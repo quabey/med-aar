@@ -28,7 +28,7 @@
 <div class="flex flex-col gap-2">
 	<div class="mx-4 flex flex-row items-center justify-between">
 		<span>Medical Ship:</span>
-		<Button>
+		<Button size="sm">
 			{selectedMedship || 'Select Medical Ship'}
 			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 		</Button>
@@ -46,7 +46,7 @@
 
 	<div class="mx-4 flex flex-row items-center justify-between">
 		<span>Gunship:</span>
-		<Button>
+		<Button size="sm">
 			{selectedGunship || 'Select Gunship'}
 			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 		</Button>

@@ -1,5 +1,7 @@
 <script>
 	import { injuries } from '$lib/stores.js';
+	import { Dropdown, DropdownItem, Button, ButtonGroup } from 'flowbite-svelte';
+	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
 	const injuryOptions = ['None', 'Tier 1', 'Tier 2', 'Tier 3', 'Unknown'];
 
@@ -22,84 +24,36 @@
 	}
 </script>
 
-<div class="rounded-lg border-2 border-black font-black text-lg uppercase flex flex-col">
-	<span class="text-center w-full text-2xl">Injuries</span>
+<div class="flex flex-col gap-2 rounded-lg">
+	<span class="w-full text-center text-2xl">Injuries</span>
 
-	<div class="mx-4 flex flex-row justify-between items-center">
-		Head:
-		<select
-			class="border-2 border-black m-2 p-1 md:w-1/3 rounded-xl"
-			bind:value={$injuries['head']}
-		>
-			{#each injuryOptions as option}
-				<option value={option}>{option}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="mx-4 flex flex-row justify-between items-center">
-		Chest:
-		<select
-			class="border-2 border-black m-2 p-1 md:w-1/3 rounded-xl"
-			bind:value={$injuries['chest']}
-		>
-			{#each injuryOptions as option}
-				<option value={option}>{option}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="mx-4 flex flex-row justify-between items-center">
-		Left Arm:
-		<select
-			class="border-2 border-black m-2 p-1 md:w-1/3 rounded-xl"
-			bind:value={$injuries['leftArm']}
-		>
-			{#each injuryOptions as option}
-				<option value={option}>{option}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="mx-4 flex flex-row justify-between items-center">
-		Right Arm:
-		<select
-			class="border-2 border-black m-2 p-1 md:w-1/3 rounded-xl"
-			bind:value={$injuries['rightArm']}
-		>
-			{#each injuryOptions as option}
-				<option value={option}>{option}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="mx-4 flex flex-row justify-between items-center">
-		Left Leg:
-		<select
-			class="border-2 border-black m-2 p-1 md:w-1/3 rounded-xl"
-			bind:value={$injuries['leftLeg']}
-		>
-			{#each injuryOptions as option}
-				<option value={option}>{option}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="mx-4 flex flex-row justify-between items-center">
-		Right Leg:
-		<select
-			class="border-2 border-black m-2 p-1 md:w-1/3 rounded-xl"
-			bind:value={$injuries['rightLeg']}
-		>
-			{#each injuryOptions as option}
-				<option value={option}>{option}</option>
-			{/each}
-		</select>
-	</div>
-	<div class="flex flex-row items-center justify-center">
-		<button class="border-2 border-black bg-white m-2 px-2 rounded-xl" on:click={() => setNone()}>
-			Set None
-		</button>
-		<button
-			class="border-2 border-black bg-white m-2 px-2 rounded-xl"
-			on:click={() => setUnknown()}
-		>
-			Set Unknown
-		</button>
+	{#each ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as part}
+		<div class="mx-4 flex flex-row items-center justify-between">
+			{@html part.charAt(0).toUpperCase() + part.slice(1)}:
+			<div class="">
+				<Button size="sm">
+					{$injuries[part] || `Select ${part.charAt(0).toUpperCase() + part.slice(1)} Injury`}
+					<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+				</Button>
+				<Dropdown class="" bind:value={$injuries[part]}>
+					{#each injuryOptions as option}
+						<DropdownItem
+							on:click={() => {
+								$injuries[part] = option;
+							}}
+						>
+							{option}
+						</DropdownItem>
+					{/each}
+				</Dropdown>
+			</div>
+		</div>
+	{/each}
+
+	<div class="flex flex-row items-center justify-center gap-3">
+		<ButtonGroup>
+			<Button on:click={() => setNone()}>Set None</Button>
+			<Button class="" on:click={() => setUnknown()}>Set Unknown</Button>
+		</ButtonGroup>
 	</div>
 </div>

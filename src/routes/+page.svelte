@@ -1,48 +1,76 @@
 <script>
-	import { Card } from 'flowbite-svelte';
+	import { sections } from '$lib/stores.js';
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
-	let items = [
-		{ id: 1, name: 'item1' },
-		{ id: 2, name: 'item2' },
-		{ id: 3, name: 'item3' },
-		{ id: 4, name: 'item4' }
+	import Section from '$lib/AAR/section.svelte';
+	import { Dropdown, Button, DropdownItem, ButtonGroup } from 'flowbite-svelte';
+	import { PlusOutline } from 'flowbite-svelte-icons';
+	import CopyButton from '$lib/AAR/CopyButton.svelte';
+	const sectionOptions = [
+		'Injury',
+		'Inqccuracy',
+		'Difficulties',
+		'Alert Breakdown',
+		'Accident Report',
+		'Team Remarks'
 	];
+
+	function addSection(option) {
+		$sections = [...$sections, { id: $sections.length + 1, name: option.toLowerCase() }];
+	}
+
 	const flipDurationMs = 300;
 	function handleDndConsider(e) {
-		items = e.detail.items;
+		sections.set(e.detail.items);
 	}
 	function handleDndFinalize(e) {
-		items = e.detail.items;
+		sections.set(e.detail.items);
 	}
 </script>
 
-<section
-	use:dndzone={{ items, flipDurationMs }}
-	on:consider={handleDndConsider}
-	on:finalize={handleDndFinalize}
->
-	{#each items as item (item.id)}
-		<div animate:flip={{ duration: flipDurationMs }}>
-			<Card>
-				<p>{item.name}</p>
-			</Card>
-		</div>
-	{/each}
-</section>
+<svelte:head>
+	<title>Medrunner AAR</title>
+</svelte:head>
 
-<style>
-	section {
-		width: 50%;
-		padding: 0.3em;
-		border: 1px solid black;
-		/* this will allow the dragged element to scroll the list although starting in version 0.9.41 the lib would detect any scrollable parent*/
-		overflow: hidden;
-		height: 200px;
-	}
-	div {
-		width: 50%;
-		padding: 0.2em;
-		margin: 0.15em 0;
-	}
-</style>
+<div class="flex justify-center pb-12">
+	<div class="my-2 flex w-full flex-col items-center gap-2">
+		<div class="flex flex-col items-center p-2">
+			<h1 class="text-center text-4xl font-black">Medrunner AAR Tool (Unofficial)</h1>
+			<ButtonGroup class="mt-2 scale-x-110">
+				<Button>See message</Button>
+				<CopyButton />
+				<Button class="">Abort Mode</Button>
+				<Button class="">Clear</Button>
+			</ButtonGroup>
+		</div>
+		<section
+			use:dndzone={{ items: $sections, flipDurationMs }}
+			on:consider={handleDndConsider}
+			on:finalize={handleDndFinalize}
+			class="gap-2"
+		>
+			{#each $sections as item (item.id)}
+				<div animate:flip={{ duration: flipDurationMs }}>
+					<Section sectionIndex={item} />
+				</div>
+			{/each}
+		</section>
+		<div class="">
+			<Button>
+				Add Section
+				<PlusOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+			</Button>
+			<Dropdown placement="top">
+				{#each sectionOptions as option}
+					<DropdownItem
+						on:click={() => {
+							addSection(option);
+						}}
+					>
+						{option}
+					</DropdownItem>
+				{/each}
+			</Dropdown>
+		</div>
+	</div>
+</div>

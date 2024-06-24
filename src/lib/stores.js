@@ -28,9 +28,3 @@ export const sections = writable([
 	{ id: 1, name: 'ships' },
 	{ id: 2, name: 'injury' }
 ]);
-
-export const dndItems = writable([
-	{ id: 0, name: 'timing' },
-	{ id: 1, name: 'ships' },
-	{ id: 2, name: 'injury' }
-]);
