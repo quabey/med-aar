@@ -3,8 +3,8 @@
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import Section from '$lib/AAR/section.svelte';
-	import { Dropdown, Button, DropdownItem, ButtonGroup } from 'flowbite-svelte';
-	import { PlusOutline } from 'flowbite-svelte-icons';
+	import { Dropdown, Button, DropdownItem, ButtonGroup, Modal } from 'flowbite-svelte';
+	import { PlusOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	import CopyButton from '$lib/AAR/CopyButton.svelte';
 	const sectionOptions = [
 		'Injury',
@@ -12,10 +12,22 @@
 		'Difficulties',
 		'Alert Breakdown',
 		'Accident Report',
-		'Team Remarks'
+		'Team Remarks',
+		'Extraction',
+		'Location',
+		'Text 1',
+		'Text 2',
+		'Text 3'
 	];
 
+	let clearModal = false;
+
 	function addSection(option) {
+		if (option == 'Text') {
+			const textId = $sections.filter((section) => section.name == 'text').length + 1;
+			$sections = [...$sections, { id: $sections.length + 1, name: option.toLowerCase(), textId }];
+			return;
+		}
 		$sections = [...$sections, { id: $sections.length + 1, name: option.toLowerCase() }];
 	}
 
@@ -25,6 +37,11 @@
 	}
 	function handleDndFinalize(e) {
 		sections.set(e.detail.items);
+	}
+
+	function clearSections() {
+		$sections = [];
+		clearModal = false;
 	}
 </script>
 
@@ -40,7 +57,7 @@
 				<Button>See message</Button>
 				<CopyButton />
 				<Button class="">Abort Mode</Button>
-				<Button class="">Clear</Button>
+				<Button class="" on:click={() => (clearModal = true)}>Clear</Button>
 			</ButtonGroup>
 		</div>
 		<section
@@ -74,3 +91,14 @@
 		</div>
 	</div>
 </div>
+
+<Modal bind:open={clearModal} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+			Are you sure you want to clear all sections?
+		</h3>
+		<Button color="red" class="me-2" on:click={clearSections}>Yes, I'm sure</Button>
+		<Button color="alternative" on:click={() => (clearModal = false)}>No, cancel</Button>
+	</div>
+</Modal>

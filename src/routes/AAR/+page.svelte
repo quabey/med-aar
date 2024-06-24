@@ -3,8 +3,8 @@
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import Section from '$lib/AAR/section.svelte';
-	import { Dropdown, Button, DropdownItem, ButtonGroup } from 'flowbite-svelte';
-	import { PlusOutline } from 'flowbite-svelte-icons';
+	import { Dropdown, Button, DropdownItem, ButtonGroup, Modal } from 'flowbite-svelte';
+	import { PlusOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	import CopyButton from '$lib/AAR/CopyButton.svelte';
 	const sectionOptions = [
 		'Injury',
@@ -39,7 +39,7 @@
 				<Button>See message</Button>
 				<CopyButton />
 				<Button class="">Abort Mode</Button>
-				<Button class="">Clear</Button>
+				<Button class="" on:click={() => (clearModal = true)}>Clear</Button>
 			</ButtonGroup>
 		</div>
 		<section

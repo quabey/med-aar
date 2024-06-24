@@ -1,4 +1,8 @@
 <script>
+	import { extraction } from '$lib/stores.js';
+	import { Dropdown, DropdownItem, Button } from 'flowbite-svelte';
+	import { ChevronDownOutline } from 'flowbite-svelte-icons';
+
 	const locationOption = [
 		'Baijini Point',
 		'Covalex Shipping Hub Gundo',
@@ -30,3 +34,24 @@
 		'MICL5 Modern Icarus'
 	];
 </script>
+
+<div class="flex flex-row items-center justify-between">
+	<span>Location</span>
+	<div class="">
+		<Button>
+			{$extraction == 'none' ? 'Select Location' : $extraction}
+			<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
+		</Button>
+		<Dropdown>
+			{#each locationOption as option}
+				<DropdownItem
+					on:click={() => {
+						$extraction = option;
+					}}
+				>
+					{option}
+				</DropdownItem>
+			{/each}
+		</Dropdown>
+	</div>
+</div>

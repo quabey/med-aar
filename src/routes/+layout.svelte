@@ -15,4 +15,8 @@
 	* {
 		color: white;
 	}
+
+	button:hover {
+		background-color: rgb(44 82 120 / 90%) !important;
+	}
 </style>

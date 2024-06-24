@@ -25,10 +25,8 @@
 </script>
 
 <div class="flex flex-col gap-2 rounded-lg">
-	<span class="w-full text-center text-2xl">Injuries</span>
-
 	{#each ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as part}
-		<div class="mx-4 flex flex-row items-center justify-between">
+		<div class=" flex flex-row items-center justify-between">
 			{@html part.charAt(0).toUpperCase() + part.slice(1)}:
 			<div class="">
 				<Button size="sm">
@@ -52,8 +50,8 @@
 
 	<div class="flex flex-row items-center justify-center gap-3">
 		<ButtonGroup>
-			<Button on:click={() => setNone()}>Set None</Button>
-			<Button class="" on:click={() => setUnknown()}>Set Unknown</Button>
+			<Button on:click={setNone}>Set None</Button>
+			<Button class="" on:click={setUnknown}>Set Unknown</Button>
 		</ButtonGroup>
 	</div>
 </div>
