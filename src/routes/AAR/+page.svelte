@@ -18,7 +18,6 @@
 	function addSection(option) {
 		$sections = [...$sections, { id: $sections.length + 1, name: option.toLowerCase() }];
 	}
-
 	const flipDurationMs = 300;
 	function handleDndConsider(e) {
 		sections.set(e.detail.items);
