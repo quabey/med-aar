@@ -15,13 +15,12 @@ export default {
 				'primary-900': '#170602',
 				'primary-800': '#461307',
 				'primary-700': '#741F0C',
-
-				// primary 600 is the official Medrunner red
+				// slowly building up to the primary colors
 				'primary-600': '#2c5278',
 
 				'primary-500': '#D13815',
-				'primary-400': '#EA512E',
-				'primary-300': '#EF785D',
+				'primary-400': 'rgb(44 82 120)',
+				'primary-300': 'rgb(164 202 254)',
 				'primary-200': '#F39F8B',
 				'primary-100': '#F8C5B9',
 				'primary-50': '#FDECE8'

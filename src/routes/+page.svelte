@@ -53,7 +53,6 @@
 <div class="flex justify-center pb-12">
 	<div class="my-2 flex w-full flex-col items-center gap-2">
 		<div class="flex flex-col items-center p-2">
-			<h1 class="text-center text-4xl font-black">Medrunner AAR Tool (Unofficial)</h1>
 			<ButtonGroup class="mt-2 scale-x-110">
 				<Button on:click={() => (previewModal = true)}>See message</Button>
 				<CopyButton />
