@@ -61,13 +61,13 @@
 			</ButtonGroup>
 		</div>
 		<section
-			use:dndzone={{ items: $sections, flipDurationMs }}
+			use:dndzone={{ items: $sections, flipDurationMs, dropTargetStyle: {} }}
 			on:consider={handleDndConsider}
 			on:finalize={handleDndFinalize}
 			class="gap-2"
 		>
 			{#each $sections as item (item.id)}
-				<div animate:flip={{ duration: flipDurationMs }}>
+				<div animate:flip={{ duration: flipDurationMs }} class="border-none outline-none">
 					<Section sectionIndex={item} />
 				</div>
 			{/each}

@@ -13,7 +13,7 @@
 			>
 				<div class=" flex flex-row items-center gap-2">
 					<span class="font-Mohave text-3xl font-bold">MED-TOOLS</span>
-					<Badge color="red" large>Unofficaial</Badge>
+					<Badge color="red" large>Unofficial</Badge>
 				</div>
 				<ul class="flex gap-10">
 					<li>
