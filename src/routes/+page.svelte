@@ -13,7 +13,6 @@
 		'Alert Breakdown',
 		'Accident Report',
 		'Team Remarks',
-		'Extraction',
 		'Location',
 		'Text 1',
 		'Text 2',
@@ -23,12 +22,11 @@
 	let clearModal = false;
 
 	function addSection(option) {
-		if (option == 'Text') {
-			const textId = $sections.filter((section) => section.name == 'text').length + 1;
-			$sections = [...$sections, { id: $sections.length + 1, name: option.toLowerCase(), textId }];
-			return;
+		let id = $sections.length + 1;
+		while ($sections.find((section) => section.id === id)) {
+			id++;
 		}
-		$sections = [...$sections, { id: $sections.length + 1, name: option.toLowerCase() }];
+		$sections = [...$sections, { id, name: option.toLowerCase() }];
 	}
 
 	const flipDurationMs = 300;

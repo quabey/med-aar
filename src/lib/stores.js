@@ -24,11 +24,9 @@ export const injuries = writable({
 });
 
 export const sections = writable([
-	{ id: 4, name: 'extraction' },
-	{ id: 5, name: 'location' },
-	{ id: 0, name: 'timing' },
-	{ id: 1, name: 'ships' },
-	{ id: 2, name: 'injury' }
+	{ id: 0, name: 'extraction' },
+	{ id: 1, name: 'timing' },
+	{ id: 2, name: 'ships' }
 ]);
 
 export const extraction = writable('none');
