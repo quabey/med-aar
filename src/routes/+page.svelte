@@ -1,4 +1,5 @@
 <script>
+	import MessagePreview from '$lib/AAR/MessagePreview.svelte';
 	import { sections } from '$lib/stores.js';
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
@@ -6,6 +7,7 @@
 	import { Dropdown, Button, DropdownItem, ButtonGroup, Modal } from 'flowbite-svelte';
 	import { PlusOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	import CopyButton from '$lib/AAR/CopyButton.svelte';
+
 	const sectionOptions = [
 		'Injury',
 		'Inqccuracy',
@@ -20,6 +22,7 @@
 	];
 
 	let clearModal = false;
+	let previewModal = false;
 
 	function addSection(option) {
 		let id = $sections.length + 1;
@@ -52,7 +55,7 @@
 		<div class="flex flex-col items-center p-2">
 			<h1 class="text-center text-4xl font-black">Medrunner AAR Tool (Unofficial)</h1>
 			<ButtonGroup class="mt-2 scale-x-110">
-				<Button>See message</Button>
+				<Button on:click={() => (previewModal = true)}>See message</Button>
 				<CopyButton />
 				<Button class="">Abort Mode</Button>
 				<Button class="" on:click={() => (clearModal = true)}>Clear</Button>
@@ -99,4 +102,8 @@
 		<Button color="red" class="me-2" on:click={clearSections}>Yes, I'm sure</Button>
 		<Button color="alternative" on:click={() => (clearModal = false)}>No, cancel</Button>
 	</div>
+</Modal>
+
+<Modal bind:open={previewModal} size="lg" title="Preview Message">
+	<MessagePreview />
 </Modal>
