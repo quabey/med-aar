@@ -38,8 +38,10 @@
 						on:click={() => {
 							$ships.medship = option;
 							console.log('Selected Medical Ship:', option);
-						}}>{option}</DropdownItem
+						}}
 					>
+						{option}
+					</DropdownItem>
 				{/each}
 			</Dropdown>
 		</div>
@@ -49,7 +51,7 @@
 		<span>Gunship:</span>
 		<div class="">
 			<Button size="sm">
-				{$ships.gunship || 'Select Gunship'}
+				{$ships.gunship == '' ? 'Select Gunship' : $ships.gunship}
 				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 			</Button>
 			<Dropdown>

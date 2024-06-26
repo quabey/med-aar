@@ -54,8 +54,8 @@ function createTimingMessage(times) {
 function createShipsMessage(ships) {
 	console.log(ships);
 	let message = '**Ships**\n';
-	message += `Medical Ship: ${ships.medship}\n`;
-	message += `Gunship: ${ships.gunship}\n`;
+	message += `Medical Ship: ${ships.medship == '' ? 'Unknown' : ships.medship}\n`;
+	message += `Gunship: ${ships.gunship == '' ? 'Unknown' : ships.gunship}\n`;
 	if (ships.qrf.length > 0 && ships.qrf[0] !== '') {
 		message += `QRF: ${ships.qrf.join(', ')}\n`;
 	}

@@ -9,8 +9,8 @@ export const times = writable({
 });
 
 export const ships = writable({
-	gunship: 'unknown',
-	medship: 'unknown',
+	gunship: '',
+	medship: '',
 	qrf: []
 });
 
@@ -47,3 +47,42 @@ export const texts = writable([
 		content: ''
 	}
 ]);
+
+export function setAllDefault() {
+	times.set({
+		received: 'unknown',
+		start: 'unknown',
+		departed: 'unknown',
+		reached: 'unknown',
+		completed: 'unknown'
+	});
+	ships.set({
+		gunship: '',
+		medship: '',
+		qrf: []
+	});
+	injuries.set({
+		head: 'None',
+		chest: 'None',
+		leftArm: 'None',
+		rightArm: 'None',
+		leftLeg: 'None',
+		rightLeg: 'None'
+	});
+	injuriesTreatment.set('None');
+	extraction.set('none');
+	texts.set([
+		{
+			title: '',
+			content: ''
+		},
+		{
+			title: '',
+			content: ''
+		},
+		{
+			title: '',
+			content: ''
+		}
+	]);
+}

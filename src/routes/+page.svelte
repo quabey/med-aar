@@ -1,6 +1,7 @@
 <script>
 	import MessagePreview from '$lib/AAR/MessagePreview.svelte';
-	import { sections } from '$lib/stores.js';
+	import { sections, setAllDefault } from '$lib/stores.js';
+	import { successToast, errorToast } from '$lib/toasts.js';
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
 	import Section from '$lib/AAR/section.svelte';
@@ -46,7 +47,24 @@
 		clearModal = true;
 	}
 
-	function clearSectionContents() {}
+	function clearSectionContents() {
+		setAllDefault();
+		clearModal = false;
+	}
+
+	function clear() {
+		switch (clearningMessage) {
+			case 'sections':
+				break;
+			case 'section contents':
+				clearSectionContents();
+				break;
+			case 'section and set default sections':
+				errorToast('Not implemented yet');
+			default:
+				break;
+		}
+	}
 
 	function clearSections() {
 		$sections = [];
@@ -77,11 +95,11 @@
 			</ButtonGroup>
 			<ButtonGroup class="scale-x-110 pl-7 pr-4">
 				<Button class="" on:click={() => actviateClearModel('sections')}>Clear Section</Button>
-				<Button class="" on:click={() => actviateClearModel('section contents')}
-					>Clear Contents</Button
-				>
-				<Button class="" on:click={() => actviateClearModel('section and set default sections')}
-					>Clear and set default sections</Button
+				<Button class="" on:click={() => actviateClearModel('section contents')}>
+					Clear Contents
+				</Button>
+				<Button class="" on:click={() => actviateClearModel('section and set default sections')}>
+					Clear and set default sections</Button
 				>
 			</ButtonGroup>
 			<Button class="">Abort Mode</Button>
@@ -124,7 +142,7 @@
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
 			Are you sure you want to clear all <b>{clearningMessage}</b>?
 		</h3>
-		<Button color="red" class="me-2" on:click={clearSections}>Yes, I'm sure</Button>
+		<Button color="red" class="me-2" on:click={clear()}>Yes, I'm sure</Button>
 		<Button color="alternative" on:click={() => (clearModal = false)}>No, cancel</Button>
 	</div>
 </Modal>
