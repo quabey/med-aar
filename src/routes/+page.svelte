@@ -60,7 +60,9 @@
 				clearSectionContents();
 				break;
 			case 'section and set default sections':
-				errorToast('Not implemented yet');
+				clearSections();
+				setDefaultSections();
+				break;
 			default:
 				break;
 		}
@@ -73,8 +75,8 @@
 
 	function setDefaultSections() {
 		$sections = [
-			{ id: 1, name: 'timing' },
-			{ id: 2, name: 'ships' },
+			{ id: 1, name: 'ships' },
+			{ id: 2, name: 'timing' },
 			{ id: 3, name: 'injury' },
 			{ id: 4, name: 'extraction' },
 			{ id: 5, name: 'text 1' }
