@@ -23,6 +23,8 @@ export const injuries = writable({
 	rightLeg: 'None'
 });
 
+export const injuriesTreatment = writable('None');
+
 export const sections = writable([
 	{ id: 0, name: 'extraction' },
 	{ id: 1, name: 'timing' },

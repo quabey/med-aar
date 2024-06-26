@@ -22,12 +22,6 @@
 	let qrf = '';
 
 	$: $ships['qrf'] = qrf.split(',');
-
-	let selectedMedship = '';
-	let selectedGunship = '';
-
-	$: $ships['medship'] = selectedMedship;
-	$: $ships['gunship'] = selectedGunship;
 </script>
 
 <div class="flex flex-col gap-2">
@@ -35,14 +29,14 @@
 		<span>Medical Ship:</span>
 		<div class="">
 			<Button size="sm">
-				{selectedMedship || 'Select Medical Ship'}
+				{$ships.medship || 'Select Medical Ship'}
 				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 			</Button>
 			<Dropdown>
 				{#each medshipOptions as option}
 					<DropdownItem
 						on:click={() => {
-							selectedMedship = option;
+							$ships.medship = option;
 							console.log('Selected Medical Ship:', option);
 						}}>{option}</DropdownItem
 					>
@@ -55,14 +49,14 @@
 		<span>Gunship:</span>
 		<div class="">
 			<Button size="sm">
-				{selectedGunship || 'Select Gunship'}
+				{$ships.gunship || 'Select Gunship'}
 				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 			</Button>
 			<Dropdown>
 				{#each gunshipOptions as option}
 					<DropdownItem
 						on:click={() => {
-							selectedGunship = option;
+							$ships.gunship = option;
 							console.log('Selected Gunship:', option);
 						}}>{option}</DropdownItem
 					>

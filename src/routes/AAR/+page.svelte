@@ -8,7 +8,7 @@
 	import CopyButton from '$lib/AAR/CopyButton.svelte';
 	const sectionOptions = [
 		'Injury',
-		'Inqccuracy',
+		'Inaccuracy',
 		'Difficulties',
 		'Alert Breakdown',
 		'Accident Report',

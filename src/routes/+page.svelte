@@ -10,7 +10,7 @@
 
 	const sectionOptions = [
 		'Injury',
-		'Inqccuracy',
+		'Inaccuracy',
 		'Difficulties',
 		'Alert Breakdown',
 		'Accident Report',
@@ -22,6 +22,7 @@
 	];
 
 	let clearModal = false;
+	let clearningMessage = 'sections';
 	let previewModal = false;
 
 	function addSection(option) {
@@ -40,9 +41,26 @@
 		sections.set(e.detail.items);
 	}
 
+	function actviateClearModel(type) {
+		clearningMessage = type;
+		clearModal = true;
+	}
+
+	function clearSectionContents() {}
+
 	function clearSections() {
 		$sections = [];
 		clearModal = false;
+	}
+
+	function setDefaultSections() {
+		$sections = [
+			{ id: 1, name: 'timing' },
+			{ id: 2, name: 'ships' },
+			{ id: 3, name: 'injury' },
+			{ id: 4, name: 'extraction' },
+			{ id: 5, name: 'text 1' }
+		];
 	}
 </script>
 
@@ -52,13 +70,21 @@
 
 <div class="flex justify-center pb-12">
 	<div class="my-2 flex w-full flex-col items-center gap-2">
-		<div class="flex flex-col items-center p-2">
-			<ButtonGroup class="mt-2 scale-x-110">
+		<div class="flex flex-row items-center gap-5 py-2">
+			<ButtonGroup class="scale-x-110 ">
 				<Button on:click={() => (previewModal = true)}>See message</Button>
 				<CopyButton />
-				<Button class="">Abort Mode</Button>
-				<Button class="" on:click={() => (clearModal = true)}>Clear</Button>
 			</ButtonGroup>
+			<ButtonGroup class="scale-x-110 pl-7 pr-4">
+				<Button class="" on:click={() => actviateClearModel('sections')}>Clear Section</Button>
+				<Button class="" on:click={() => actviateClearModel('section contents')}
+					>Clear Contents</Button
+				>
+				<Button class="" on:click={() => actviateClearModel('section and set default sections')}
+					>Clear and set default sections</Button
+				>
+			</ButtonGroup>
+			<Button class="">Abort Mode</Button>
 		</div>
 		<section
 			use:dndzone={{ items: $sections, flipDurationMs, dropTargetStyle: {} }}
@@ -96,7 +122,7 @@
 	<div class="text-center">
 		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-			Are you sure you want to clear all sections?
+			Are you sure you want to clear all <b>{clearningMessage}</b>?
 		</h3>
 		<Button color="red" class="me-2" on:click={clearSections}>Yes, I'm sure</Button>
 		<Button color="alternative" on:click={() => (clearModal = false)}>No, cancel</Button>

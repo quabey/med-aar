@@ -43,7 +43,7 @@
 				<div class="flex items-center gap-4 text-primary-300">
 					<a href="https://github.com/quabey/med-aar/" target="_blank"><span>Github</span></a>
 					<button>
-						<span class=" border-l-2 border-white pl-4"> Contact </span>
+						<span class=" border-l-2 border-white pl-4"> Credits </span>
 					</button>
 				</div>
 

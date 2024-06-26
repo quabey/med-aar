@@ -34,6 +34,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@macfja/svelte-persistent-store": "^2.4.1",
 		"@medrunner/api-client": "^0.1.1",
 		"svelte-french-toast": "^1.2.0"
 	}
