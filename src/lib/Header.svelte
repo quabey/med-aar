@@ -14,6 +14,7 @@
 				<div class=" flex flex-row items-center gap-2">
 					<span class="font-Mohave text-3xl font-bold">MED-TOOLS</span>
 					<Badge color="red" large>Unofficial</Badge>
+					<Badge color="red" large>Beta</Badge>
 				</div>
 				<ul class="flex gap-10">
 					<li>
@@ -42,9 +43,9 @@
 				</ul>
 				<div class="flex items-center gap-4 text-primary-300">
 					<a href="https://github.com/quabey/med-aar/" target="_blank"><span>Github</span></a>
-					<button>
+					<a href="/credits">
 						<span class=" border-x-2 border-white px-4"> Credits </span>
-					</button>
+					</a>
 					<button>
 						<CogOutline class="h-6 w-6 text-white dark:text-white" />
 					</button>
