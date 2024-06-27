@@ -8,7 +8,8 @@ import {
 	texts,
 	location,
 	locationDistance,
-	alertBreakdown
+	alertBreakdown,
+	otherShips
 } from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
 
@@ -16,6 +17,7 @@ export function createMessage() {
 	const sectionsData = get(sections);
 	const timesData = get(times);
 	const shipsData = get(ships);
+	const otherShipsData = get(otherShips);
 	const injuriesData = get(injuries);
 	const extractionData = get(extraction);
 	const textsData = get(texts);
@@ -31,7 +33,7 @@ export function createMessage() {
 				message += createTimingMessage(timesData);
 				break;
 			case 'ships':
-				message += createShipsMessage(shipsData);
+				message += createShipsMessage(shipsData, otherShipsData);
 				break;
 			case 'injury':
 				message += createInjuryMessage(injuriesData);
@@ -70,11 +72,19 @@ function createTimingMessage(times) {
 	return message;
 }
 
-function createShipsMessage(ships) {
+function createShipsMessage(ships, otherShips) {
 	console.log(ships);
 	let message = '**Ships**\n';
-	message += `Medical Ship: ${ships.medship == '' ? 'Unknown' : ships.medship}\n`;
-	message += `Gunship: ${ships.gunship == '' ? 'Unknown' : ships.gunship}\n`;
+	let gunship = ships.gunship;
+	let medship = ships.medship;
+	if (gunship == 'Other' && otherShips.gunship !== '') {
+		gunship = otherShips.gunship;
+	}
+	if (medship == 'Other' && otherShips.medship !== '') {
+		medship = otherShips.medship;
+	}
+	message += `Medical Ship: ${medship == '' ? 'Unknown' : medship}\n`;
+	message += `Gunship: ${gunship == '' ? 'Unknown' : gunship}\n`;
 	if (ships.qrf.length > 0 && ships.qrf[0] !== '') {
 		message += `QRF: ${ships.qrf.join(', ')}\n`;
 	}
@@ -101,6 +111,8 @@ function createExtractionMessage(extraction) {
 		let message = '**Extraction**\n';
 		message += `The client was extracted to ${extraction}\n`;
 		return message;
+	} else if (extraction === 'refused') {
+		return '**Extraction**\nThe client refused extraction\n';
 	} else {
 		return '';
 	}

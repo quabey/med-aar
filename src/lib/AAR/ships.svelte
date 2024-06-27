@@ -1,5 +1,5 @@
 <script>
-	import { ships } from '$lib/stores.js';
+	import { ships, otherShips } from '$lib/stores.js';
 	import { Dropdown, DropdownItem, Button, Input } from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
@@ -28,7 +28,7 @@
 	<div class="flex flex-row items-center justify-between">
 		<span>Medical Ship:</span>
 		<div class="">
-			<Button size="sm">
+			<Button size="sm" class="w-[12rem]">
 				{$ships.medship || 'Select Medical Ship'}
 				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 			</Button>
@@ -44,13 +44,21 @@
 					</DropdownItem>
 				{/each}
 			</Dropdown>
+			{#if $ships.medship == 'Other'}
+				<Input
+					bind:value={$otherShips.medship}
+					type="text"
+					class="my-2 rounded-xl border-2 border-black p-1"
+					placeholder="Enter Medical Ship..."
+				/>
+			{/if}
 		</div>
 	</div>
 
 	<div class=" flex flex-row items-center justify-between">
 		<span>Gunship:</span>
 		<div class="">
-			<Button size="sm">
+			<Button size="sm" class="w-[12rem]">
 				{$ships.gunship == '' ? 'Select Gunship' : $ships.gunship}
 				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 			</Button>
@@ -60,19 +68,28 @@
 						on:click={() => {
 							$ships.gunship = option;
 							console.log('Selected Gunship:', option);
-						}}>{option}</DropdownItem
+						}}
 					>
+						{option}
+					</DropdownItem>
 				{/each}
 			</Dropdown>
+			{#if $ships.gunship == 'Other'}
+				<Input
+					bind:value={$otherShips.gunship}
+					type="text"
+					class="my-2 rounded-xl border-2 border-black p-1"
+				/>
+			{/if}
 		</div>
 	</div>
 
 	<div class=" flex flex-row items-center justify-between">
-		<span>QRF (Separate by comma):</span>
+		<span>QRF / Additional Ships (Separate by comma):</span>
 		<Input bind:value={qrf} type="text" class="m-2 rounded-xl border-2 border-black p-1 md:w-1/3" />
 	</div>
 
 	<div class=" flex flex-row items-center justify-between">
-		<span>QRF Ships: {$ships['qrf'].join('; ')}</span>
+		<span>QRF / Additional Ships: {$ships['qrf'].join('; ')}</span>
 	</div>
 </div>

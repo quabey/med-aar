@@ -14,6 +14,11 @@ export const ships = writable({
 	qrf: []
 });
 
+export const otherShips = writable({
+	gunship: '',
+	medship: ''
+});
+
 export const injuries = writable({
 	head: 'None',
 	chest: 'None',
