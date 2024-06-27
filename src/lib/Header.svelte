@@ -33,11 +33,12 @@
 					</li>
 					<li>
 						<div class="relative">
-							<button
+							<a
+								href="/copy-pastes"
 								class="flex w-full items-center justify-between rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
 								Copy-Pastes
-							</button><!---->
+							</a><!---->
 						</div>
 					</li>
 				</ul>

@@ -98,3 +98,8 @@ export function setAllDefault() {
 		}
 	]);
 }
+
+// ============= Copy-paste ============= //
+
+export const hasNitro = writable(false);
+export const isMRBlack = writable(false);

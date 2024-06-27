@@ -1,8 +1,7 @@
 <script>
 	import LocationSearch from '$lib/AAR/LocationSearch.svelte';
-	import { extraction, locationDistance } from '$lib/stores.js';
-	import { Button, Dropdown, DropdownItem } from 'flowbite-svelte';
-	import { ChevronDownOutline } from 'flowbite-svelte-icons';
+	import { extraction } from '$lib/stores.js';
+	import { Button } from 'flowbite-svelte';
 </script>
 
 <div class="">
