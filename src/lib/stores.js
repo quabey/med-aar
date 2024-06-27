@@ -30,10 +30,12 @@ export const sections = writable([
 	{ id: 1, name: 'timing' },
 	{ id: 2, name: 'text 1' },
 	{ id: 3, name: 'injury' },
-	{ id: 5, name: 'extraction' }
+	{ id: 4, name: 'extraction' }
 ]);
 
-export const extraction = writable('none');
+export const extractionStore = writable('');
+export const locationStore = writable('');
+export const locationDistance = writable('');
 
 export const texts = writable([
 	{

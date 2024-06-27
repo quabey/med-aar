@@ -1,0 +1,1847 @@
+[
+	{
+		"id": 1,
+		"name": "\"The Pit\"",
+		"type": "Outpost"
+	},
+	{
+		"id": 2,
+		"name": "\"Wheeler's\"",
+		"type": "Outpost"
+	},
+	{
+		"id": 3,
+		"name": "ARC-L1 Wide Forest Station",
+		"type": "Space station"
+	},
+	{
+		"id": 4,
+		"name": "Aciedo Communication Station",
+		"type": "Space station"
+	},
+	{
+		"id": 5,
+		"name": "Adira Falls Apartments",
+		"type": "Residential"
+	},
+	{
+		"id": 6,
+		"name": "Afterlife",
+		"type": "Outpost"
+	},
+	{
+		"id": 7,
+		"name": "Aparelli",
+		"type": "Store"
+	},
+	{
+		"id": 8,
+		"name": "ArcCorp Mining Area 045",
+		"type": "Outpost"
+	},
+	{
+		"id": 9,
+		"name": "ArcCorp Mining Area 048",
+		"type": "Outpost"
+	},
+	{
+		"id": 10,
+		"name": "ArcCorp Mining Area 056",
+		"type": "Outpost"
+	},
+	{
+		"id": 11,
+		"name": "ArcCorp Mining Area 061",
+		"type": "Outpost"
+	},
+	{
+		"id": 12,
+		"name": "ArcCorp Mining Area 141",
+		"type": "Outpost"
+	},
+	{
+		"id": 13,
+		"name": "ArcCorp Mining Area 157",
+		"type": "Outpost"
+	},
+	{
+		"id": 14,
+		"name": "Archangel Station",
+		"type": "Space station"
+	},
+	{
+		"id": 15,
+		"name": "Archon Station",
+		"type": "Space station"
+	},
+	{
+		"id": 16,
+		"name": "Area04",
+		"type": "Industrial and commercial zone"
+	},
+	{
+		"id": 17,
+		"name": "Area06",
+		"type": "Industrial and commercial zone"
+	},
+	{
+		"id": 18,
+		"name": "Area11",
+		"type": "Industrial and commercial zone"
+	},
+	{
+		"id": 19,
+		"name": "Area17",
+		"type": "Industrial and commercial zone"
+	},
+	{
+		"id": 20,
+		"name": "Area18",
+		"type": "City"
+	},
+	{
+		"id": 21,
+		"name": "Area18 Hospital",
+		"type": "Hospital"
+	},
+	{
+		"id": 22,
+		"name": "Area20",
+		"type": "Industrial and commercial zone"
+	},
+	{
+		"id": 23,
+		"name": "Armor store (ARC-L1 Wide Forest Station)",
+		"type": "Store"
+	},
+	{
+		"id": 24,
+		"name": "Ashburn Channel Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 25,
+		"name": "Aston Ridge Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 26,
+		"name": "Astro Armada",
+		"type": "Store"
+	},
+	{
+		"id": 27,
+		"name": "August Dunlow Spaceport",
+		"type": "Spaceport"
+	},
+	{
+		"id": 28,
+		"name": "Aydo",
+		"type": "City"
+	},
+	{
+		"id": 29,
+		"name": "Bacchus Flotilla",
+		"type": "Space station"
+	},
+	{
+		"id": 30,
+		"name": "Baijini Point",
+		"type": "Space station"
+	},
+	{
+		"id": 31,
+		"name": "Banu Station",
+		"type": "Space station"
+	},
+	{
+		"id": 32,
+		"name": "Barton Flats Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 33,
+		"name": "Benny Henge",
+		"type": "Landmark"
+	},
+	{
+		"id": 34,
+		"name": "Benson Mining Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 35,
+		"name": "Bevic Convention Center",
+		"type": "Convention center"
+	},
+	{
+		"id": 36,
+		"name": "Boro",
+		"type": "City"
+	},
+	{
+		"id": 37,
+		"name": "Bountiful Harvest Hydroponics",
+		"type": "Outpost"
+	},
+	{
+		"id": 38,
+		"name": "Brentworth Care Center",
+		"type": "Hospital"
+	},
+	{
+		"id": 39,
+		"name": "Brio's Breaker Yard",
+		"type": "Scrapyard"
+	},
+	{
+		"id": 40,
+		"name": "Buckets",
+		"type": "Outpost"
+	},
+	{
+		"id": 41,
+		"name": "Bud's Growery",
+		"type": "Outpost"
+	},
+	{
+		"id": 42,
+		"name": "Buloi Sataball Arena",
+		"type": "Space station"
+	},
+	{
+		"id": 43,
+		"name": "CRU-L1 Ambitious Dream Station",
+		"type": "Space station"
+	},
+	{
+		"id": 44,
+		"name": "CRU-L4 Shallow Fields Station",
+		"type": "Space station"
+	},
+	{
+		"id": 45,
+		"name": "CRU-L5 Beautiful Glen Station",
+		"type": "Space station"
+	},
+	{
+		"id": 46,
+		"name": "Café Musain",
+		"type": "Bar"
+	},
+	{
+		"id": 47,
+		"name": "Calhoun Pass Emergency Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 48,
+		"name": "Candalor",
+		"type": "City"
+	},
+	{
+		"id": 49,
+		"name": "Cargo deck store (Baijini Point)",
+		"type": "Store"
+	},
+	{
+		"id": 50,
+		"name": "Cargo deck store (Everus Harbor)",
+		"type": "Store"
+	},
+	{
+		"id": 51,
+		"name": "Cargo deck store (Port Tressler)",
+		"type": "Store"
+	},
+	{
+		"id": 52,
+		"name": "Casaba Outlet (Area18)",
+		"type": "Store"
+	},
+	{
+		"id": 53,
+		"name": "CenterMass (Area18)",
+		"type": "Store"
+	},
+	{
+		"id": 54,
+		"name": "CenterMass (New Babbage)",
+		"type": "Store"
+	},
+	{
+		"id": 55,
+		"name": "Chairman's Club Lounge (Lorville)",
+		"type": "Lounge"
+	},
+	{
+		"id": 56,
+		"name": "Chairman's Club Lounge (Orison)",
+		"type": "Lounge"
+	},
+	{
+		"id": 57,
+		"name": "Char",
+		"type": "City"
+	},
+	{
+		"id": 58,
+		"name": "Clear View Emergency Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 59,
+		"name": "Comm Array 042",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 60,
+		"name": "Comm Array 126",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 61,
+		"name": "Comm Array 275",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 62,
+		"name": "Comm Array 306",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 63,
+		"name": "Comm Array 472",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 64,
+		"name": "Comm Array 556",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 65,
+		"name": "Comm Array 625",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 66,
+		"name": "Comm Array 730",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 67,
+		"name": "Comm Array 849",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 68,
+		"name": "Comm Array ST1-02",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 69,
+		"name": "Comm Array ST1-13",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 70,
+		"name": "Comm Array ST1-48",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 71,
+		"name": "Comm Array ST1-61",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 72,
+		"name": "Comm Array ST1-92",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 73,
+		"name": "Comm Array ST2-28",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 74,
+		"name": "Comm Array ST2-47",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 75,
+		"name": "Comm Array ST2-55",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 76,
+		"name": "Comm Array ST2-76",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 77,
+		"name": "Comm Array ST3-18",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 78,
+		"name": "Comm Array ST3-35",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 79,
+		"name": "Comm Array ST3-90",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 80,
+		"name": "Comm Array ST4-22",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 81,
+		"name": "Comm Array ST4-31",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 82,
+		"name": "Comm Array ST4-59",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 83,
+		"name": "Comm Array ST4-64",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 84,
+		"name": "Commarray SCC",
+		"type": "Communication satellite"
+	},
+	{
+		"id": 85,
+		"name": "Connor's",
+		"type": "Outpost"
+	},
+	{
+		"id": 86,
+		"name": "Conscientious Objects",
+		"type": "Store"
+	},
+	{
+		"id": 87,
+		"name": "Cordry's",
+		"type": "Store"
+	},
+	{
+		"id": 88,
+		"name": "Corilla",
+		"type": "City"
+	},
+	{
+		"id": 89,
+		"name": "Covalex Shipping (Orison)",
+		"type": "Store"
+	},
+	{
+		"id": 90,
+		"name": "Covalex Shipping Hub Gundo",
+		"type": "Space station"
+	},
+	{
+		"id": 91,
+		"name": "Covalex Shipping Hub Xenia",
+		"type": "Space station"
+	},
+	{
+		"id": 92,
+		"name": "Crusader Showroom",
+		"type": "Store"
+	},
+	{
+		"id": 93,
+		"name": "Cry-Astro Service 042",
+		"type": "Space station"
+	},
+	{
+		"id": 94,
+		"name": "Cry-Astro Service 151",
+		"type": "Space station"
+	},
+	{
+		"id": 95,
+		"name": "Cry-Astro Service 262",
+		"type": "Space station"
+	},
+	{
+		"id": 96,
+		"name": "Cubby Blast",
+		"type": "Store"
+	},
+	{
+		"id": 97,
+		"name": "Dark Sun",
+		"type": "Bar"
+	},
+	{
+		"id": 98,
+		"name": "Deakins Research Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 99,
+		"name": "Dell",
+		"type": "Town"
+	},
+	{
+		"id": 100,
+		"name": "Desmond Memorial Convention Center",
+		"type": "Convention center"
+	},
+	{
+		"id": 101,
+		"name": "Devlin Scrap & Salvage",
+		"type": "Scrapyard"
+	},
+	{
+		"id": 102,
+		"name": "Dumper's Depot (Area18)",
+		"type": "Store"
+	},
+	{
+		"id": 103,
+		"name": "Dumper's Depot (Grim HEX)",
+		"type": "Store"
+	},
+	{
+		"id": 104,
+		"name": "Dumper's Depot (Levski)",
+		"type": "Store"
+	},
+	{
+		"id": 105,
+		"name": "Dumper's Depot (Port Olisar)",
+		"type": "Store"
+	},
+	{
+		"id": 106,
+		"name": "Dunlow Ridge Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 107,
+		"name": "Eager Flats Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 108,
+		"name": "Edge of Oblivion",
+		"type": "Bar"
+	},
+	{
+		"id": 109,
+		"name": "Elsewhere",
+		"type": "Outpost"
+	},
+	{
+		"id": 110,
+		"name": "Encole Station",
+		"type": "Space station"
+	},
+	{
+		"id": 111,
+		"name": "Eri City",
+		"type": "City"
+	},
+	{
+		"id": 112,
+		"name": "Everus Harbor",
+		"type": "Space station"
+	},
+	{
+		"id": 113,
+		"name": "Factory Line",
+		"type": "Store"
+	},
+	{
+		"id": 114,
+		"name": "Flanagan's Ravine Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 115,
+		"name": "Fujin City",
+		"type": "City"
+	},
+	{
+		"id": 116,
+		"name": "G-Loc Bar",
+		"type": "Bar"
+	},
+	{
+		"id": 117,
+		"name": "Gallete Family Farm",
+		"type": "Outpost"
+	},
+	{
+		"id": 118,
+		"name": "Garrity Defense",
+		"type": "Store"
+	},
+	{
+		"id": 119,
+		"name": "Gemma",
+		"type": "City"
+	},
+	{
+		"id": 120,
+		"name": "Green Circle Habitation",
+		"type": "Residential"
+	},
+	{
+		"id": 121,
+		"name": "Grim HEX",
+		"type": "Space station"
+	},
+	{
+		"id": 122,
+		"name": "Grim Hex Clinic",
+		"type": "Hospital"
+	},
+	{
+		"id": 123,
+		"name": "HDMO-Calthrope (NA)",
+		"type": "Cave"
+	},
+	{
+		"id": 124,
+		"name": "HDMO-Dobbs (NA)",
+		"type": "Cave"
+	},
+	{
+		"id": 125,
+		"name": "HDMS-Anderson",
+		"type": "Outpost"
+	},
+	{
+		"id": 126,
+		"name": "HDMS-Bezdek",
+		"type": "Outpost"
+	},
+	{
+		"id": 127,
+		"name": "HDMS-Edmond",
+		"type": "Outpost"
+	},
+	{
+		"id": 128,
+		"name": "HDMS-Hadley",
+		"type": "Outpost"
+	},
+	{
+		"id": 129,
+		"name": "HDMS-Hahn",
+		"type": "Outpost"
+	},
+	{
+		"id": 130,
+		"name": "HDMS-Lathan",
+		"type": "Outpost"
+	},
+	{
+		"id": 131,
+		"name": "HDMS-Norgaard",
+		"type": "Outpost"
+	},
+	{
+		"id": 132,
+		"name": "HDMS-Oparei",
+		"type": "Outpost"
+	},
+	{
+		"id": 133,
+		"name": "HDMS-Perlman",
+		"type": "Outpost"
+	},
+	{
+		"id": 134,
+		"name": "HDMS-Pinewood",
+		"type": "Outpost"
+	},
+	{
+		"id": 135,
+		"name": "HDMS-Ryder",
+		"type": "Outpost"
+	},
+	{
+		"id": 136,
+		"name": "HDMS-Stanhope",
+		"type": "Outpost"
+	},
+	{
+		"id": 137,
+		"name": "HDMS-Thedus",
+		"type": "Outpost"
+	},
+	{
+		"id": 138,
+		"name": "HDMS-Woodruff",
+		"type": "Outpost"
+	},
+	{
+		"id": 139,
+		"name": "HDSF-Adlai",
+		"type": "Outpost"
+	},
+	{
+		"id": 140,
+		"name": "HDSF-Barnabas",
+		"type": "Outpost"
+	},
+	{
+		"id": 141,
+		"name": "HDSF-Breckinridge",
+		"type": "Outpost"
+	},
+	{
+		"id": 142,
+		"name": "HDSF-Colfax",
+		"type": "Outpost"
+	},
+	{
+		"id": 143,
+		"name": "HDSF-Damaris",
+		"type": "Outpost"
+	},
+	{
+		"id": 144,
+		"name": "HDSF-Elbridge",
+		"type": "Outpost"
+	},
+	{
+		"id": 145,
+		"name": "HDSF-Hendricks",
+		"type": "Outpost"
+	},
+	{
+		"id": 146,
+		"name": "HDSF-Hiram",
+		"type": "Outpost"
+	},
+	{
+		"id": 147,
+		"name": "HDSF-Hobart",
+		"type": "Outpost"
+	},
+	{
+		"id": 148,
+		"name": "HDSF-Ishmael",
+		"type": "Outpost"
+	},
+	{
+		"id": 149,
+		"name": "HDSF-Millerand",
+		"type": "Outpost"
+	},
+	{
+		"id": 150,
+		"name": "HDSF-Rufus",
+		"type": "Outpost"
+	},
+	{
+		"id": 151,
+		"name": "HDSF-Sherman",
+		"type": "Outpost"
+	},
+	{
+		"id": 152,
+		"name": "HDSF-Tamar",
+		"type": "Outpost"
+	},
+	{
+		"id": 153,
+		"name": "HDSF-Tompkins",
+		"type": "Outpost"
+	},
+	{
+		"id": 154,
+		"name": "HDSF-Zacharias",
+		"type": "Outpost"
+	},
+	{
+		"id": 155,
+		"name": "HUR-L1 Green Glade Station",
+		"type": "Space station"
+	},
+	{
+		"id": 156,
+		"name": "HUR-L2 Faithful Dream Station",
+		"type": "Space station"
+	},
+	{
+		"id": 157,
+		"name": "HUR-L3 Thundering Express Station",
+		"type": "Space station"
+	},
+	{
+		"id": 158,
+		"name": "HUR-L4 Melodic Fields Station",
+		"type": "Space station"
+	},
+	{
+		"id": 159,
+		"name": "HUR-L5 High Course Station",
+		"type": "Space station"
+	},
+	{
+		"id": 160,
+		"name": "Hadrian Flotilla",
+		"type": "Space station"
+	},
+	{
+		"id": 161,
+		"name": "Haven",
+		"type": "City"
+	},
+	{
+		"id": 162,
+		"name": "Hephaestus Station",
+		"type": "Space station"
+	},
+	{
+		"id": 163,
+		"name": "Hickes Research Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 164,
+		"name": "Humboldt Mines",
+		"type": "Outpost"
+	},
+	{
+		"id": 165,
+		"name": "Hurston Dynamics Showcase",
+		"type": "Store"
+	},
+	{
+		"id": 166,
+		"name": "IAS Hammett",
+		"type": "Space station"
+	},
+	{
+		"id": 167,
+		"name": "ICC ScanHub Stanton",
+		"type": "Space station"
+	},
+	{
+		"id": 168,
+		"name": "ICS Evolen",
+		"type": "Space station"
+	},
+	{
+		"id": 169,
+		"name": "IMS Bolliver",
+		"type": "Space station"
+	},
+	{
+		"id": 170,
+		"name": "INS Dunleavy",
+		"type": "Space station"
+	},
+	{
+		"id": 171,
+		"name": "INS Reilly",
+		"type": "Space station"
+	},
+	{
+		"id": 172,
+		"name": "INS-Jericho",
+		"type": "Space station"
+	},
+	{
+		"id": 173,
+		"name": "IO-North Tower",
+		"type": "Office building"
+	},
+	{
+		"id": 174,
+		"name": "Jata",
+		"type": "City"
+	},
+	{
+		"id": 175,
+		"name": "Julep Ravine Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 176,
+		"name": "Jumptown",
+		"type": "Outpost"
+	},
+	{
+		"id": 177,
+		"name": "JusticeStar Satellite",
+		"type": "Space station"
+	},
+	{
+		"id": 178,
+		"name": "KC Trending",
+		"type": "Store"
+	},
+	{
+		"id": 179,
+		"name": "Kesseli",
+		"type": "City"
+	},
+	{
+		"id": 180,
+		"name": "Klescher Rehabilitation Facility",
+		"type": "Correctional facility"
+	},
+	{
+		"id": 181,
+		"name": "Kosso Basin Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 182,
+		"name": "Kudre Ore",
+		"type": "Outpost"
+	},
+	{
+		"id": 183,
+		"name": "Kudre Ore Mine (Closed)",
+		"type": "Outpost"
+	},
+	{
+		"id": 184,
+		"name": "L19 Residences",
+		"type": "Residential"
+	},
+	{
+		"id": 185,
+		"name": "Launch Pad",
+		"type": "Outpost"
+	},
+	{
+		"id": 186,
+		"name": "Levski",
+		"type": "City"
+	},
+	{
+		"id": 187,
+		"name": "Levski Hospital",
+		"type": "Hospital"
+	},
+	{
+		"id": 188,
+		"name": "Levski clothing store",
+		"type": "Store"
+	},
+	{
+		"id": 189,
+		"name": "Levski general merchandise store",
+		"type": "Store"
+	},
+	{
+		"id": 190,
+		"name": "Live Fire Weapons (ARC-L1 Wide Forest Station)",
+		"type": "Store"
+	},
+	{
+		"id": 191,
+		"name": "Live Fire Weapons (CRU-L1 Ambitious Dream Station)",
+		"type": "Store"
+	},
+	{
+		"id": 192,
+		"name": "Live Fire Weapons (HUR-L1 Green Glade Station)",
+		"type": "Store"
+	},
+	{
+		"id": 193,
+		"name": "Live Fire Weapons (HUR-L2 Faithful Dream Station)",
+		"type": "Store"
+	},
+	{
+		"id": 194,
+		"name": "Live Fire Weapons (HUR-L4 Melodic Fields Station)",
+		"type": "Store"
+	},
+	{
+		"id": 195,
+		"name": "Live Fire Weapons (HUR-L5 High Course Station)",
+		"type": "Store"
+	},
+	{
+		"id": 196,
+		"name": "Live Fire Weapons (MIC-L1 Shallow Frontier Station)",
+		"type": "Store"
+	},
+	{
+		"id": 197,
+		"name": "Live Fire Weapons (Port Olisar)",
+		"type": "Store"
+	},
+	{
+		"id": 198,
+		"name": "Lorville",
+		"type": "City"
+	},
+	{
+		"id": 199,
+		"name": "Loveridge Mineral Reserve",
+		"type": "Outpost"
+	},
+	{
+		"id": 200,
+		"name": "Lyris",
+		"type": "Space station"
+	},
+	{
+		"id": 201,
+		"name": "MIC-L1 Shallow Frontier Station",
+		"type": "Space station"
+	},
+	{
+		"id": 202,
+		"name": "MT DataCenter 2UB-RB9-5",
+		"type": "Outpost"
+	},
+	{
+		"id": 203,
+		"name": "MT DataCenter 4HJ-LVE-A",
+		"type": "Outpost"
+	},
+	{
+		"id": 204,
+		"name": "MT DataCenter 5WQ-R2V-C",
+		"type": "Outpost"
+	},
+	{
+		"id": 205,
+		"name": "MT DataCenter 8FK-Q2X-K",
+		"type": "Outpost"
+	},
+	{
+		"id": 206,
+		"name": "MT DataCenter D79-ECG-R",
+		"type": "Outpost"
+	},
+	{
+		"id": 207,
+		"name": "MT DataCenter E2Q-NSG-Y",
+		"type": "Outpost"
+	},
+	{
+		"id": 208,
+		"name": "MT DataCenter KH3-AAE-L",
+		"type": "Outpost"
+	},
+	{
+		"id": 209,
+		"name": "MT DataCenter L8P-JUC-8 (Offline)",
+		"type": "Outpost"
+	},
+	{
+		"id": 210,
+		"name": "MT DataCenter QVX-J88-J",
+		"type": "Outpost"
+	},
+	{
+		"id": 211,
+		"name": "MT DataCenter TMG-XEV-2",
+		"type": "Outpost"
+	},
+	{
+		"id": 212,
+		"name": "MT SecurityCenter DDV-6",
+		"type": "Outpost"
+	},
+	{
+		"id": 213,
+		"name": "MacIntyre & Victor's Bar",
+		"type": "Bar"
+	},
+	{
+		"id": 214,
+		"name": "Magellan’s",
+		"type": "Bar"
+	},
+	{
+		"id": 215,
+		"name": "Maria Pure of Heart",
+		"type": "Hospital"
+	},
+	{
+		"id": 216,
+		"name": "Mariana",
+		"type": "City"
+	},
+	{
+		"id": 217,
+		"name": "Million Mile High Club",
+		"type": "Club"
+	},
+	{
+		"id": 218,
+		"name": "Mogote Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 219,
+		"name": "Moscow",
+		"type": "City"
+	},
+	{
+		"id": 220,
+		"name": "NT-999-XVI",
+		"type": "Outpost"
+	},
+	{
+		"id": 221,
+		"name": "NT-999-XX",
+		"type": "Outpost"
+	},
+	{
+		"id": 222,
+		"name": "NT-999-XXII",
+		"type": "Outpost"
+	},
+	{
+		"id": 223,
+		"name": "Nakamura Valley Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 224,
+		"name": "Neso Triangle",
+		"type": ""
+	},
+	{
+		"id": 225,
+		"name": "Nest Apartments",
+		"type": "Residential"
+	},
+	{
+		"id": 226,
+		"name": "Neutrality",
+		"type": "Bar"
+	},
+	{
+		"id": 227,
+		"name": "New Arden",
+		"type": "City"
+	},
+	{
+		"id": 228,
+		"name": "New Austin",
+		"type": "City"
+	},
+	{
+		"id": 229,
+		"name": "New Babbage",
+		"type": "City"
+	},
+	{
+		"id": 230,
+		"name": "New Babbage Interstellar Spaceport",
+		"type": "Spaceport"
+	},
+	{
+		"id": 231,
+		"name": "New Corvo",
+		"type": "City"
+	},
+	{
+		"id": 232,
+		"name": "New Deal",
+		"type": "Store"
+	},
+	{
+		"id": 233,
+		"name": "New Junction",
+		"type": "City"
+	},
+	{
+		"id": 234,
+		"name": "New York",
+		"type": "City"
+	},
+	{
+		"id": 235,
+		"name": "Newcastle",
+		"type": "City"
+	},
+	{
+		"id": 236,
+		"name": "Nuen Waste Management",
+		"type": "Outpost"
+	},
+	{
+		"id": 237,
+		"name": "Nuiqsut Emergency Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 238,
+		"name": "OB Heller",
+		"type": "Space station"
+	},
+	{
+		"id": 239,
+		"name": "OB Kobold",
+		"type": "Space station"
+	},
+	{
+		"id": 240,
+		"name": "OB Station Gryphon",
+		"type": "Space station"
+	},
+	{
+		"id": 241,
+		"name": "OB Station Pegasus",
+		"type": "Space station"
+	},
+	{
+		"id": 242,
+		"name": "OP Station Demien",
+		"type": "Space station"
+	},
+	{
+		"id": 243,
+		"name": "Odyssa",
+		"type": "City"
+	},
+	{
+		"id": 244,
+		"name": "Old '38",
+		"type": "Bar"
+	},
+	{
+		"id": 245,
+		"name": "Olympus",
+		"type": "Town"
+	},
+	{
+		"id": 246,
+		"name": "Omega Pro",
+		"type": "Store"
+	},
+	{
+		"id": 247,
+		"name": "Orison",
+		"type": "City"
+	},
+	{
+		"id": 248,
+		"name": "Orison General",
+		"type": "Hospital"
+	},
+	{
+		"id": 249,
+		"name": "Outpost 54",
+		"type": "Outpost"
+	},
+	{
+		"id": 250,
+		"name": "O’Halloran’s",
+		"type": "Bar"
+	},
+	{
+		"id": 251,
+		"name": "PRIVATE PROPERTY",
+		"type": "Outpost"
+	},
+	{
+		"id": 252,
+		"name": "Paradise Cove",
+		"type": "Outpost"
+	},
+	{
+		"id": 253,
+		"name": "Platinum Bay (ARC-L1 Wide Forest Station)",
+		"type": "Store"
+	},
+	{
+		"id": 254,
+		"name": "Platinum Bay (Baijini Point)",
+		"type": "Store"
+	},
+	{
+		"id": 255,
+		"name": "Platinum Bay (CRU-L1 Ambitious Dream Station)",
+		"type": "Store"
+	},
+	{
+		"id": 256,
+		"name": "Platinum Bay (CRU-L4 Shallow Fields Station)",
+		"type": "Store"
+	},
+	{
+		"id": 257,
+		"name": "Platinum Bay (CRU-L5 Beautiful Glen Station)",
+		"type": "Store"
+	},
+	{
+		"id": 258,
+		"name": "Platinum Bay (Everus Harbor)",
+		"type": "Store"
+	},
+	{
+		"id": 259,
+		"name": "Platinum Bay (HUR-L2 Faithful Dream Station)",
+		"type": "Store"
+	},
+	{
+		"id": 260,
+		"name": "Platinum Bay (HUR-L3 Thundering Express Station)",
+		"type": "Store"
+	},
+	{
+		"id": 261,
+		"name": "Platinum Bay (HUR-L5 High Course Station)",
+		"type": "Store"
+	},
+	{
+		"id": 262,
+		"name": "Platinum Bay (Port Tressler)",
+		"type": "Store"
+	},
+	{
+		"id": 263,
+		"name": "Point Wain Emergency Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 264,
+		"name": "Port Olisar",
+		"type": "Space station"
+	},
+	{
+		"id": 265,
+		"name": "Port Renatus",
+		"type": "City"
+	},
+	{
+		"id": 266,
+		"name": "Port Tressler",
+		"type": "Space station"
+	},
+	{
+		"id": 267,
+		"name": "Prime",
+		"type": "City"
+	},
+	{
+		"id": 268,
+		"name": "Providence Surplus",
+		"type": "Store"
+	},
+	{
+		"id": 269,
+		"name": "Quasi",
+		"type": "City"
+	},
+	{
+		"id": 270,
+		"name": "Quinton",
+		"type": "City"
+	},
+	{
+		"id": 271,
+		"name": "R&R CRU-L2",
+		"type": "Space station"
+	},
+	{
+		"id": 272,
+		"name": "Radegast",
+		"type": "Bar"
+	},
+	{
+		"id": 273,
+		"name": "Raleigh Station",
+		"type": "Settlement"
+	},
+	{
+		"id": 274,
+		"name": "Raven's Roost",
+		"type": "Outpost"
+	},
+	{
+		"id": 275,
+		"name": "Rayari Anvik Research Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 276,
+		"name": "Rayari Cantwell Research Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 277,
+		"name": "Rayari Deltana Research Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 278,
+		"name": "Rayari Kaltag Research Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 279,
+		"name": "Rayari McGrath Research Outpost",
+		"type": "Outpost"
+	},
+	{
+		"id": 280,
+		"name": "Reclamation & Disposal Orinth",
+		"type": "Scrapyard"
+	},
+	{
+		"id": 281,
+		"name": "Refinery deck store (ARC-L1 Wide Forest Station)",
+		"type": "Store"
+	},
+	{
+		"id": 282,
+		"name": "Refinery deck store (CRU-L1 Ambitious Dream Station)",
+		"type": "Store"
+	},
+	{
+		"id": 283,
+		"name": "Refinery deck store (HUR-L1 Green Glade Station)",
+		"type": "Store"
+	},
+	{
+		"id": 284,
+		"name": "Refinery deck store (HUR-L2 Faithful Dream Station)",
+		"type": "Store"
+	},
+	{
+		"id": 285,
+		"name": "Refinery deck store (MIC-L1 Shallow Frontier Station)",
+		"type": "Store"
+	},
+	{
+		"id": 286,
+		"name": "Regal Luxury Rentals",
+		"type": "Rental"
+	},
+	{
+		"id": 287,
+		"name": "Riker Memorial Spaceport",
+		"type": "Spaceport"
+	},
+	{
+		"id": 288,
+		"name": "Ruin Station",
+		"type": "Space station"
+	},
+	{
+		"id": 289,
+		"name": "Samson & Son's Salvage Center",
+		"type": "Scrapyard"
+	},
+	{
+		"id": 290,
+		"name": "Security Depot Hurston-1",
+		"type": "Outpost"
+	},
+	{
+		"id": 291,
+		"name": "Security Depot Lyria-1",
+		"type": "Outpost"
+	},
+	{
+		"id": 292,
+		"name": "Security Post Criska",
+		"type": "Outpost"
+	},
+	{
+		"id": 293,
+		"name": "Security Post Dipur",
+		"type": "Outpost"
+	},
+	{
+		"id": 294,
+		"name": "Security Post Kareah",
+		"type": "Space station"
+	},
+	{
+		"id": 295,
+		"name": "Security Post Lespin",
+		"type": "Outpost"
+	},
+	{
+		"id": 296,
+		"name": "Security Post Moluto",
+		"type": "Outpost"
+	},
+	{
+		"id": 297,
+		"name": "Security Post Opal",
+		"type": "Outpost"
+	},
+	{
+		"id": 298,
+		"name": "Security Post Prashad",
+		"type": "Outpost"
+	},
+	{
+		"id": 299,
+		"name": "Security Post Thaquray",
+		"type": "Outpost"
+	},
+	{
+		"id": 300,
+		"name": "Security Post Wan",
+		"type": "Outpost"
+	},
+	{
+		"id": 301,
+		"name": "Shady Glen Farms",
+		"type": "Outpost"
+	},
+	{
+		"id": 302,
+		"name": "Shanghai",
+		"type": "City"
+	},
+	{
+		"id": 303,
+		"name": "Sherman",
+		"type": "City"
+	},
+	{
+		"id": 304,
+		"name": "Ship gun shop (Baijini Point)",
+		"type": "Store"
+	},
+	{
+		"id": 305,
+		"name": "Ship gun shop (CRU-L5 Beautiful Glen Station)",
+		"type": "Store"
+	},
+	{
+		"id": 306,
+		"name": "Ship gun shop (HUR-L2 Faithful Dream Station)",
+		"type": "Store"
+	},
+	{
+		"id": 307,
+		"name": "Ship gun shop (HUR-L3 Thundering Express Station)",
+		"type": "Store"
+	},
+	{
+		"id": 308,
+		"name": "Ship gun shop (HUR-L4 Melodic Fields Station)",
+		"type": "Store"
+	},
+	{
+		"id": 309,
+		"name": "Ship gun shop (HUR-L5 High Course Station)",
+		"type": "Store"
+	},
+	{
+		"id": 310,
+		"name": "Shoel",
+		"type": "City"
+	},
+	{
+		"id": 311,
+		"name": "Shubin Interstellar (New Babbage)",
+		"type": "Store"
+	},
+	{
+		"id": 312,
+		"name": "Shubin Mining Facility SAL-2",
+		"type": "Outpost"
+	},
+	{
+		"id": 313,
+		"name": "Shubin Mining Facility SAL-5",
+		"type": "Outpost"
+	},
+	{
+		"id": 314,
+		"name": "Shubin Mining Facility SCD-1",
+		"type": "Outpost"
+	},
+	{
+		"id": 315,
+		"name": "Shubin Mining Facility SM0-10",
+		"type": "Outpost"
+	},
+	{
+		"id": 316,
+		"name": "Shubin Mining Facility SM0-13",
+		"type": "Outpost"
+	},
+	{
+		"id": 317,
+		"name": "Shubin Mining Facility SM0-18",
+		"type": "Outpost"
+	},
+	{
+		"id": 318,
+		"name": "Shubin Mining Facility SM0-22",
+		"type": "Outpost"
+	},
+	{
+		"id": 319,
+		"name": "Shubin Mining Facility SMCa-6",
+		"type": "Outpost"
+	},
+	{
+		"id": 320,
+		"name": "Shubin Mining Facility SMCa-8",
+		"type": "Outpost"
+	},
+	{
+		"id": 321,
+		"name": "Shubin Processing Facility SPAL-12",
+		"type": "Outpost"
+	},
+	{
+		"id": 322,
+		"name": "Shubin Processing Facility SPAL-16",
+		"type": "Outpost"
+	},
+	{
+		"id": 323,
+		"name": "Shubin Processing Facility SPAL-21",
+		"type": "Outpost"
+	},
+	{
+		"id": 324,
+		"name": "Shubin Processing Facility SPAL-3",
+		"type": "Outpost"
+	},
+	{
+		"id": 325,
+		"name": "Shubin Processing Facility SPAL-7",
+		"type": "Outpost"
+	},
+	{
+		"id": 326,
+		"name": "Shubin Processing Facility SPAL-9",
+		"type": "Outpost"
+	},
+	{
+		"id": 327,
+		"name": "Shubin Processing Facility SPMC-1",
+		"type": "Outpost"
+	},
+	{
+		"id": 328,
+		"name": "Shubin Processing Facility SPMC-10",
+		"type": "Outpost"
+	},
+	{
+		"id": 329,
+		"name": "Shubin Processing Facility SPMC-11",
+		"type": "Outpost"
+	},
+	{
+		"id": 330,
+		"name": "Shubin Processing Facility SPMC-14",
+		"type": "Outpost"
+	},
+	{
+		"id": 331,
+		"name": "Shubin Processing Facility SPMC-3",
+		"type": "Outpost"
+	},
+	{
+		"id": 332,
+		"name": "Shubin Processing Facility SPMC-5",
+		"type": "Outpost"
+	},
+	{
+		"id": 333,
+		"name": "Skutters",
+		"type": "Store"
+	},
+	{
+		"id": 334,
+		"name": "Spider",
+		"type": "Space station"
+	},
+	{
+		"id": 335,
+		"name": "Stalford",
+		"type": "City"
+	},
+	{
+		"id": 336,
+		"name": "Su'Shora",
+		"type": "City"
+	},
+	{
+		"id": 337,
+		"name": "TDD Kesner",
+		"type": "Space station"
+	},
+	{
+		"id": 338,
+		"name": "TPF",
+		"type": "Outpost"
+	},
+	{
+		"id": 339,
+		"name": "Talarine Divide Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 340,
+		"name": "Tamdom Plains Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 341,
+		"name": "Tammany and Sons",
+		"type": "Store"
+	},
+	{
+		"id": 342,
+		"name": "Tanys",
+		"type": "City"
+	},
+	{
+		"id": 343,
+		"name": "Teach's Ship Shop",
+		"type": "Store"
+	},
+	{
+		"id": 344,
+		"name": "Teasa Spaceport",
+		"type": "Spaceport"
+	},
+	{
+		"id": 345,
+		"name": "Technotic",
+		"type": "Store"
+	},
+	{
+		"id": 346,
+		"name": "Teddy's Playhouse",
+		"type": "Outpost"
+	},
+	{
+		"id": 347,
+		"name": "Terra Mills HydroFarm",
+		"type": "Outpost"
+	},
+	{
+		"id": 348,
+		"name": "The ARK",
+		"type": "Space station"
+	},
+	{
+		"id": 349,
+		"name": "The Garden",
+		"type": "Outpost"
+	},
+	{
+		"id": 350,
+		"name": "The Necropolis",
+		"type": "Outpost"
+	},
+	{
+		"id": 351,
+		"name": "The Orphanage",
+		"type": "Outpost"
+	},
+	{
+		"id": 352,
+		"name": "Titus",
+		"type": "City"
+	},
+	{
+		"id": 353,
+		"name": "Tobin Expo Center",
+		"type": "Convention center"
+	},
+	{
+		"id": 354,
+		"name": "Torchlight Express",
+		"type": "Bar"
+	},
+	{
+		"id": 355,
+		"name": "Trade and Development Division (Area18)",
+		"type": "Administration"
+	},
+	{
+		"id": 356,
+		"name": "Trade and Development Division (New Babbage)",
+		"type": "Administration"
+	},
+	{
+		"id": 357,
+		"name": "Tram",
+		"type": "City"
+	},
+	{
+		"id": 358,
+		"name": "Tram & Myers Mining",
+		"type": "Outpost"
+	},
+	{
+		"id": 359,
+		"name": "Traveler Rentals",
+		"type": "Rental"
+	},
+	{
+		"id": 360,
+		"name": "Utopia",
+		"type": "Outpost"
+	},
+	{
+		"id": 361,
+		"name": "Vantage Rentals",
+		"type": "Rental"
+	},
+	{
+		"id": 362,
+		"name": "Viola's",
+		"type": "Bar"
+	},
+	{
+		"id": 363,
+		"name": "Voyager Bar",
+		"type": "Bar"
+	},
+	{
+		"id": 364,
+		"name": "Wally's Bar",
+		"type": "Bar"
+	},
+	{
+		"id": 365,
+		"name": "Wolf Point Aid Shelter",
+		"type": "Public shelter"
+	},
+	{
+		"id": 366,
+		"name": "Wreck of the UEES Flyssa",
+		"type": "Ship wreck"
+	},
+	{
+		"id": 367,
+		"name": "Yogi Station",
+		"type": "Space station"
+	},
+	{
+		"id": 368,
+		"name": "Yulin Flotilla",
+		"type": "Space station"
+	},
+	{
+		"id": 369,
+		"name": "Outer Space",
+		"type": "Space"
+	}
+]

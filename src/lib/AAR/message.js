@@ -1,5 +1,14 @@
 import { get } from 'svelte/store';
-import { sections, times, ships, injuries, extraction, texts } from '../stores.js';
+import {
+	sections,
+	times,
+	ships,
+	injuries,
+	extractionStore,
+	texts,
+	locationStore,
+	locationDistance
+} from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
 
 export function createMessage() {
@@ -7,8 +16,10 @@ export function createMessage() {
 	const timesData = get(times);
 	const shipsData = get(ships);
 	const injuriesData = get(injuries);
-	const extractionData = get(extraction);
+	const extractionData = get(extractionStore);
 	const textsData = get(texts);
+	const locationData = get(locationStore);
+	const locationDistanceData = get(locationDistance);
 
 	let message = '';
 	sectionsData.forEach((section) => {
@@ -25,6 +36,9 @@ export function createMessage() {
 				break;
 			case 'extraction':
 				message += createExtractionMessage(extractionData);
+				break;
+			case 'location':
+				message += createLocationMessage(locationData, locationDistanceData);
 				break;
 		}
 		if (section.name.includes('text')) {
@@ -79,7 +93,7 @@ function createInjuryMessage(injuries) {
 
 function createExtractionMessage(extraction) {
 	if (extraction !== 'none') {
-		let message = '## Extraction\n';
+		let message = '**Extraction**\n';
 		message += `The client was extracted to ${extraction}\n`;
 		return message;
 	} else {
@@ -93,8 +107,18 @@ function createTextMessage(texts) {
 	texts.forEach((text) => {
 		if (text.title !== '' && text.content !== '') {
 			console.log('adding this text', text);
-			message += `## ${text.title}\n${text.content}\n`;
+			message += `**${text.title}**\n${text.content}\n`;
 		}
 	});
+	return message;
+}
+
+function createLocationMessage(location, locationDistance) {
+	let message = '**Location**\n';
+	if (locationDistance == '') {
+		message += `Client Location: ${location}\n`;
+	} else {
+		message += `The client was ${locationDistance.toLowerCase()} ${location}. \n`;
+	}
 	return message;
 }
