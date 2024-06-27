@@ -134,4 +134,5 @@ function createAlertBreakdownMessage(alertBreakdown) {
 		message += alertBreakdown;
 		return message;
 	}
+	return '';
 }
