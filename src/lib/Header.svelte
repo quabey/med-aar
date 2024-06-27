@@ -1,6 +1,6 @@
 <script>
 	import logo from '$lib/assets/med-tools-logo-beta-white.svg';
-	import { ChevronDownOutline } from 'flowbite-svelte-icons';
+	import { ChevronDownOutline, CogOutline } from 'flowbite-svelte-icons';
 	import { Badge } from 'flowbite-svelte';
 </script>
 
@@ -43,7 +43,10 @@
 				<div class="flex items-center gap-4 text-primary-300">
 					<a href="https://github.com/quabey/med-aar/" target="_blank"><span>Github</span></a>
 					<button>
-						<span class=" border-l-2 border-white pl-4"> Credits </span>
+						<span class=" border-x-2 border-white px-4"> Credits </span>
+					</button>
+					<button>
+						<CogOutline class="h-6 w-6 text-white dark:text-white" />
 					</button>
 				</div>
 
