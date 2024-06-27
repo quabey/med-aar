@@ -40,4 +40,8 @@
 	::-webkit-scrollbar-thumb:hover {
 		@apply bg-slate-200; /* Color when hovering */
 	}
+
+	.focus-within\:ring-2:focus-within {
+		box-shadow: none !important;
+	}
 </style>

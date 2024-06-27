@@ -14,7 +14,7 @@ export default {
 			colors: {
 				'primary-900': '#170602',
 				'primary-800': '#461307',
-				'primary-700': '#741F0C',
+				'primary-700': '#2c5278e6',
 				// slowly building up to the primary colors
 				'primary-600': '#2c5278',
 
