@@ -4,10 +4,11 @@ import {
 	times,
 	ships,
 	injuries,
-	extractionStore,
+	extraction,
 	texts,
-	locationStore,
-	locationDistance
+	location,
+	locationDistance,
+	alertBreakdown
 } from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
 
@@ -16,10 +17,11 @@ export function createMessage() {
 	const timesData = get(times);
 	const shipsData = get(ships);
 	const injuriesData = get(injuries);
-	const extractionData = get(extractionStore);
+	const extractionData = get(extraction);
 	const textsData = get(texts);
-	const locationData = get(locationStore);
+	const locationData = get(location);
 	const locationDistanceData = get(locationDistance);
+	const alertBreakdownData = get(alertBreakdown);
 
 	let message = '';
 	sectionsData.forEach((section) => {
@@ -39,6 +41,9 @@ export function createMessage() {
 				break;
 			case 'location':
 				message += createLocationMessage(locationData, locationDistanceData);
+				break;
+			case 'alert breakdown':
+				message += createAlertBreakdownMessage(alertBreakdownData);
 				break;
 		}
 		if (section.name.includes('text')) {
@@ -121,4 +126,12 @@ function createLocationMessage(location, locationDistance) {
 		message += `The client was ${locationDistance.toLowerCase()} ${location}. \n`;
 	}
 	return message;
+}
+
+function createAlertBreakdownMessage(alertBreakdown) {
+	if (alertBreakdown !== '') {
+		let message = '**Alert Breakdown**\n';
+		message += alertBreakdown;
+		return message;
+	}
 }

@@ -1,17 +1,13 @@
 <script>
 	import LocationSearch from '$lib/AAR/LocationSearch.svelte';
-	import { locationStore, locationDistance } from '$lib/stores.js';
+	import { location, locationDistance } from '$lib/stores.js';
 	import { Button, Dropdown, DropdownItem } from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
-
-	let location;
-
-	$: $locationStore = location;
 </script>
 
 <div class="">
-	{#if !location}
-		<LocationSearch bind:location />
+	{#if !$location}
+		<LocationSearch bind:location={$location} />
 	{:else}
 		<div class="flex flex-row items-center justify-between">
 			<div class="">
@@ -27,7 +23,7 @@
 					{/each}
 				</Dropdown>
 
-				{$locationStore}
+				{$location}
 			</div>
 			<Button>Edit</Button>
 		</div>

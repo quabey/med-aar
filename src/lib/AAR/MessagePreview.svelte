@@ -19,6 +19,10 @@
 	}
 
 	let finalMessage = createMessage();
+
+	function addwatermark() {
+		finalMessage = finalMessage + '\n' + 'Made with med-tools.space';
+	}
 </script>
 
 <div class="">
@@ -30,4 +34,5 @@
 		bind:value={finalMessage}
 	/>
 	<Button on:click={copy}>Copy Message</Button>
+	<Button on:click={addwatermark}>Add Watermark</Button>
 </div>

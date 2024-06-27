@@ -6,6 +6,7 @@
 	import Injury from '$lib/AAR/injury.svelte';
 	import Location from '$lib/AAR/Location.svelte';
 	import Text from '$lib/AAR/Text.svelte';
+	import AlertBreakdown from '$lib/AAR/AlertBreakdown.svelte';
 	import { Card } from 'flowbite-svelte';
 	import { CloseOutline } from 'flowbite-svelte-icons';
 
@@ -34,8 +35,6 @@
 			<Ships />
 		{:else if sectionIndex.name == 'location'}
 			<Location />
-		{:else if sectionIndex.name == 'alert breakdown'}
-			<span>Section not implemented yet</span>
 		{:else if sectionIndex.name == 'accident report'}
 			<span>Section not implemented yet</span>
 		{:else if sectionIndex.name == 'team remarks'}
@@ -44,8 +43,10 @@
 			<Extraction />
 		{:else if sectionIndex.name.includes('text')}
 			<Text index={sectionIndex.name.slice(-1) - 1} />
+		{:else if sectionIndex.name == 'alert breakdown'}
+			<AlertBreakdown />
 		{:else}
-			<span>Section not implemented yet</span>
+			<span>Section not implemented ye1t</span>
 		{/if}
 	{:else}
 		<span>Invalid section</span>

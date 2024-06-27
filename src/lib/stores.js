@@ -33,8 +33,8 @@ export const sections = writable([
 	{ id: 4, name: 'extraction' }
 ]);
 
-export const extractionStore = writable('');
-export const locationStore = writable('');
+export const extraction = writable('');
+export const location = writable('');
 export const locationDistance = writable('');
 
 export const texts = writable([
@@ -51,6 +51,8 @@ export const texts = writable([
 		content: ''
 	}
 ]);
+
+export const alertBreakdown = writable('');
 
 export function setAllDefault() {
 	times.set({

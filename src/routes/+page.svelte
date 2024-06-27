@@ -52,9 +52,10 @@
 		clearModal = false;
 	}
 
-	function clear() {
+	function executeClear() {
 		switch (clearningMessage) {
 			case 'sections':
+				clearSections();
 				break;
 			case 'section contents':
 				clearSectionContents();
@@ -144,7 +145,7 @@
 		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
 			Are you sure you want to clear all <b>{clearningMessage}</b>?
 		</h3>
-		<Button color="red" class="me-2" on:click={clear()}>Yes, I'm sure</Button>
+		<Button color="red" class="me-2" on:click={executeClear}>Yes, I'm sure</Button>
 		<Button color="alternative" on:click={() => (clearModal = false)}>No, cancel</Button>
 	</div>
 </Modal>

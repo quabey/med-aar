@@ -5,7 +5,7 @@
 </script>
 
 <html class="dark" lang="en">
-	<div class="h-full w-full bg-gray-800">
+	<div class="h-max min-h-screen w-full bg-gray-800">
 		<Header />
 		<Toaster />
 
