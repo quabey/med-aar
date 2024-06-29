@@ -43,7 +43,7 @@
 			<Extraction />
 		{:else if sectionIndex.name.includes('text')}
 			<Text index={sectionIndex.name.slice(-1) - 1} />
-		{:else if sectionIndex.name == 'alert breakdown'}
+		{:else if sectionIndex.name == 'incident report'}
 			<AlertBreakdown />
 		{:else}
 			<span>Section not implemented ye1t</span>

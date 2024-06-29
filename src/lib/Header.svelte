@@ -1,5 +1,5 @@
 <script>
-	import logo from '$lib/assets/med-tools-logo-beta-white.svg';
+	import logo from '$lib/assets/medtool-logo-beta-white.svg';
 	import { ChevronDownOutline, CogOutline } from 'flowbite-svelte-icons';
 	import { Badge } from 'flowbite-svelte';
 </script>
@@ -12,6 +12,7 @@
 				class="content-container flex hidden flex-wrap items-center justify-between py-3 lg:flex"
 			>
 				<div class=" flex flex-row items-center gap-2">
+					<img src={logo} alt="Med-Tools Logo" class="h-10 w-10" />
 					<span class="font-Mohave text-3xl font-bold">MED-TOOLS</span>
 					<Badge color="red" large>Unofficial</Badge>
 					<Badge color="red" large>Beta</Badge>
@@ -33,11 +34,12 @@
 					</li>
 					<li>
 						<div class="relative">
-							<button
+							<a
+								href="/copy-pastes"
 								class="flex w-full items-center justify-between rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
 								Copy-Pastes
-							</button><!---->
+							</a><!---->
 						</div>
 					</li>
 				</ul>
