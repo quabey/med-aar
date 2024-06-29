@@ -34,7 +34,7 @@ export const sections = writable([
 	{ id: 0, name: 'ships' },
 	{ id: 1, name: 'timing' },
 	{ id: 2, name: 'location' },
-	{ id: 3, name: 'alert breakdown' },
+	{ id: 3, name: 'incident report' },
 	{ id: 4, name: 'injury' },
 	{ id: 5, name: 'extraction' }
 ]);
