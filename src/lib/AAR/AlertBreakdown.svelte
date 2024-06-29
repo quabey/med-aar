@@ -6,7 +6,7 @@
 <div class="">
 	<Textarea
 		id="alertBreakdown"
-		placeholder="Write the incident report here..."
+		placeholder="Write the alert breakdown here..."
 		class=""
 		rows="16"
 		bind:value={$alertBreakdown}

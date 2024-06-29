@@ -44,7 +44,7 @@ export function createMessage() {
 			case 'location':
 				message += createLocationMessage(locationData, locationDistanceData);
 				break;
-			case 'incident report':
+			case 'alert breakdown':
 				message += createAlertBreakdownMessage(alertBreakdownData);
 				break;
 		}
@@ -150,7 +150,7 @@ function createLocationMessage(location, locationDistance) {
 
 function createAlertBreakdownMessage(alertBreakdown) {
 	if (alertBreakdown !== '') {
-		let message = '**Incident Report**\n';
+		let message = '**Alert Breakdown**\n';
 		message += alertBreakdown;
 		return message;
 	}
