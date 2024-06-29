@@ -34,7 +34,13 @@
 		<div class=" flex flex-row items-center justify-between">
 			{time.charAt(0).toUpperCase() + time.slice(1)} at:
 			<div class="flex flex-row items-center justify-center gap-2">
-				<Button class="" on:click={() => setNow(time)}>Set Now</Button>
+				<Button
+					outline
+					class="font-bold dark:border-primary-400 dark:text-primary-400"
+					on:click={() => setNow(time)}
+				>
+					Set Now
+				</Button>
 				<input
 					type="time"
 					class="scale-110 rounded-lg border-none bg-primary-600 py-2 text-sm font-medium text-black hover:bg-primary-600/90 dark:text-white"

@@ -92,27 +92,35 @@ function createShipsMessage(ships, otherShips) {
 }
 
 function createInjuryMessage(injuries) {
+	let allUnknown = true;
 	let message = '**Injuries**\n';
 	for (let [key, value] of Object.entries(injuries)) {
 		if (value !== 'None') {
 			// for every char in the key check if its uppercase and replace it with a space and the lowercase letter
 			key = key.replace(/([A-Z])/g, ' $1').toLowerCase();
-			key = message += `${key}: ${value}\n`;
+			key = message += `- ${key}: ${value}\n`;
+			if (value != 'Unknown') {
+				allUnknown = false;
+			}
 		}
 	}
+	if (allUnknown) {
+		message = '**Injuries**\n';
+		message += 'Unknown if client had any injuries.\n';
+	}
 	if (message === '**Injuries**\n') {
-		message += 'No injuries reported\n';
+		message += 'No injuries reported.\n';
 	}
 	return message;
 }
 
 function createExtractionMessage(extraction) {
-	if (extraction !== 'none') {
+	if (extraction !== 'none' && extraction !== 'refused') {
 		let message = '**Extraction**\n';
 		message += `The client was extracted to ${extraction}\n`;
 		return message;
 	} else if (extraction === 'refused') {
-		return '**Extraction**\nThe client refused extraction\n';
+		return '**Extraction**\nThe client refused extraction.\n';
 	} else {
 		return '';
 	}
@@ -131,11 +139,11 @@ function createTextMessage(texts) {
 }
 
 function createLocationMessage(location, locationDistance) {
-	let message = '**Location**\n';
+	let message = '';
 	if (locationDistance == '') {
-		message += `Client Location: ${location}\n`;
+		message += `**Location**\nClient Location: ${location}\n`;
 	} else {
-		message += `The client was ${locationDistance.toLowerCase()} ${location}. \n`;
+		message += `**Location**\nThe client was ${locationDistance.toLowerCase()} ${location}. \n`;
 	}
 	return message;
 }

@@ -5,6 +5,6 @@
 </script>
 
 <Toggle bind:value={$hasNitro}>Do you have discord Nitro?</Toggle>
-<Toggle bind:value={$isMRBlack}>Medrunner Black</Toggle>
+<Toggle class="" bind:value={$isMRBlack}>Medrunner Black</Toggle>
 
 <Status />

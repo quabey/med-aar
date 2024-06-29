@@ -22,9 +22,13 @@
 			<Button>Edit</Button>
 		</div>
 	{/if}
-	<div class="mt-2">
+	<div class="mt-2 flex justify-end">
 		{#if $extraction != 'refused'}
-			<Button on:click={() => ($extraction = 'refused')}>Refused by client</Button>
+			<Button
+				outline
+				class="font-bold dark:border-primary-400 dark:text-primary-400"
+				on:click={() => ($extraction = 'refused')}>Refused by client</Button
+			>
 		{/if}
 	</div>
 </div>
