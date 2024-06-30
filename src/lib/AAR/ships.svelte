@@ -89,7 +89,10 @@
 		<Input bind:value={qrf} type="text" class="m-2 rounded-xl border-2 border-black p-1 md:w-1/3" />
 	</div>
 
-	<div class=" flex flex-row items-center justify-between">
-		<span>QRF / Additional Ships: {$ships['qrf'].join('; ')}</span>
-	</div>
+	{#if $ships['qrf'].length > 0 && $ships['qrf'][0] != ''}
+		<div class=" flex flex-row items-center justify-between">
+			{$ships['qrf'].length}
+			<span>QRF / Additional Ships: {$ships['qrf'].join(', ')}</span>
+		</div>
+	{/if}
 </div>

@@ -123,7 +123,7 @@ function createInjuryMessage(injuries) {
 }
 
 function createExtractionMessage(extraction) {
-	if (extraction !== 'none' && extraction !== 'refused') {
+	if (extraction !== '' && extraction !== 'refused') {
 		let message = '**Extraction**\n';
 		message += `The client was extracted to ${extraction}\n`;
 		return message;

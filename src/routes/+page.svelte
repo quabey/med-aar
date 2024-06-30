@@ -1,6 +1,6 @@
 <script>
 	import MessagePreview from '$lib/AAR/MessagePreview.svelte';
-	import { sections, setAllDefault } from '$lib/stores.js';
+	import { sections, setAllDefault, defaultSections } from '$lib/stores.js';
 	import { successToast, errorToast } from '$lib/toasts.js';
 	import { flip } from 'svelte/animate';
 	import { dndzone } from 'svelte-dnd-action';
@@ -76,14 +76,7 @@
 	}
 
 	function setDefaultSections() {
-		$sections = [
-			{ id: 0, name: 'ships' },
-			{ id: 1, name: 'timing' },
-			{ id: 2, name: 'location' },
-			{ id: 3, name: 'alert breakdown' },
-			{ id: 4, name: 'injury' },
-			{ id: 5, name: 'extraction' }
-		];
+		$sections = $defaultSections;
 	}
 </script>
 

@@ -1,11 +1,17 @@
 <script>
+	import { settingsModal } from '$lib/stores.js';
 	import Header from '$lib/Header.svelte';
 	import '../app.css';
+	import { Modal } from 'flowbite-svelte';
+	import Settings from '$lib/Settings.svelte';
 	import toast, { Toaster } from 'svelte-french-toast';
 </script>
 
 <html class="dark" lang="en">
 	<div class="h-max min-h-screen w-full bg-gray-800">
+		<Modal bind:open={$settingsModal} size="lg" title="Settings">
+			<Settings />
+		</Modal>
 		<Header />
 		<Toaster />
 

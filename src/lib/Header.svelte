@@ -1,4 +1,5 @@
 <script>
+	import { settingsModal } from '$lib/stores.js';
 	import logo from '$lib/assets/medtool-logo-beta-white.svg';
 	import { ChevronDownOutline, CogOutline } from 'flowbite-svelte-icons';
 	import { Badge } from 'flowbite-svelte';
@@ -48,7 +49,7 @@
 					<a href="/credits">
 						<span class=" border-x-2 border-white px-4"> Credits </span>
 					</a>
-					<button>
+					<button on:click={() => ($settingsModal = true)}>
 						<CogOutline class="h-6 w-6 text-white dark:text-white" />
 					</button>
 				</div>
