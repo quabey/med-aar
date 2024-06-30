@@ -1,7 +1,7 @@
 <script>
 	import { assignmentPlayers, assignmentShips } from '$lib/stores.js';
 	import { Button, Card, Select, Label, Input } from 'flowbite-svelte';
-	import { ChevronRightOutline } from 'flowbite-svelte-icons';
+	import { ChevronRightOutline, UserRemoveOutline } from 'flowbite-svelte-icons';
 	import { get } from 'svelte/store';
 
 	const medshipOptions = [
@@ -63,6 +63,18 @@
 				return players;
 			});
 			newQRFPlayer = '';
+		}
+	}
+
+	// Remove player from the any list
+	function removePlayer(playerName) {
+		if (playerName.trim() !== '') {
+			assignmentPlayers.update((players) => {
+				players.qrf = players.qrf.filter((player) => player !== playerName);
+				players.medship = players.medship.filter((player) => player !== playerName);
+				players.gunship = players.gunship.filter((player) => player !== playerName);
+				return players;
+			});
 		}
 	}
 
@@ -159,6 +171,9 @@
 								<ChevronRightOutline class="m-0 scale-110" />
 								QRF
 							</Button>
+							<Button on:click={() => removePlayer(player)} class="px-3">
+								<UserRemoveOutline />
+							</Button>
 						</div>
 					</div>
 				{/each}
@@ -207,6 +222,9 @@
 								<ChevronRightOutline class="m-0 scale-110" />
 								QRF
 							</Button>
+							<Button on:click={() => removePlayer(player)} class="px-3">
+								<UserRemoveOutline />
+							</Button>
 						</div>
 					</div>
 				{/each}
@@ -246,6 +264,9 @@
 							<Button on:click={() => movePlayer(player, 'qrf', 'medship')} class="pl-1" size="sm">
 								<ChevronRightOutline class="m-0 scale-110" />
 								Medship
+							</Button>
+							<Button on:click={() => removePlayer(player)} class="px-3">
+								<UserRemoveOutline />
 							</Button>
 						</div>
 					</div>
