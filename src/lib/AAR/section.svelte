@@ -1,4 +1,5 @@
 <script>
+	import IncidentReport from '$lib/AAR/IncidentReport.svelte';
 	import Extraction from '$lib/AAR/extraction.svelte';
 	import { sections } from '$lib/stores.js';
 	import Ships from '$lib/AAR/ships.svelte';
@@ -45,6 +46,8 @@
 			<Text index={sectionIndex.name.slice(-1) - 1} />
 		{:else if sectionIndex.name == 'alert breakdown'}
 			<AlertBreakdown />
+		{:else if sectionIndex.name == 'incident report'}
+			<IncidentReport />
 		{:else}
 			<span>Section not implemented ye1t</span>
 		{/if}

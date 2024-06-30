@@ -14,6 +14,7 @@
 		'Inaccuracy',
 		'Difficulties',
 		'Alert Breakdown',
+		'Incident Report',
 		'Accident Report',
 		'Team Remarks',
 		'Location',
@@ -76,11 +77,12 @@
 
 	function setDefaultSections() {
 		$sections = [
-			{ id: 1, name: 'ships' },
-			{ id: 2, name: 'timing' },
-			{ id: 3, name: 'injury' },
-			{ id: 4, name: 'extraction' },
-			{ id: 5, name: 'text 1' }
+			{ id: 0, name: 'ships' },
+			{ id: 1, name: 'timing' },
+			{ id: 2, name: 'location' },
+			{ id: 3, name: 'alert breakdown' },
+			{ id: 4, name: 'injury' },
+			{ id: 5, name: 'extraction' }
 		];
 	}
 </script>
