@@ -114,7 +114,7 @@ export const hasNitro = writable(false);
 export const isMRBlack = writable(false);
 
 // ============= Settings ============= //
-export const settingsModal = writable(true);
+export const settingsModal = writable(false);
 export const settings = writable({
 	debug: false,
 	medrunnerBlackMember: false
