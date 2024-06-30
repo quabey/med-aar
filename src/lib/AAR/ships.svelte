@@ -1,5 +1,5 @@
 <script>
-	import { ships, otherShips } from '$lib/stores.js';
+	import { ships, otherShips, assignmentShips } from '$lib/stores.js';
 	import { Dropdown, DropdownItem, Button, Input } from 'flowbite-svelte';
 	import { ChevronDownOutline } from 'flowbite-svelte-icons';
 
@@ -28,6 +28,15 @@
 	<div class="flex flex-row items-center justify-between">
 		<span>Medical Ship:</span>
 		<div class="">
+			{#if $assignmentShips.medship != ''}
+				<Button
+					outline
+					class="font-bold dark:border-primary-400 dark:text-primary-400"
+					on:click={() => ($ships.medship = $assignmentShips.medship)}
+				>
+					Import
+				</Button>
+			{/if}
 			<Button size="sm" class="w-[12rem]">
 				{$ships.medship || 'Select Medical Ship'}
 				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
@@ -58,6 +67,15 @@
 	<div class=" flex flex-row items-center justify-between">
 		<span>Gunship:</span>
 		<div class="">
+			{#if $assignmentShips.gunship != ''}
+				<Button
+					outline
+					class="font-bold dark:border-primary-400 dark:text-primary-400"
+					on:click={() => ($ships.gunship = $assignmentShips.gunship)}
+				>
+					Import
+				</Button>
+			{/if}
 			<Button size="sm" class="w-[12rem]">
 				{$ships.gunship == '' ? 'Select Gunship' : $ships.gunship}
 				<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
