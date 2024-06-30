@@ -62,7 +62,7 @@
 				clearSectionContents();
 				break;
 			case 'section and set default sections':
-				clearSections();
+				clearSectionContents();
 				setDefaultSections();
 				break;
 			default:

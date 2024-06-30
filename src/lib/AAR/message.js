@@ -159,7 +159,7 @@ function createLocationMessage(location, locationDistance) {
 function createAlertBreakdownMessage(alertBreakdown) {
 	if (alertBreakdown !== '') {
 		let message = '**Alert Breakdown**\n';
-		message += alertBreakdown;
+		message += `${alertBreakdown}\n`;
 		return message;
 	}
 	return '';
@@ -168,7 +168,7 @@ function createAlertBreakdownMessage(alertBreakdown) {
 function createIncidentReportMessage(incidentReport) {
 	if (incidentReport !== '') {
 		let message = '**Incident Report**\n';
-		message += incidentReport;
+		message += `${incidentReport}\n`;
 		return message;
 	}
 	return '';

@@ -74,6 +74,10 @@ export function setAllDefault() {
 		medship: '',
 		qrf: []
 	});
+	otherShips.set({
+		gunship: '',
+		medship: ''
+	});
 	injuries.set({
 		head: 'None',
 		chest: 'None',
@@ -83,7 +87,7 @@ export function setAllDefault() {
 		rightLeg: 'None'
 	});
 	injuriesTreatment.set('None');
-	extraction.set('none');
+	extraction.set('');
 	texts.set([
 		{
 			title: '',
@@ -98,6 +102,10 @@ export function setAllDefault() {
 			content: ''
 		}
 	]);
+	alertBreakdown.set('');
+	incidentReport.set('');
+	location.set('');
+	locationDistance.set('');
 }
 
 // ============= Copy-paste ============= //
