@@ -8,7 +8,7 @@
 </script>
 
 <html class="dark" lang="en">
-	<div class="h-max min-h-screen w-full bg-gray-800">
+	<div class="h-max min-h-screen w-full bg-gray-800 font-Mohave font-medium">
 		<Modal bind:open={$settingsModal} size="lg" title="Settings">
 			<Settings />
 		</Modal>

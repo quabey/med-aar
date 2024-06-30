@@ -127,3 +127,15 @@ export const defaultSections = writable([
 	{ id: 4, name: 'injury' },
 	{ id: 5, name: 'extraction' }
 ]);
+
+// ============= Assignments ============= //
+export const assignmentShips = writable({
+	gunship: '',
+	medship: ''
+});
+
+export const assignmentPlayers = writable({
+	medship: [],
+	gunship: [],
+	qrf: []
+});
