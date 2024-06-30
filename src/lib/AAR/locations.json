@@ -1843,5 +1843,70 @@
 		"id": 369,
 		"name": "Outer Space",
 		"type": "Space"
+	},
+	{
+		"id": 370,
+		"name": "HDPC-Cassillo",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 371,
+		"name": "HDPC-Farnesway",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 372,
+		"name": "Covalex Distribution Centre S1DC06",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 373,
+		"name": "Dupree Industrial Manufacturing Facility",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 374,
+		"name": "Greycat Stanton I Production Complex-B",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 375,
+		"name": "Sakura Sun Magnolia Workcenter",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 376,
+		"name": "Covalex Distribution Centre S4DC05",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 377,
+		"name": "Cry-Astro Processing Plant 19-02",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 378,
+		"name": "Cry-Astro Processing Plant 34-12",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 379,
+		"name": "Greycat Stanton IV Production Complex-B",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 380,
+		"name": "Microtech Logistics Depot S4LD01",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 381,
+		"name": "Microtech Logistics Depot S4LD13",
+		"type": "Distribution Center"
+	},
+	{
+		"id": 382,
+		"name": "Sakura Sun Goldenrod Workcenter",
+		"type": "Distribution Center"
 	}
 ]

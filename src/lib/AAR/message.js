@@ -66,14 +66,13 @@ export function createMessage() {
 }
 
 function createTimingMessage(times) {
-	console.log(times);
 	let message = '**Timing**\n';
 	for (let [key, value] of Object.entries(times)) {
 		if (value !== 'unknown') {
 			message += `${key}: <t:${convertToUnixTimestamp(value)}:t>\n`;
 		}
 	}
-	if (message === '## Timing\n') {
+	if (message === '**Timing**\n') {
 		return '';
 	}
 	return message;
@@ -95,6 +94,8 @@ function createShipsMessage(ships, otherShips) {
 	if (ships.qrf.length > 0 && ships.qrf[0] !== '') {
 		message += `QRF: ${ships.qrf.join(', ')}\n`;
 	}
+	// remove all double newlines
+	message = message.replace(/\n\n/g, '\n');
 	return message;
 }
 
