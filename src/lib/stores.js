@@ -59,6 +59,7 @@ export const texts = writable([
 ]);
 
 export const alertBreakdown = writable('');
+export const incidentReport = writable('');
 
 export function setAllDefault() {
 	times.set({

@@ -9,7 +9,9 @@ import {
 	location,
 	locationDistance,
 	alertBreakdown,
-	otherShips
+	otherShips,
+	injuriesTreatment,
+	incidentReport
 } from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
 
@@ -24,6 +26,8 @@ export function createMessage() {
 	const locationData = get(location);
 	const locationDistanceData = get(locationDistance);
 	const alertBreakdownData = get(alertBreakdown);
+	const injuriesTreatmentData = get(injuriesTreatment);
+	const incidentReportData = get(incidentReport);
 
 	let message = '';
 	sectionsData.forEach((section) => {
@@ -46,6 +50,9 @@ export function createMessage() {
 				break;
 			case 'alert breakdown':
 				message += createAlertBreakdownMessage(alertBreakdownData);
+				break;
+			case 'incident report':
+				message += createIncidentReportMessage(incidentReportData);
 				break;
 		}
 		if (section.name.includes('text')) {
@@ -152,6 +159,15 @@ function createAlertBreakdownMessage(alertBreakdown) {
 	if (alertBreakdown !== '') {
 		let message = '**Alert Breakdown**\n';
 		message += alertBreakdown;
+		return message;
+	}
+	return '';
+}
+
+function createIncidentReportMessage(incidentReport) {
+	if (incidentReport !== '') {
+		let message = '**Incident Report**\n';
+		message += incidentReport;
 		return message;
 	}
 	return '';
