@@ -139,3 +139,8 @@ export const assignmentPlayers = writable({
 	gunship: [],
 	qrf: []
 });
+
+export const pilotAssignments = writable({
+	gunship: '',
+	medship: ''
+});

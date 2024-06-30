@@ -1,7 +1,11 @@
 <script>
-	import { assignmentPlayers, assignmentShips } from '$lib/stores.js';
-	import { Button, Card, Select, Label, Input } from 'flowbite-svelte';
-	import { ChevronRightOutline, UserRemoveOutline } from 'flowbite-svelte-icons';
+	import { assignmentPlayers, assignmentShips, pilotAssignments } from '$lib/stores.js';
+	import { Button, Card, Select, Label, Input, Badge, ButtonGroup } from 'flowbite-svelte';
+	import {
+		ChevronRightOutline,
+		UserRemoveOutline,
+		ChevronDoubleUpOutline
+	} from 'flowbite-svelte-icons';
 	import { get } from 'svelte/store';
 
 	const medshipOptions = [
@@ -129,12 +133,18 @@
 			<Button on:click={clearAssignments}>Clear</Button>
 		</div>
 		<Card size="lg">
-			<div class="flex flex-row items-center gap-7">
-				<span class="text-lg font-bold uppercase text-white">Gunship</span>
+			<div class="flex flex-row items-center justify-between">
+				<div class="flex flex-row gap-2">
+					<span class="text-lg font-bold uppercase text-white">Gunship</span>
+					{#if $pilotAssignments.gunship != ''}
+						<Badge color="dark">Pilot: {$pilotAssignments.gunship}</Badge>
+					{/if}
+				</div>
 				<Select
 					items={gunshipOptions}
 					bind:value={$assignmentShips.gunship}
 					placeholder="Choose a gunship..."
+					class="w-48"
 				/>
 			</div>
 			<div class="mb-2 mt-4 flex flex-row gap-3">
@@ -158,34 +168,58 @@
 				{#each $assignmentPlayers.gunship as player}
 					<div class="flex flex-row items-center justify-between gap-2">
 						<span class="text-white">{player}</span>
-						<div class="">
+						<ButtonGroup class="">
 							<Button
 								on:click={() => movePlayer(player, 'gunship', 'medship')}
-								class="pl-1"
+								outline
+								class="pl-1 font-bold dark:border-primary-400 dark:text-primary-400"
 								size="sm"
 							>
 								<ChevronRightOutline class="m-0 scale-110" />
 								Medship
 							</Button>
-							<Button on:click={() => movePlayer(player, 'gunship', 'qrf')} class="pl-1" size="sm">
+							<Button
+								on:click={() => movePlayer(player, 'gunship', 'qrf')}
+								outline
+								class="pl-1 font-bold dark:border-primary-400 dark:text-primary-400"
+								size="sm"
+							>
 								<ChevronRightOutline class="m-0 scale-110" />
 								QRF
 							</Button>
-							<Button on:click={() => removePlayer(player)} class="px-3">
+							<Button
+								on:click={() => ($pilotAssignments.gunship = player)}
+								outline
+								class="px-3 font-bold dark:border-primary-400 dark:text-primary-400"
+							>
+								<ChevronDoubleUpOutline />
+								Pilot
+							</Button>
+							<Button
+								on:click={() => removePlayer(player)}
+								outline
+								class="px-3 font-bold dark:border-primary-400 dark:text-primary-400"
+							>
 								<UserRemoveOutline />
 							</Button>
-						</div>
+						</ButtonGroup>
 					</div>
 				{/each}
 			</div>
 		</Card>
 		<Card size="lg">
-			<div class="flex flex-row items-center gap-7">
-				<span class="text-lg font-bold uppercase text-white">Medship</span>
+			<div class="flex flex-row items-center justify-between gap-7">
+				<div class="flex flex-row items-center gap-2">
+					<span class="text-xl font-bold uppercase text-white">Medship</span>
+					{#if $pilotAssignments.medship != ''}
+						<Badge color="dark">Pilot: {$pilotAssignments.medship}</Badge>
+					{/if}
+				</div>
 				<Select
 					items={medshipOptions}
 					bind:value={$assignmentShips.medship}
 					placeholder="Choose a medship..."
+					class="w-48"
 				/>
 			</div>
 			<div class="mb-2 mt-4 flex flex-row gap-3">
@@ -209,23 +243,41 @@
 				{#each $assignmentPlayers.medship as player}
 					<div class="flex flex-row items-center justify-between gap-2">
 						<span class="text-white">{player}</span>
-						<div class="">
+						<ButtonGroup class="">
 							<Button
 								on:click={() => movePlayer(player, 'medship', 'gunship')}
-								class="pl-1"
+								outline
+								class="pl-1 font-bold dark:border-primary-400 dark:text-primary-400"
 								size="sm"
 							>
 								<ChevronRightOutline class="m-0 scale-110" />
 								Gunship
 							</Button>
-							<Button on:click={() => movePlayer(player, 'medship', 'qrf')} class="pl-1" size="sm">
+							<Button
+								on:click={() => movePlayer(player, 'medship', 'qrf')}
+								outline
+								class="pl-1 font-bold dark:border-primary-400 dark:text-primary-400"
+								size="sm"
+							>
 								<ChevronRightOutline class="m-0 scale-110" />
 								QRF
 							</Button>
-							<Button on:click={() => removePlayer(player)} class="px-3">
+							<Button
+								on:click={() => ($pilotAssignments.medship = player)}
+								outline
+								class="px-3 font-bold dark:border-primary-400 dark:text-primary-400"
+							>
+								<ChevronDoubleUpOutline />
+								Pilot
+							</Button>
+							<Button
+								on:click={() => removePlayer(player)}
+								outline
+								class="px-3 font-bold dark:border-primary-400 dark:text-primary-400"
+							>
 								<UserRemoveOutline />
 							</Button>
-						</div>
+						</ButtonGroup>
 					</div>
 				{/each}
 			</div>
@@ -256,19 +308,33 @@
 				{#each $assignmentPlayers.qrf as player}
 					<div class="flex flex-row items-center justify-between gap-2">
 						<span class="text-white">{player}</span>
-						<div class="">
-							<Button on:click={() => movePlayer(player, 'qrf', 'gunship')} class="pl-1" size="sm">
+						<ButtonGroup class="">
+							<Button
+								on:click={() => movePlayer(player, 'qrf', 'gunship')}
+								outline
+								class="pl-1 font-bold dark:border-primary-400 dark:text-primary-400"
+								size="sm"
+							>
 								<ChevronRightOutline class="m-0 scale-110" />
 								Gunship
 							</Button>
-							<Button on:click={() => movePlayer(player, 'qrf', 'medship')} class="pl-1" size="sm">
+							<Button
+								on:click={() => movePlayer(player, 'qrf', 'medship')}
+								outline
+								class="pl-1 font-bold dark:border-primary-400 dark:text-primary-400"
+								size="sm"
+							>
 								<ChevronRightOutline class="m-0 scale-110" />
 								Medship
 							</Button>
-							<Button on:click={() => removePlayer(player)} class="px-3">
+							<Button
+								on:click={() => removePlayer(player)}
+								outline
+								class="px-3 font-bold dark:border-primary-400 dark:text-primary-400"
+							>
 								<UserRemoveOutline />
 							</Button>
-						</div>
+						</ButtonGroup>
 					</div>
 				{/each}
 			</div>
