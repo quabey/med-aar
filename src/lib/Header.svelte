@@ -28,9 +28,10 @@
 						<div class="relative">
 							<a
 								href="/assignments"
-								class="flex w-full items-center justify-between rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
+								class="flex w-full items-center justify-between gap-2 rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
 								Ship Assignments
+								<Badge color="green">New!</Badge>
 							</a>
 						</div>
 					</li>
@@ -38,9 +39,10 @@
 						<div class="relative">
 							<a
 								href="/copy-pastes"
-								class="flex w-full items-center justify-between rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
+								class="flex w-full items-center justify-between gap-2 rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
 								Copy-Pastes
+								<Badge color="yellow">WIP</Badge>
 							</a><!---->
 						</div>
 					</li>
