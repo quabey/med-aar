@@ -88,7 +88,7 @@
 	<div class="my-2 flex w-full flex-col items-center gap-2">
 		<div class="flex flex-row items-center gap-5 py-2">
 			<ButtonGroup class="scale-x-110 ">
-				<Button on:click={() => (previewModal = true)}>See message</Button>
+				<Button on:click={() => (previewModal = true)}>Preview AAR</Button>
 				<CopyButton />
 			</ButtonGroup>
 			<ButtonGroup class="scale-x-110 pl-7 pr-4">

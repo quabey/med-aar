@@ -21,4 +21,4 @@
 	}
 </script>
 
-<Button on:click={copyMessage}>Copy Message</Button>
+<Button on:click={copyMessage}>Copy AAR</Button>
