@@ -34,8 +34,8 @@ export const sections = writable([
 	{ id: 0, name: 'ships' },
 	{ id: 1, name: 'timing' },
 	{ id: 2, name: 'location' },
-	{ id: 3, name: 'alert breakdown' },
-	{ id: 4, name: 'injury' },
+	{ id: 3, name: 'injury' },
+	{ id: 4, name: 'alert breakdown' },
 	{ id: 5, name: 'extraction' }
 ]);
 
@@ -123,8 +123,8 @@ export const defaultSections = writable([
 	{ id: 0, name: 'ships' },
 	{ id: 1, name: 'timing' },
 	{ id: 2, name: 'location' },
-	{ id: 3, name: 'alert breakdown' },
-	{ id: 4, name: 'injury' },
+	{ id: 3, name: 'injury' },
+	{ id: 4, name: 'alert breakdown' },
 	{ id: 5, name: 'extraction' }
 ]);
 

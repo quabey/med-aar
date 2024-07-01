@@ -3,7 +3,7 @@
 </script>
 
 <div class="mt-10 flex justify-center">
-	<Card class="w-full">
+	<Card class="w-full" size="lg">
 		<span class="text-3xl font-bold text-white">Credits</span>
 		<ul>
 			<li>- Initial AAR template by Angelic Fluffy</li>
