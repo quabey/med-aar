@@ -97,14 +97,14 @@
 		let message = '';
 
 		if ($assignmentPlayers.gunship.length > 0 && $assignmentPlayers.gunship[0] !== '') {
-			message += `**__Gunship__** *${$assignmentShips.gunship ?? ''} ${$pilotAssignments.gunship ? ' - Pilot: ' + $pilotAssignments.gunship : ''} * \n`;
+			message += `**__Gunship__** ${$assignmentShips.gunship ?? ''} ${$pilotAssignments.gunship ? ' - *Pilot: ' + $pilotAssignments.gunship.trim() : ''}* \n`;
 			$assignmentPlayers.gunship.forEach((player) => {
 				message += `> ${player}\n`;
 			});
 			message += '\n';
 		}
 		if ($assignmentPlayers.medship.length > 0 && $assignmentPlayers.medship[0] !== '') {
-			message += `**__Medship__** *${$assignmentShips.medship ?? ''} ${$pilotAssignments.medship ? ' - Pilot: ' + $pilotAssignments.medship : ''} * \n`;
+			message += `**__Medship__** *${$assignmentShips.medship ?? ''} ${$pilotAssignments.medship ? ' - Pilot: ' + $pilotAssignments.medship.trim() : ''} * \n`;
 			$assignmentPlayers.medship.forEach((player) => {
 				message += `> ${player}\n`;
 			});

@@ -25,7 +25,7 @@
 
 				{$location}
 			</div>
-			<Button>Edit</Button>
+			<Button on:click={() => ($location = '')}>Edit</Button>
 		</div>
 	{/if}
 </div>

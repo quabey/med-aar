@@ -19,7 +19,7 @@
 			<div class="">
 				{$extraction}
 			</div>
-			<Button>Edit</Button>
+			<Button on:click={() => ($extraction = '')}>Edit</Button>
 		</div>
 	{/if}
 	<div class="mt-2 flex justify-end">
