@@ -1,6 +1,16 @@
 <script>
 	import { assignmentPlayers, assignmentShips, pilotAssignments } from '$lib/stores.js';
-	import { Button, Card, Select, Label, Input, Badge, ButtonGroup } from 'flowbite-svelte';
+	import {
+		Button,
+		Card,
+		Select,
+		Label,
+		Input,
+		Badge,
+		Checkbox,
+		ButtonGroup
+	} from 'flowbite-svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import {
 		ChevronRightOutline,
 		UserRemoveOutline,
@@ -24,6 +34,7 @@
 	let newGunshipPlayer = '';
 	let newMedshipPlayer = '';
 	let newQRFPlayer = '';
+	let watermark = false;
 
 	function movePlayer(player, fromKey, toKey) {
 		const players = get(assignmentPlayers);
@@ -105,6 +116,9 @@
 				message += `> ${player}\n`;
 			});
 		}
+		if (watermark) {
+			message += '\nMade with [med-tools.space](https://med-tools.space/assignments)';
+		}
 		console.log(message);
 		navigator.clipboard.writeText(message);
 	}
@@ -128,18 +142,21 @@
 		});
 	}
 
-	document.addEventListener('keydown', (event) => {
+	function handleKeydown(event) {
 		if (event.key === 'Enter') {
-			if (document.activeElement.id === 'gunship_player') {
+			const activeElementId = document.activeElement.id;
+			if (activeElementId === 'gunship_player') {
 				addGunPlayer(newGunshipPlayer);
-			}
-			if (document.activeElement.id === 'medship_player') {
+			} else if (activeElementId === 'medship_player') {
 				addMedPlayer(newMedshipPlayer);
-			}
-			if (document.activeElement.id === 'qrf_player') {
+			} else if (activeElementId === 'qrf_player') {
 				addQRFPlayer(newQRFPlayer);
 			}
 		}
+	}
+
+	onMount(() => {
+		document.addEventListener('keydown', handleKeydown);
 	});
 </script>
 
@@ -152,6 +169,7 @@
 		<div class="flex flex-row gap-3">
 			<Button on:click={copyAssignments}>Copy</Button>
 			<Button on:click={clearAssignments}>Clear</Button>
+			<Checkbox bind:checked={watermark}>Add Watermark</Checkbox>
 		</div>
 		<Card size="lg">
 			<div class="flex flex-row items-center justify-between">

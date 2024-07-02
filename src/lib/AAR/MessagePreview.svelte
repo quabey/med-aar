@@ -21,7 +21,7 @@
 	let finalMessage = createMessage();
 
 	function addwatermark() {
-		finalMessage = finalMessage + '\n' + 'Made with med-tools.space';
+		finalMessage = finalMessage + '\n' + 'Made with [med-tools.space](https://med-tools.space)';
 	}
 </script>
 
