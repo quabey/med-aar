@@ -100,7 +100,7 @@
 			message += '\n';
 		}
 		if ($assignmentPlayers.qrf.length > 0 && $assignmentPlayers.qrf[0] !== '') {
-			message += `**__QRF__**\n`;
+			message += `**__Additional Ships / QRF__**\n`;
 			$assignmentPlayers.qrf.forEach((player) => {
 				message += `> ${player}\n`;
 			});
@@ -292,7 +292,7 @@
 		<!-- QRF Card, doenst have a ship select -->
 		<Card size="lg">
 			<div class="flex flex-row items-center gap-7">
-				<span class="text-lg font-bold uppercase text-white">QRF</span>
+				<span class="text-lg font-bold uppercase text-white">Additional Ships / QRF</span>
 			</div>
 			<div class="mb-2 mt-4 flex flex-row gap-3">
 				<Input
