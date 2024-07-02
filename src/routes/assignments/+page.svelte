@@ -127,6 +127,20 @@
 			return pilots;
 		});
 	}
+
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Enter') {
+			if (document.activeElement.id === 'gunship_player') {
+				addGunPlayer(newGunshipPlayer);
+			}
+			if (document.activeElement.id === 'medship_player') {
+				addMedPlayer(newMedshipPlayer);
+			}
+			if (document.activeElement.id === 'qrf_player') {
+				addQRFPlayer(newQRFPlayer);
+			}
+		}
+	});
 </script>
 
 <svelte:head>
