@@ -8,7 +8,8 @@
 		Input,
 		Badge,
 		Checkbox,
-		ButtonGroup
+		ButtonGroup,
+		Modal
 	} from 'flowbite-svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import {
@@ -35,6 +36,7 @@
 	let newMedshipPlayer = '';
 	let newQRFPlayer = '';
 	let watermark = false;
+	let appModal = true;
 
 	function movePlayer(player, fromKey, toKey) {
 		const players = get(assignmentPlayers);
@@ -170,6 +172,9 @@
 			<Button on:click={copyAssignments}>Copy</Button>
 			<Button on:click={clearAssignments}>Clear</Button>
 			<Checkbox bind:checked={watermark}>Add Watermark</Checkbox>
+			<button on:click={() => (appModal = true)} class="ml-1 italic text-primary-300 underline">
+				What is A.P.P?
+			</button>
 		</div>
 		<Card size="lg">
 			<div class="flex flex-row items-center justify-between">
@@ -380,3 +385,21 @@
 		</Card>
 	</div>
 </div>
+
+<Modal title="What is A.P.P?" autoclose outsideclose bind:open={appModal}>
+	<div class="flex flex-col gap-2">
+		<p>
+			A.P.P stands for All Player Participate. This policy is in place to ensure that all players
+			are actively engaged, and participating in an alert. In the case of ship assignments this
+			means that every ship is only crewed as needed, and no players are forced to sit idle.
+		</p>
+		<span class="text-xl font-bold">Why use A.P.P ?</span>
+		<p>
+			At the core of A.P.P is the idea that every player should be able to participate in the alert,
+			and have fun. By ensuring that every player is actively engaged, we can help to prevent
+			players from feeling left out, or bored.
+		</p>
+		<span class="text-xl font-bold"> What is an example of A.P.P in action?</span>
+		<p></p>
+	</div>
+</Modal>
