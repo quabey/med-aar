@@ -107,9 +107,9 @@ function createInjuryMessage(injuries) {
 			// for every char in the key check if its uppercase and replace it with a space and the lowercase letter
 			key = key.replace(/([A-Z])/g, ' $1').toLowerCase();
 			key = message += `- ${key}: ${value}\n`;
-			if (value != 'Unknown') {
-				allUnknown = false;
-			}
+		}
+		if (value != 'Unknown') {
+			allUnknown = false;
 		}
 	}
 	if (allUnknown) {
