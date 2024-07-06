@@ -209,7 +209,7 @@
 		</button>
 	</div>
 	<div class="my-2 w-full items-center grid grid-cols-1 px-5">
-		<select bind:value={selectedSystem} class="selector" on:change={() => setSelectedSystem(selectedSystem)}>
+		<select id="system-selector" bind:value={selectedSystem} class="selector" on:change={() => setSelectedSystem(selectedSystem)}>
 			{#each getAllSystems() as system}
 				<option value={system}>{system}</option>
 			{/each}
@@ -228,7 +228,7 @@
 					 on:drop={dragDrop}
 					 on:dragend={dragEnd}
 			>
-				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999"
+				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999" id="number-field-{team.num}"
 																																										class="input-number mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none"
 																																										value="{team.num}"
 																																										on:change={(event) => changeTeamNumber(team.num, event.target)} />
@@ -237,14 +237,14 @@
 				<div class="form-container">
 					<div class="name-group">
 						<!-- TODO (low priority): When the team lead field is changed, check if the user already has a team. If yes, warn the user to change the other beforehand -->
-						<label for="team-name" class="block">Team Lead</label>
-						<input type="text" id="team-name" value="{team.leader}" class="input-field block"
+						<label for="team-name-{team.num}" class="block">Team Lead</label>
+						<input type="text" id="team-name-{team.num}" value="{team.leader}" class="input-field block"
 									 placeholder="Enter Team Lead Name"
 									 on:input={(event) => updateTeamAttribute(team.num, "leader", event.target)} />
 					</div>
 					<div class="status-group">
-						<label for="team-lead" class="block">Team Status</label>
-						<select id="team-lead" bind:value={TEAMS[team.position - 1].status} class="selector block rounded-none"
+						<label for="team-lead-{team.num}" class="block">Team Status</label>
+						<select id="team-lead-{team.num}" bind:value={TEAMS[team.position - 1].status} class="selector block rounded-none"
 										on:input={(event) => updateTeamAttribute(team.num, "status", event.target)}>
 							{#each getStatusList() as status}
 								<option value={status.name}>{status.name}</option>
