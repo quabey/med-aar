@@ -1,6 +1,6 @@
 <script>
 	import '$lib/dispatch-tool/style.css';
-	import { getStatusList } from '$lib/dispatch-tool/status.ts';
+	import { getStatus, getStatusList } from '$lib/dispatch-tool/status.ts';
 	import { getAllSystems, getSelectedSystem, setSelectedSystem } from '$lib/dispatch-tool/systems.ts';
 	import { loadTeams, rerenderTeams, saveTeams } from '$lib/dispatch-tool/teams.ts';
 	import { generateFeed } from '$lib/dispatch-tool/formatting.ts';
@@ -256,6 +256,18 @@
 								<option value={status.name}>{status.name}</option>
 							{/each}
 						</select>
+					</div>
+				</div>
+
+				<div class="form-container">
+					<div class="comment-group">
+						{#if getStatus(team.status).input !== undefined}
+							<input type="text" id="team-comment-{team.num}" value="{team.comment || ''}" class="input-field block"
+										 placeholder={getStatus(team.status).input}
+										 on:input={(event) => updateTeamAttribute(team.num, "comment", event.target)} />
+						{:else}
+							<input type="text" class="input-field invisible" id="consistency-preserver-{team.num}" />
+						{/if}
 					</div>
 				</div>
 				<div class="relative bottom-0 left-0 p-2">

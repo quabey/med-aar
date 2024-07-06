@@ -4,13 +4,13 @@ export interface Status {
 	name: string;
 	color: Color;
 	position: number;
-	input?: { type: string, placeholder: string };
+	input?: string;
 }
 
 export const DEFAULT_STATUS_LIST: Status[] = [
 	{ name: 'Available', color: Color.Green, position: 0 },
-	{ name: 'Alert', color: Color.Red, position: 1 },
-	{ name: 'Beacon', color: Color.Red, position: 2 },
+	{ name: 'Alert', color: Color.Red, position: 1, input: "Alert name" },
+	{ name: 'Beacon', color: Color.Red, position: 2, input: "Beacon name" },
 	{ name: 'RTB', color: Color.Cyan, position: 3 },
 	{ name: 'Mustering', color: Color.Blue, position: 4 },
 	{ name: 'Refitting', color: Color.Blue, position: 5 },

@@ -29,15 +29,19 @@
     }
 
     .form-container {
-        @apply p-4 rounded-lg grid grid-cols-3;
+        @apply p-2 rounded-lg grid grid-cols-3;
     }
 
     .name-group {
-        @apply col-span-2 mb-4 block;
+        @apply col-span-2 mb-2 block;
     }
 
     .status-group {
-        @apply col-span-1 mb-4 block;
+        @apply col-span-1 mb-2 block;
+    }
+
+    .comment-group {
+        @apply col-span-3 mb-2 block;
     }
 }
 

@@ -68,7 +68,7 @@ export function generateFeed(system: string, teams: Team[]): string {
 		let status = getStatus(team.status);
 		let teamName = `${system} ${team.num}: ${teamLeader} | `;
 		let statusMessage = status.name;
-		if (team.comment) {
+		if (status.input && status.input.length > 0 && team.comment && team.comment.length > 0) {
 			statusMessage += `: ${team.comment}`;
 		}
 		return format(teamName, Color.White) + format(statusMessage, status.color);
