@@ -287,3 +287,27 @@
 		{/each}
 	</div>
 </div>
+
+
+<div class="fixed bottom-4 right-4 z-[1000]">
+	<button class="btn btn-red" on:click={() => TEAMS = rerenderTeams([])}>
+		<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
+				 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="trash outline"
+				 viewBox="0 0 24 24">
+			<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+						d="M6 18L18 6M6 6l12 12"></path>
+		</svg>
+		Delete all teams
+	</button>
+</div>
+
+<footer>
+	<div class="w-full max-w-screen-xl mx-auto p-4 md:py-8">
+		<hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+		<span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">It is known, that the ability to customize your own statuses is not yet included.</span>
+		<span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">Due to the refactor needed to implement the code into this website, it may take a while until the feature is added back in, depending on my workload.</span>
+		<span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">Until then, feel free to use the "standalone" version of the Dispatch Tool, if you want to use this feature.</span>
+	</div>
+</footer>
+
+
