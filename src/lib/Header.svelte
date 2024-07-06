@@ -58,7 +58,7 @@
 					</li>
 				</ul>
 				<div class="flex items-center gap-4 text-primary-300">
-					<a href="https://github.com/quabey/med-aar/" target="_blank"><span>Github</span></a>
+					<a href="https://github.com/quabey/med-aar/" target="_blank"><span>GitHub</span></a>
 					<a href="/credits">
 						<span class=" border-x-2 border-white px-4"> Credits </span>
 					</a>

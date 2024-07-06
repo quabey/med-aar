@@ -85,7 +85,7 @@
 	let selectedSystem = getSelectedSystem();
 
 	function copyFeed() {
-		if(TEAMS.length === 0) {
+		if (TEAMS.length === 0) {
 			toast.error('You need to have at least one team to copy the feed', {
 				style: 'background-color: #2c5278; color: white;',
 				position: 'top-right'
@@ -215,7 +215,8 @@
 		</button>
 	</div>
 	<div class="my-2 w-full items-center grid grid-cols-1 px-5">
-		<select id="system-selector" bind:value={selectedSystem} class="selector" on:change={() => setSelectedSystem(selectedSystem)}>
+		<select bind:value={selectedSystem} class="selector" id="system-selector"
+						on:change={() => setSelectedSystem(selectedSystem)}>
 			{#each getAllSystems() as system}
 				<option value={system}>{system}</option>
 			{/each}
@@ -234,7 +235,8 @@
 					 on:drop={dragDrop}
 					 on:dragend={dragEnd}
 			>
-				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999" id="number-field-{team.num}"
+				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999"
+																																										id="number-field-{team.num}"
 																																										class="input-number mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none"
 																																										value="{team.num}"
 																																										on:change={(event) => changeTeamNumber(team.num, event.target)} />
@@ -250,7 +252,8 @@
 					</div>
 					<div class="status-group">
 						<label for="team-lead-{team.num}" class="block">Team Status</label>
-						<select id="team-lead-{team.num}" bind:value={TEAMS[team.position - 1].status} class="selector block rounded-none"
+						<select id="team-lead-{team.num}" bind:value={TEAMS[team.position - 1].status}
+										class="selector block rounded-none"
 										on:input={(event) => updateTeamAttribute(team.num, "status", event.target)}>
 							{#each getStatusList() as status}
 								<option value={status.name}>{status.name}</option>
@@ -309,11 +312,11 @@
 
 <div class="fixed bottom-4 right-4 z-[1000]">
 	<button class="btn btn-red" on:click={() => TEAMS = rerenderTeams([])}>
-		<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
-				 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="trash outline"
-				 viewBox="0 0 24 24">
-			<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-						d="M6 18L18 6M6 6l12 12"></path>
+		<svg aria-label="trash outline" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" color="currentColor"
+				 fill="none" role="img" viewBox="0 0 24 24"
+				 xmlns="http://www.w3.org/2000/svg">
+			<path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+						stroke-width="2"></path>
 		</svg>
 		Delete all teams
 	</button>
