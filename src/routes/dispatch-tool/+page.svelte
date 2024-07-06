@@ -8,7 +8,6 @@
 	import { toast } from 'svelte-french-toast';
 
 	// TODO: Add input field when an input field is specified in the status list
-	// TODO: Add functionality to copy the feed
 	// TODO: Add the settings menu back in
 	// TODO SETTINGS: Add functionality to change elements per row
 	// TODO SETTINGS: Add functionality to change the status list and their colors
@@ -86,6 +85,13 @@
 	let selectedSystem = getSelectedSystem();
 
 	function copyFeed() {
+		if(TEAMS.length === 0) {
+			toast.error('You need to have at least one team to copy the feed', {
+				style: 'background-color: #2c5278; color: white;',
+				position: 'top-right'
+			});
+			return;
+		}
 		try {
 			navigator.clipboard.writeText(generateFeed(selectedSystem, TEAMS));
 			toast.success('Feed copied', {
@@ -93,7 +99,7 @@
 				position: 'top-right'
 			});
 		} catch (error) {
-			toast.error('Error copying feed, try again', {
+			toast.error('Error copying feed, please try again', {
 				style: 'background-color: #2c5278; color: white;',
 				position: 'top-right'
 			});
