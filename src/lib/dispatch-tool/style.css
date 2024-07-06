@@ -35,6 +35,7 @@
     .name-group {
         @apply col-span-2 mb-4 block;
     }
+
     .status-group {
         @apply col-span-1 mb-4 block;
     }

@@ -1,5 +1,5 @@
 <script>
-	import "$lib/dispatch-tool/style.css";
+	import '$lib/dispatch-tool/style.css';
 	import { getStatusList } from '$lib/dispatch-tool/status.ts';
 	import { getAllSystems, getSelectedSystem, setSelectedSystem } from '$lib/dispatch-tool/systems.ts';
 	import { loadTeams, rerenderTeams, saveTeams } from '$lib/dispatch-tool/teams.ts';
@@ -10,8 +10,8 @@
 	// TODO: Add input field when an input field is specified in the status list
 	// TODO: Add functionality to copy the feed
 	// TODO: Add the settings menu back in
-			// TODO SETTINGS: Add functionality to change elements per row
-			// TODO SETTINGS: Add functionality to change the status list and their colors
+	// TODO SETTINGS: Add functionality to change elements per row
+	// TODO SETTINGS: Add functionality to change the status list and their colors
 
 	$: TEAMS = loadTeams();
 
@@ -21,7 +21,7 @@
 			newNum++;
 		}
 
-		if(newNum > 999) {
+		if (newNum > 999) {
 			toast.error('You cannot have more than 999 teams. Sorry :(', {
 				style: 'background-color: #2c5278; color: white;',
 				position: 'top-right'
@@ -59,7 +59,7 @@
 			inputField.value = teamNum;
 			return;
 		}
-		if(newNum < 1 || newNum > 999) {
+		if (newNum < 1 || newNum > 999) {
 			toast.error('The team number must be between 1 and 999', {
 				style: 'background-color: #2c5278; color: white;',
 				position: 'top-right'
@@ -77,7 +77,7 @@
 
 		saveTeams(TEAMS);
 
-		toast.success('Changed ' + selectedSystem + " " + teamNum + " to " + selectedSystem + " " + newNum, {
+		toast.success('Changed ' + selectedSystem + ' ' + teamNum + ' to ' + selectedSystem + ' ' + newNum, {
 			style: 'background-color: #2c5278; color: white;',
 			position: 'top-right'
 		});
@@ -92,8 +92,7 @@
 				style: 'background-color: #2c5278; color: white;',
 				position: 'top-right'
 			});
-		}
-		catch (error) {
+		} catch (error) {
 			toast.error('Error copying feed, try again', {
 				style: 'background-color: #2c5278; color: white;',
 				position: 'top-right'
@@ -103,25 +102,31 @@
 	}
 
 	let dragStartIndex;
+
 	function dragStart() {
 		dragStartIndex = +this.getAttribute('data-index');
 		this.classList.add('dragging');
 	}
+
 	function dragOver(e) {
 		e.preventDefault();
 		this.classList.add('over');
 	}
+
 	function dragEnter() {
 		this.classList.add('over');
 	}
+
 	function dragLeave() {
 		this.classList.remove('over');
 	}
+
 	function dragDrop() {
 		const dragEndIndex = +this.getAttribute('data-index');
 		swapComponents(dragStartIndex, dragEndIndex);
 		this.classList.remove('over');
 	}
+
 	function dragEnd() {
 		this.classList.remove('over');
 		this.classList.remove('dragging');
@@ -138,10 +143,11 @@
 		});
 		TEAMS = rerenderTeams(TEAMS);
 	}
+
 	function moveToLast(teamNum) {
 		// Set the position of the team that is being moved to the last position and let the rerender handle the correction of the positions
 		TEAMS.find(team => team.num === teamNum).position = TEAMS.length + 1;
-		TEAMS = rerenderTeams(TEAMS)
+		TEAMS = rerenderTeams(TEAMS);
 	}
 
 	/**
@@ -181,40 +187,65 @@
 
 <div class="justify-center pb-12">
 	<div class="my-2 w-full items-center gap-4 grid grid-cols-2 px-5">
-			<button on:click={addTeam} class="btn btn-green"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="plus outline" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"></path></svg> New Team</button>
-			<button on:click={copyFeed} class="btn"><svg xmlns="http://www.w3.org/2000/svg" color="currentColor" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="copy filled" viewBox="0 0 24 24"><title>file_copy</title><g fill="#F7F7F7"><path d="M15 1H4c-1.1 0-2 .9-2 2v13c0 .55.45 1 1 1s1-.45 1-1V4c0-.55.45-1 1-1h10c.55 0 1-.45 1-1s-.45-1-1-1zm.59 4.59 4.83 4.83c.37.37.58.88.58 1.41V21c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h6.17c.53 0 1.04.21 1.42.59zM15 12h4.5L14 6.5V11c0 .55.45 1 1 1z"></path></g></svg> Copy</button>
+		<button class="btn btn-green" on:click={addTeam}>
+			<svg aria-label="plus outline" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white" color="currentColor"
+					 fill="none" role="img" viewBox="0 0 24 24"
+					 xmlns="http://www.w3.org/2000/svg">
+				<path d="M5 12h14m-7 7V5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+							stroke-width="2"></path>
+			</svg>
+			New Team
+		</button>
+		<button class="btn" on:click={copyFeed}>
+			<svg aria-label="copy filled" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white"
+					 color="currentColor" role="img" viewBox="0 0 24 24"
+					 xmlns="http://www.w3.org/2000/svg"><title>file_copy</title>
+				<g fill="#F7F7F7">
+					<path
+						d="M15 1H4c-1.1 0-2 .9-2 2v13c0 .55.45 1 1 1s1-.45 1-1V4c0-.55.45-1 1-1h10c.55 0 1-.45 1-1s-.45-1-1-1zm.59 4.59 4.83 4.83c.37.37.58.88.58 1.41V21c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h6.17c.53 0 1.04.21 1.42.59zM15 12h4.5L14 6.5V11c0 .55.45 1 1 1z"></path>
+				</g>
+			</svg>
+			Copy
+		</button>
 	</div>
 	<div class="my-2 w-full items-center grid grid-cols-1 px-5">
-		<select class="selector" bind:value={selectedSystem} on:change={() => setSelectedSystem(selectedSystem)}>
+		<select bind:value={selectedSystem} class="selector" on:change={() => setSelectedSystem(selectedSystem)}>
 			{#each getAllSystems() as system}
 				<option value={system}>{system}</option>
 			{/each}
 		</select>
 	</div>
-	<div id="draggable-wrapper" class="my-2 w-full items-center gap-4 grid grid-cols-1 xl:grid-cols-2 px-5">
+	<div class="my-2 w-full items-center gap-4 grid grid-cols-1 xl:grid-cols-2 px-5" id="draggable-wrapper">
 		{#each TEAMS as team}
 			<div class="draggable-component bg-gray-900 dark:bg-gray-900" aria-controls="team-name team-lead" role="group"
-				draggable="true"
-				data-index={team.position}
-				data-team={team.num}
-				on:dragstart={dragStart}
-				on:dragover={dragOver}
-				on:dragenter={dragEnter}
-				on:dragleave={dragLeave}
-				on:drop={dragDrop}
-				on:dragend={dragEnd}
+					 draggable="true"
+					 data-index={team.position}
+					 data-team={team.num}
+					 on:dragstart={dragStart}
+					 on:dragover={dragOver}
+					 on:dragenter={dragEnter}
+					 on:dragleave={dragLeave}
+					 on:drop={dragDrop}
+					 on:dragend={dragEnd}
 			>
-				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999" class="input-number mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none" value="{team.num}" on:change={(event) => changeTeamNumber(team.num, event.target)}/></h3>
+				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999"
+																																										class="input-number mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none"
+																																										value="{team.num}"
+																																										on:change={(event) => changeTeamNumber(team.num, event.target)} />
+				</h3>
 
 				<div class="form-container">
 					<div class="name-group">
 						<!-- TODO (low priority): When the team lead field is changed, check if the user already has a team. If yes, warn the user to change the other beforehand -->
 						<label for="team-name" class="block">Team Lead</label>
-						<input type="text" id="team-name" value="{team.leader}" class="input-field block" placeholder="Enter Team Lead Name" on:input={(event) => updateTeamAttribute(team.num, "leader", event.target)}/>
+						<input type="text" id="team-name" value="{team.leader}" class="input-field block"
+									 placeholder="Enter Team Lead Name"
+									 on:input={(event) => updateTeamAttribute(team.num, "leader", event.target)} />
 					</div>
 					<div class="status-group">
 						<label for="team-lead" class="block">Team Status</label>
-						<select id="team-lead" bind:value={TEAMS[team.position - 1].status} class="selector block rounded-none" on:input={(event) => updateTeamAttribute(team.num, "status", event.target)}>
+						<select id="team-lead" bind:value={TEAMS[team.position - 1].status} class="selector block rounded-none"
+										on:input={(event) => updateTeamAttribute(team.num, "status", event.target)}>
 							{#each getStatusList() as status}
 								<option value={status.name}>{status.name}</option>
 							{/each}
@@ -222,9 +253,35 @@
 					</div>
 				</div>
 				<div class="relative bottom-0 left-0 p-2">
-					<button on:click={() => moveToFirst(team.num)} class="btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-first outline" viewBox="0 0 24 24"><title>first_page</title><g fill="#F7F7F7"><path d="M18.41 16.59 13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z"></path></g></svg> Move to first position</button>
-					<button on:click={() => moveToLast(team.num)} class="btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-last outline" viewBox="0 0 24 24"><title>last_page</title><g fill="#F7F7F7"><path d="M5.59 7.41 10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z"></path></g></svg> Move to last position</button>
-					<button on:click={() => removeTeam(team.num)} class="btn btn-red"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="trash outline" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Delete</button>
+					<button on:click={() => moveToFirst(team.num)} class="btn">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
+								 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-first outline"
+								 viewBox="0 0 24 24"><title>first_page</title>
+							<g fill="#F7F7F7">
+								<path d="M18.41 16.59 13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z"></path>
+							</g>
+						</svg>
+						Move to first position
+					</button>
+					<button on:click={() => moveToLast(team.num)} class="btn">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
+								 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-last outline"
+								 viewBox="0 0 24 24"><title>last_page</title>
+							<g fill="#F7F7F7">
+								<path d="M5.59 7.41 10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z"></path>
+							</g>
+						</svg>
+						Move to last position
+					</button>
+					<button on:click={() => removeTeam(team.num)} class="btn btn-red">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
+								 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="trash outline"
+								 viewBox="0 0 24 24">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+										d="M6 18L18 6M6 6l12 12"></path>
+						</svg>
+						Delete
+					</button>
 				</div>
 			</div>
 		{/each}

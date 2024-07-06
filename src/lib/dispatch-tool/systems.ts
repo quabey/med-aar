@@ -15,14 +15,15 @@ export function getSelectedSystem(): System | null {
 		if (!getAllSystems().includes(selected as System)) {
 			return System.STANTON;
 		}
+	} catch (error) {
 	}
-	catch (error) {}
 	return System.STANTON;
 }
 
 export function setSelectedSystem(system: System) {
 	try {
 		localStorage.setItem('selected-system', system);
-	} catch (error) {}
+	} catch (error) {
+	}
 	return system;
 }

@@ -12,7 +12,7 @@ export interface Team {
  */
 export function loadTeams(): Team[] {
 	try {
-		const teams = localStorage.getItem("teams");
+		const teams = localStorage.getItem('teams');
 		if (teams) {
 			let teamsParsed = JSON.parse(teams);
 			teamsParsed.sort((a: Team, b: Team) => a.position - b.position);
@@ -34,12 +34,13 @@ export function loadTeams(): Team[] {
 
 			return teamsParsed;
 		}
-	} catch (error) {}
+	} catch (error) {
+	}
 
 	try {
-		localStorage.setItem("teams", JSON.stringify([]));
+		localStorage.setItem('teams', JSON.stringify([]));
+	} catch (error) {
 	}
-	catch (error) {}
 	return [];
 }
 
@@ -54,8 +55,8 @@ export function rerenderTeams(teams: Team[]) {
  */
 export function saveTeams(teams: Team[]) {
 	try {
-		localStorage.setItem("teams", JSON.stringify(teams));
+		localStorage.setItem('teams', JSON.stringify(teams));
+	} catch (error) {
 	}
-	catch (error) {}
 }
 

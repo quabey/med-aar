@@ -1,4 +1,4 @@
-import { Color } from "./formatting";
+import { Color } from './formatting';
 
 export interface Status {
 	name: string;
@@ -8,13 +8,13 @@ export interface Status {
 }
 
 export const DEFAULT_STATUS_LIST: Status[] = [
-	{ name: "Available", color: Color.Green, position: 0 },
-	{ name: "Alert", color: Color.Red, position: 1 },
-	{ name: "Beacon", color: Color.Red, position: 2 },
-	{ name: "RTB", color: Color.Cyan, position: 3 },
-	{ name: "Mustering", color: Color.Blue, position: 4 },
-	{ name: "Refitting", color: Color.Blue, position: 5 },
-	{ name: "Unavailable", color: Color.Orange, position: 6 },
+	{ name: 'Available', color: Color.Green, position: 0 },
+	{ name: 'Alert', color: Color.Red, position: 1 },
+	{ name: 'Beacon', color: Color.Red, position: 2 },
+	{ name: 'RTB', color: Color.Cyan, position: 3 },
+	{ name: 'Mustering', color: Color.Blue, position: 4 },
+	{ name: 'Refitting', color: Color.Blue, position: 5 },
+	{ name: 'Unavailable', color: Color.Orange, position: 6 }
 ];
 
 export function getStatusList(): Status[] {
@@ -23,25 +23,25 @@ export function getStatusList(): Status[] {
 	// Load the status list from local storage
 	// If the status list is not an array, or if any of the statuses are not objects with a name, color, and position, then reset the status list to the default
 	try {
-		const statusList = localStorage.getItem("status");
+		const statusList = localStorage.getItem('status');
 		if (statusList) {
 			StatusList = JSON.parse(statusList);
 			if (!Array.isArray(StatusList)) {
 				StatusList = undefined;
 			} else {
 				for (const status of StatusList) {
-					if (typeof status !== "object" || !status.name || !status.color || !status.position) {
+					if (typeof status !== 'object' || !status.name || !status.color || !status.position) {
 						StatusList = undefined;
 						break;
 					}
 				}
 			}
 		}
+	} catch (error) {
 	}
-	catch (error) {}
 
 	// If the status list is still undefined, set it to the default status list
-	if(!StatusList) {
+	if (!StatusList) {
 		StatusList = DEFAULT_STATUS_LIST;
 	}
 	return StatusList;
@@ -58,5 +58,5 @@ export function getStatus(status: string) {
 }
 
 export function saveStatusList(StatusList: Status[]) {
-	localStorage.setItem("status", JSON.stringify(StatusList));
+	localStorage.setItem('status', JSON.stringify(StatusList));
 }
