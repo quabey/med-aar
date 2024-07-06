@@ -2,10 +2,11 @@
 	import "$lib/dispatch-tool/style.css";
 	import { getStatusList } from '$lib/dispatch-tool/status.ts';
 	import { getAllSystems, getSelectedSystem, setSelectedSystem } from '$lib/dispatch-tool/systems.ts';
-	import { loadTeams, saveTeams } from '$lib/dispatch-tool/teams.ts';
+	import { loadTeams, rerenderTeams, saveTeams } from '$lib/dispatch-tool/teams.ts';
 
-	// TODO: Add functionality to put the team first and last in queue
-	// TODO: Add functionality to delete a team
+	import { toast } from 'svelte-french-toast';
+
+	// TODO: Add input field when an input field is specified in the status list
 	// TODO: Add functionality to copy the feed
 	// TODO: Add the settings menu back in
 			// TODO SETTINGS: Add functionality to change elements per row
@@ -14,9 +15,71 @@
 	$: TEAMS = loadTeams();
 
 	function addTeam() {
-		let maxNum = Math.max(...TEAMS.map(team => team.num), 0);
-		TEAMS = [...TEAMS, { num: maxNum + 1, leader: '', status: '' }];
+		let newNum = 1;
+		while (TEAMS.find(team => team.num === newNum)) {
+			newNum++;
+		}
+
+		if(newNum > 999) {
+			toast.error('You cannot have more than 999 teams. Sorry :(', {
+				style: 'background-color: #2c5278; color: white;',
+				position: 'top-right'
+			});
+			return;
+		}
+
+		let position = TEAMS.length + 1;
+		TEAMS = [...TEAMS, { position: position, num: newNum, leader: '', status: 'Mustering' }];
 		saveTeams(TEAMS);
+	}
+
+	function removeTeam(teamNum) {
+		TEAMS = TEAMS.filter(team => team.num !== teamNum);
+		TEAMS = rerenderTeams(TEAMS);
+	}
+
+	function changeTeamNumber(teamNum, inputField) {
+		let newNum = inputField.value;
+
+		if (isNaN(newNum)) {
+			toast.error('Error: The input was no numer', {
+				style: 'background-color: #2c5278; color: white;',
+				position: 'top-right'
+			});
+			inputField = teamNum;
+			return;
+		}
+		newNum = +newNum;
+		if (TEAMS.find(team => team.num === newNum)) {
+			toast.error('You cannot have two teams with the same team number', {
+				style: 'background-color: #2c5278; color: white;',
+				position: 'top-right'
+			});
+			inputField.value = teamNum;
+			return;
+		}
+		if(newNum < 1 || newNum > 999) {
+			toast.error('The team number must be between 1 and 999', {
+				style: 'background-color: #2c5278; color: white;',
+				position: 'top-right'
+			});
+			inputField.value = teamNum;
+			return;
+		}
+
+		inputField.value = newNum;
+		let team = TEAMS.find(team => team.num === teamNum);
+		team.num = newNum;
+
+		let component = document.querySelector(`[data-team="${teamNum}"]`);
+		component.setAttribute('data-team', `${newNum}`);
+
+		saveTeams(TEAMS);
+
+		toast.success('Changed ' + selectedSystem + " " + teamNum + " to " + selectedSystem + " " + newNum, {
+			style: 'background-color: #2c5278; color: white;',
+			position: 'top-right'
+		});
 	}
 
 	let selectedSystem = getSelectedSystem();
@@ -45,38 +108,52 @@
 		this.classList.remove('over');
 		this.classList.remove('dragging');
 	}
+
+	function moveToFirst(teamNum) {
+		// Increment the position of all teams that are above the team that is being moved
+		TEAMS.forEach(team => {
+			if (team.num === teamNum) {
+				team.position = 1;
+			} else if (team.position < TEAMS.find(team => team.num === teamNum).position) {
+				team.position++;
+			}
+		});
+		TEAMS = rerenderTeams(TEAMS);
+	}
+	function moveToLast(teamNum) {
+		// Set the position of the team that is being moved to the last position and let the rerender handle the correction of the positions
+		TEAMS.find(team => team.num === teamNum).position = TEAMS.length + 1;
+		TEAMS = rerenderTeams(TEAMS)
+	}
+
+	/**
+	 * Swaps the components in the DOM
+	 * While this happens, the function will move the corresponding team to the new position in the array
+	 * @param startIndex The index of the component that is being dragged
+	 * @param endIndex The index of the component that is being dropped on
+	 */
 	function swapComponents(startIndex, endIndex) {
-		const components = document.querySelectorAll('.draggable-component');
-		const startComponent = components[startIndex - 1];
-		const endComponent = components[endIndex - 1];
+		// Swap the two components in the DOM by changing their position in the array and letting Svelte rerender the positions
+		// This has the added benefit of preserving event listeners on elements inside the component
+		let temp = TEAMS[startIndex - 1];
+		TEAMS[startIndex - 1] = TEAMS[endIndex - 1];
+		TEAMS[endIndex - 1] = temp;
+		TEAMS[startIndex - 1].position = startIndex;
+		TEAMS[endIndex - 1].position = endIndex;
+		TEAMS = rerenderTeams(TEAMS);
+	}
 
-		let startCopy = startComponent.cloneNode(true);
-		let endCopy = endComponent.cloneNode(true);
-
-		startComponent.replaceWith(endCopy);
-		endComponent.replaceWith(startCopy);
-
-		startCopy.classList.remove('dragging');
-		startCopy.classList.remove('over');
-		endCopy.classList.remove('dragging');
-		endCopy.classList.remove('over');
-
-		startCopy.addEventListener('dragstart', dragStart);
-		startCopy.addEventListener('dragover', dragOver);
-		startCopy.addEventListener('dragenter', dragEnter);
-		startCopy.addEventListener('dragleave', dragLeave);
-		startCopy.addEventListener('drop', dragDrop);
-		startCopy.addEventListener('dragend', dragEnd);
-
-		endCopy.addEventListener('dragstart', dragStart);
-		endCopy.addEventListener('dragover', dragOver);
-		endCopy.addEventListener('dragenter', dragEnter);
-		endCopy.addEventListener('dragleave', dragLeave);
-		endCopy.addEventListener('drop', dragDrop);
-		endCopy.addEventListener('dragend', dragEnd);
-
-		startCopy.setAttribute('data-index', `${endIndex}`);
-		endCopy.setAttribute('data-index', `${startIndex}`);
+	/**
+	 * Updates the team object in the TEAMS array.
+	 * Important: This function will not correctly change the number or the position of the team
+	 * @param teamNum The number of the team that is being updated
+	 * @param field The field that is being updated
+	 * @param inputField The input field that is being updated
+	 */
+	function updateTeamAttribute(teamNum, field, inputField) {
+		let team = TEAMS.find(team => team.num === teamNum);
+		team[field] = inputField.value;
+		saveTeams(TEAMS);
 	}
 </script>
 
@@ -100,7 +177,7 @@
 		{#each TEAMS as team}
 			<div class="draggable-component bg-gray-900 dark:bg-gray-900" aria-controls="team-name team-lead" role="group"
 				draggable="true"
-				data-index={team.num}
+				data-index={team.position}
 				data-team={team.num}
 				on:dragstart={dragStart}
 				on:dragover={dragOver}
@@ -109,26 +186,27 @@
 				on:drop={dragDrop}
 				on:dragend={dragEnd}
 			>
-				<!-- TODO: When the number field is changed, check if the team already exist. If so, revert the number back and give the user an error message -->
-				<!-- TODO: When the number was changed successfully, change the details of the team and update it-->
-				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999" class="input-number mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none" value="{team.num}"/></h3>
+				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999" class="input-number mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none" value="{team.num}" on:change={(event) => changeTeamNumber(team.num, event.target)}/></h3>
 
 				<div class="form-container">
 					<div class="name-group">
-						<!-- TODO: When the team lead field is changed and update the team accordingly -->
 						<!-- TODO (low priority): When the team lead field is changed, check if the user already has a team. If yes, warn the user to change the other beforehand -->
 						<label for="team-name" class="block">Team Lead</label>
-						<input type="text" id="team-name" class="input-field block" placeholder="Enter Team Lead Name" />
+						<input type="text" id="team-name" value="{team.leader}" class="input-field block" placeholder="Enter Team Lead Name" on:input={(event) => updateTeamAttribute(team.num, "leader", event.target)}/>
 					</div>
 					<div class="status-group">
 						<label for="team-lead" class="block">Team Status</label>
-						<select id="team-lead" class="selector block rounded-none">
-							<!-- TODO: Update the team when the status is changed -->
+						<select id="team-lead" bind:value={TEAMS[team.position - 1].status} class="selector block rounded-none" on:input={(event) => updateTeamAttribute(team.num, "status", event.target)}>
 							{#each getStatusList() as status}
 								<option value={status.name}>{status.name}</option>
 							{/each}
 						</select>
 					</div>
+				</div>
+				<div class="relative bottom-0 left-0 p-2">
+					<button on:click={() => moveToFirst(team.num)} class="btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-first outline" viewBox="0 0 24 24"><title>first_page</title><g fill="#F7F7F7"><path d="M18.41 16.59 13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z"></path></g></svg> Move to first position</button>
+					<button on:click={() => moveToLast(team.num)} class="btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-last outline" viewBox="0 0 24 24"><title>last_page</title><g fill="#F7F7F7"><path d="M5.59 7.41 10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z"></path></g></svg> Move to last position</button>
+					<button on:click={() => removeTeam(team.num)} class="btn btn-red"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="trash outline" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg> Delete</button>
 				</div>
 			</div>
 		{/each}
