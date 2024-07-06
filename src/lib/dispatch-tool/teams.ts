@@ -1,8 +1,9 @@
-interface Team {
+export interface Team {
 	position: number;
 	num: number;
 	leader: string;
 	status: string;
+	comment?: string;
 }
 
 /**

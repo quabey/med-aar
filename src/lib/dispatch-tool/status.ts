@@ -1,6 +1,6 @@
 import { Color } from "./formatting";
 
-interface Status {
+export interface Status {
 	name: string;
 	color: Color;
 	position: number;
@@ -45,6 +45,16 @@ export function getStatusList(): Status[] {
 		StatusList = DEFAULT_STATUS_LIST;
 	}
 	return StatusList;
+}
+
+export function getStatus(status: string) {
+	const StatusList = getStatusList();
+	for (const s of StatusList) {
+		if (s.name === status) {
+			return s;
+		}
+	}
+	return null;
 }
 
 export function saveStatusList(StatusList: Status[]) {

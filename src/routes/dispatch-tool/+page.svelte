@@ -3,6 +3,7 @@
 	import { getStatusList } from '$lib/dispatch-tool/status.ts';
 	import { getAllSystems, getSelectedSystem, setSelectedSystem } from '$lib/dispatch-tool/systems.ts';
 	import { loadTeams, rerenderTeams, saveTeams } from '$lib/dispatch-tool/teams.ts';
+	import { generateFeed } from '$lib/dispatch-tool/formatting.ts';
 
 	import { toast } from 'svelte-french-toast';
 
@@ -84,6 +85,23 @@
 
 	let selectedSystem = getSelectedSystem();
 
+	function copyFeed() {
+		try {
+			navigator.clipboard.writeText(generateFeed(selectedSystem, TEAMS));
+			toast.success('Feed copied', {
+				style: 'background-color: #2c5278; color: white;',
+				position: 'top-right'
+			});
+		}
+		catch (error) {
+			toast.error('Error copying feed, try again', {
+				style: 'background-color: #2c5278; color: white;',
+				position: 'top-right'
+			});
+			console.error(error);
+		}
+	}
+
 	let dragStartIndex;
 	function dragStart() {
 		dragStartIndex = +this.getAttribute('data-index');
@@ -164,7 +182,7 @@
 <div class="justify-center pb-12">
 	<div class="my-2 w-full items-center gap-4 grid grid-cols-2 px-5">
 			<button on:click={addTeam} class="btn btn-green"><svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="plus outline" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5"></path></svg> New Team</button>
-			<button class="btn"><svg xmlns="http://www.w3.org/2000/svg" color="currentColor" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="copy filled" viewBox="0 0 24 24"><title>file_copy</title><g fill="#F7F7F7"><path d="M15 1H4c-1.1 0-2 .9-2 2v13c0 .55.45 1 1 1s1-.45 1-1V4c0-.55.45-1 1-1h10c.55 0 1-.45 1-1s-.45-1-1-1zm.59 4.59 4.83 4.83c.37.37.58.88.58 1.41V21c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h6.17c.53 0 1.04.21 1.42.59zM15 12h4.5L14 6.5V11c0 .55.45 1 1 1z"></path></g></svg> Copy</button>
+			<button on:click={copyFeed} class="btn"><svg xmlns="http://www.w3.org/2000/svg" color="currentColor" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="copy filled" viewBox="0 0 24 24"><title>file_copy</title><g fill="#F7F7F7"><path d="M15 1H4c-1.1 0-2 .9-2 2v13c0 .55.45 1 1 1s1-.45 1-1V4c0-.55.45-1 1-1h10c.55 0 1-.45 1-1s-.45-1-1-1zm.59 4.59 4.83 4.83c.37.37.58.88.58 1.41V21c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h6.17c.53 0 1.04.21 1.42.59zM15 12h4.5L14 6.5V11c0 .55.45 1 1 1z"></path></g></svg> Copy</button>
 	</div>
 	<div class="my-2 w-full items-center grid grid-cols-1 px-5">
 		<select class="selector" bind:value={selectedSystem} on:change={() => setSelectedSystem(selectedSystem)}>

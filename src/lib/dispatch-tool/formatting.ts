@@ -1,4 +1,7 @@
 
+import { Team } from "./teams";
+import { getStatus } from "./status";
+
 export enum Color {
 	Red = "red",
 	Green = "green",
@@ -38,18 +41,50 @@ const DEFAULT_STATUS_LIST = {
 	"Unavailable": { color: "orange", pos: 6 },
 }
 
-export function format(text: string, color: Color) {
+function format(text: string, color: Color) {
 	return `${FORMATTING[color].color}${text}${FORMATTING_RESET}`;
 }
 
-export function getColorInformation(color: Color): ColorInformation {
-	return FORMATTING[color];
-}
 
-export function getFormattedColorList() {
-	const colorList: ColorInformation[] = [];
-	for (const color in FORMATTING) {
-		colorList.push(FORMATTING[color]);
+export function generateFeed(system: string, teams: Team[]): string {
+	// Be sure to sort the teams by position before generating the feed
+	teams.sort((a, b) => a.position - b.position);
+
+	let firstTeam = teams[0];
+	let queue = '';
+	if(teams.length > 1) {
+		queue = '\nQueue: ';
+		for(let i = 1; i < teams.length; i++) {
+			queue += `${teams[i].num}`;
+			if(i < teams.length - 1) {
+				queue += ', ';
+			}
+		}
 	}
-	return colorList;
+
+	let maxLeaderLength = teams.reduce((max, team) => Math.max(max, team.leader.length), 0);
+
+	let teamStatus = teams.map((team) => {
+		let teamLeader = team.leader.padEnd(maxLeaderLength, ' ');
+		let status = getStatus(team.status);
+		let teamName = `${system} ${team.num}: ${teamLeader} | `;
+		let statusMessage = status.name;
+		if(team.comment) {
+			statusMessage += `: ${team.comment}`;
+		}
+		return format(teamName, Color.White) + format(statusMessage, status.color);
+	}).join('\n');
+
+	return '```ansi\n' +
+		`--- Transmission from ${system} Dispatcher ---\n` +
+		'\n' +
+		`${teamStatus}` +
+		' \n\n' +
+		'------------- End Transmission -------------\n' +
+		'```\n' +
+		'```\n' +
+		`Next in line: ${system} ${firstTeam.num}` +
+		`${queue}` +
+		'```\n' +
+		`Last updated: <t:${Math.floor(Date.now() / 1000)}:R>`;
 }
