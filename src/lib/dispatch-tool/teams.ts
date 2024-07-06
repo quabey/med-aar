@@ -42,10 +42,6 @@ export function loadTeams(): Team[] {
 	return [];
 }
 
-export function formatComponents(html: string): Team[] {
-	return [];
-}
-
 export function rerenderTeams(teams: Team[]) {
 	saveTeams(teams);
 	return loadTeams();
