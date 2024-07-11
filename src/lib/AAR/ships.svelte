@@ -16,7 +16,9 @@
 		'RSI Constellation X',
 		'Drake Corsair',
 		'Aegis Vanguard Hoplite',
-		'Other'
+		'Hammerhead',
+		'Other',
+		'None'
 	];
 
 	let qrf = '';
