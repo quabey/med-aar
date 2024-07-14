@@ -28,6 +28,7 @@
 		{ name: 'Aegis Redeemer', value: 'Aegis Redeemer' },
 		{ name: 'RSI Constellation X', value: 'RSI Constellation X' },
 		{ name: 'Drake Corsair', value: 'Drake Corsair' },
+		{ name: 'Hammerhead', value: 'Hammerhead' },
 		{ name: 'Aegis Vanguard Hoplite', value: 'Aegis Vanguard Hoplite' }
 	];
 
