@@ -12,6 +12,8 @@
 
 	const sectionOptions = [
 		'Injury',
+		'Timing',
+		'Ships',
 		'Inaccuracy',
 		'Difficulties',
 		'Alert Breakdown',
@@ -21,7 +23,8 @@
 		'Location',
 		'Text 1',
 		'Text 2',
-		'Text 3'
+		'Text 3',
+		'Extraction'
 	];
 
 	let clearModal = false;
