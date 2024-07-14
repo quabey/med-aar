@@ -11,24 +11,28 @@
 	} from 'flowbite-svelte';
 	// import the locations from locations.json
 	import locations from '$lib/AAR/locations.json';
-	import MiniSearch from 'minisearch';
+	import Fuse from 'fuse.js';
+
+	const fuseOptions = {
+		threshold: 0.35,
+		includeScore: true,
+		keys: ['name', 'type']
+	};
+
+	const fuse = new Fuse(locations, fuseOptions);
 
 	export let location;
 	let results = [];
 
-	let minisearch = new MiniSearch({
-		fields: ['name', 'type'],
-		storeFields: ['name', 'type']
-	});
-
-	minisearch.addAll(locations);
-
 	function searchLocation() {
 		console.log('searching for ' + searchInput);
-		results = minisearch.search(searchInput);
+		results = fuse.search(searchInput);
 		if (results.length === 0) {
 			results = [{ name: searchInput, type: '' }];
 		}
+		// cut array to 10 results and add the input as the last result
+		results = results.slice(0, 10);
+		results[results.length] = { item: { name: searchInput, type: 'Manual' } };
 		console.log(results);
 	}
 
@@ -48,8 +52,8 @@
 		<TableBody>
 			{#each results as result}
 				<TableBodyRow>
-					<TableBodyCell>{result.name}</TableBodyCell>
-					<TableBodyCell>{result.type}</TableBodyCell>
+					<TableBodyCell>{result.item.name}</TableBodyCell>
+					<TableBodyCell>{result.item.type}</TableBodyCell>
 					<TableBodyCell>
 						<Button on:click={() => (location = result.name)}>Select</Button>
 					</TableBodyCell>
