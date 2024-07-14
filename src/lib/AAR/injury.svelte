@@ -27,10 +27,10 @@
 <div class="flex flex-col gap-2 rounded-lg">
 	{#each ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as part}
 		<div class=" flex flex-row items-center justify-between">
-			{@html part.charAt(0).toUpperCase() + part.slice(1)}:
+			{@html part.replace(/([A-Z])/g, ' $1').toLowerCase()}:
 			<div class="">
 				<Button size="sm">
-					{$injuries[part] || `Select ${part.charAt(0).toUpperCase() + part.slice(1)} Injury`}
+					{$injuries[part] || `Select ${part.replace(/([A-Z])/g, ' $1').toLowerCase()} Injury`}
 					<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
 				</Button>
 				<Dropdown class="" bind:value={$injuries[part]}>

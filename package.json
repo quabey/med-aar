@@ -36,7 +36,7 @@
 	"dependencies": {
 		"@macfja/svelte-persistent-store": "^2.4.1",
 		"@medrunner/api-client": "^0.1.1",
-		"minisearch": "^6.3.0",
+		"fuse.js": "^7.0.0",
 		"svelte-french-toast": "^1.2.0"
 	}
 }

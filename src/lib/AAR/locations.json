@@ -1913,5 +1913,20 @@
 		"id": 383,
 		"name": "Picker's Field",
 		"type": "Outpost"
+	},
+	{
+		"id": 384,
+		"name": "Seraphim Station",
+		"type": "Space station"
+	},
+	{
+		"id": 385,
+		"name": "Maker's Point",
+		"type": "Outpost"
+	},
+	{
+		"id": 386,
+		"name": "Rappel",
+		"type": "Outpost"
 	}
 ]
