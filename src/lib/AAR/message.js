@@ -104,7 +104,6 @@ function createInjuryMessage(injuries) {
 	let message = '**Injuries**\n';
 	for (let [key, value] of Object.entries(injuries)) {
 		if (value !== 'None') {
-			// for every char in the key check if its uppercase and replace it with a space and the lowercase letter
 			key = key.replace(/([A-Z])/g, ' $1').toLowerCase();
 			key = message += `- ${key}: ${value}\n`;
 		}

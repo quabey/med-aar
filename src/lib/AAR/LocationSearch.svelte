@@ -55,7 +55,7 @@
 					<TableBodyCell>{result.item.name}</TableBodyCell>
 					<TableBodyCell>{result.item.type}</TableBodyCell>
 					<TableBodyCell>
-						<Button on:click={() => (location = result.name)}>Select</Button>
+						<Button on:click={() => (location = result.item.name)}>Select</Button>
 					</TableBodyCell>
 				</TableBodyRow>
 			{/each}

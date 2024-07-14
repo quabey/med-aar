@@ -8,6 +8,7 @@
 	import { Dropdown, Button, DropdownItem, ButtonGroup, Modal } from 'flowbite-svelte';
 	import { PlusOutline, ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	import CopyButton from '$lib/AAR/CopyButton.svelte';
+	import toast from 'svelte-french-toast';
 
 	const sectionOptions = [
 		'Injury',
@@ -100,7 +101,7 @@
 					Clear and set default sections</Button
 				>
 			</ButtonGroup>
-			<Button class="">Abort Mode</Button>
+			<Button class="" on:click={() => errorToast('Not yet implemented')}>Abort Mode</Button>
 		</div>
 		<section
 			use:dndzone={{ items: $sections, flipDurationMs, dropTargetStyle: {} }}
@@ -121,13 +122,15 @@
 			</Button>
 			<Dropdown placement="top">
 				{#each sectionOptions as option}
-					<DropdownItem
-						on:click={() => {
-							addSection(option);
-						}}
-					>
-						{option}
-					</DropdownItem>
+					{#if !$sections.find((section) => section.name === option.toLowerCase())}
+						<DropdownItem
+							on:click={() => {
+								addSection(option);
+							}}
+						>
+							{option}
+						</DropdownItem>
+					{/if}
 				{/each}
 			</Dropdown>
 		</div>

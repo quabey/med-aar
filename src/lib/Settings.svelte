@@ -25,23 +25,7 @@
 	</div>
 	<div class="w-1/2">
 		<span>Default Sections (Drag & Drop)</span>
-		<div class="">
-			<section
-				use:dndzone={{ items: $defaultSections, flipDurationMs, dropTargetStyle: {} }}
-				on:consider={handleDndConsider}
-				on:finalize={handleDndFinalize}
-				class="flex flex-col gap-1"
-			>
-				{#each $defaultSections as item (item.id)}
-					<div animate:flip={{ duration: flipDurationMs }} class="border-none outline-none">
-						<div class="flex flex-row justify-between rounded-lg border px-1">
-							{formatName(item.name)}
-							<button>Remove</button>
-						</div>
-					</div>
-				{/each}
-			</section>
-		</div>
+		<div>Not yet implemented</div>
 	</div>
 </div>
 <div class="">
