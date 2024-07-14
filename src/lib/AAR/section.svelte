@@ -18,7 +18,7 @@
 	}
 </script>
 
-<Card class="m-2 w-[50rem] max-w-7xl sm:p-4">
+<Card class="m-2 w-full max-w-7xl sm:p-4 md:w-[50rem]">
 	{#if sectionIndex && sectionIndex.name}
 		<div class="mb-2 flex flex-row items-center justify-between">
 			<span class="font-Mohave text-2xl font-semibold uppercase dark:text-white">

@@ -88,11 +88,11 @@
 <div class="flex justify-center pb-12">
 	<div class="my-2 flex w-full flex-col items-center gap-2">
 		<div class="flex flex-row items-center gap-5 py-2">
-			<ButtonGroup class="scale-x-110 ">
+			<ButtonGroup class="md:scale-x-110 ">
 				<Button on:click={() => (previewModal = true)}>Preview AAR</Button>
 				<CopyButton />
 			</ButtonGroup>
-			<ButtonGroup class="scale-x-110 pl-7 pr-4">
+			<ButtonGroup class="pl-7 pr-4 md:scale-x-110">
 				<Button class="" on:click={() => actviateClearModel('sections')}>Clear Section</Button>
 				<Button class="" on:click={() => actviateClearModel('section contents')}>
 					Clear Contents
