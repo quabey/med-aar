@@ -36,7 +36,8 @@ export const sections = writable([
 	{ id: 2, name: 'location' },
 	{ id: 3, name: 'injury' },
 	{ id: 4, name: 'alert breakdown' },
-	{ id: 5, name: 'extraction' }
+	{ id: 5, name: 'vod' },
+	{ id: 6, name: 'extraction' }
 ]);
 
 export const extraction = writable('');
@@ -60,6 +61,12 @@ export const texts = writable([
 
 export const alertBreakdown = writable('');
 export const incidentReport = writable('');
+
+export const vod = writable({
+	url: '',
+	timestamps: false,
+	commsAllowed: false
+});
 
 export function setAllDefault() {
 	times.set({
@@ -106,6 +113,11 @@ export function setAllDefault() {
 	incidentReport.set('');
 	location.set('');
 	locationDistance.set('');
+	vod.set({
+		url: '',
+		timestamps: false,
+		commsAllowed: false
+	});
 }
 
 // ============= Copy-paste ============= //

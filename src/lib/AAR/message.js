@@ -11,7 +11,8 @@ import {
 	alertBreakdown,
 	otherShips,
 	injuriesTreatment,
-	incidentReport
+	incidentReport,
+	vod
 } from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
 
@@ -28,6 +29,7 @@ export function createMessage() {
 	const alertBreakdownData = get(alertBreakdown);
 	const injuriesTreatmentData = get(injuriesTreatment);
 	const incidentReportData = get(incidentReport);
+	const vodData = get(vod);
 
 	let message = '';
 	sectionsData.forEach((section) => {
@@ -53,6 +55,9 @@ export function createMessage() {
 				break;
 			case 'incident report':
 				message += createIncidentReportMessage(incidentReportData);
+				break;
+			case 'vod':
+				message += createVodMessage(vodData);
 				break;
 		}
 		if (section.name.includes('text')) {
@@ -147,6 +152,7 @@ function createTextMessage(texts) {
 
 function createLocationMessage(location, locationDistance) {
 	let message = '';
+	if (location == '') return message;
 	if (locationDistance == '') {
 		message += `**Location**\nClient Location: ${location}\n`;
 	} else {
@@ -168,6 +174,18 @@ function createIncidentReportMessage(incidentReport) {
 	if (incidentReport !== '') {
 		let message = '**Incident Report**\n';
 		message += `${incidentReport}\n`;
+		return message;
+	}
+	return '';
+}
+
+function createVodMessage(vod) {
+	if (vod.url !== '') {
+		let message = '**VOD**\n';
+		message += `VOD${vod.timestamps ? '*(Includes Timestamps)*' : ''}: [VOD Link](${vod.url})\n`;
+		if (vod.commsAllowed) {
+			message += '*Comms Version Available to Media Team Members*\n';
+		}
 		return message;
 	}
 	return '';
