@@ -84,6 +84,13 @@
 
 <svelte:head>
 	<title>Medrunner AAR</title>
+	<meta property="og:title" content="Med-Tools" />
+	<meta
+		property="og:description"
+		content="med-tools.space is the number 1 unofficial tools website for medrunners, including tools for AARs and ship assignments."
+	/>
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content={`https://med-tools.space`} />
 </svelte:head>
 
 <div class="flex justify-center pb-12">
