@@ -7,6 +7,14 @@
 	import toast, { Toaster } from 'svelte-french-toast';
 </script>
 
+<svelte:head>
+	<meta property="og:image" content={`https://med-tools.space/medtools-og.png`} />
+	<meta
+		property="og:description"
+		content="med-tools.space is the premier unofficial resource hub for medrunners, offering essential tools for After Action Reports (AARs) and ship assignments. Explore top-notch utilities designed to enhance your medrunning experience."
+	/>
+</svelte:head>
+
 <html class="dark" lang="en">
 	<div class="h-max min-h-screen w-full bg-gray-800 font-Mohave font-medium">
 		<Modal bind:open={$settingsModal} size="lg" title="Settings">
