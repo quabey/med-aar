@@ -87,10 +87,11 @@
 	<meta property="og:title" content="Med-Tools" />
 	<meta
 		property="og:description"
-		content="med-tools.space is the number 1 unofficial tools website for medrunners, including tools for AARs and ship assignments."
+		content="med-tools.space is the premier unofficial resource hub for medrunners, offering essential tools for After Action Reports (AARs) and ship assignments. Explore top-notch utilities designed to enhance your medrunning experience."
 	/>
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={`https://med-tools.space`} />
+	<meta property="og:image" content={`https://med-tools.space/medtools-og.svg`} />
 </svelte:head>
 
 <div class="flex justify-center pb-12">
