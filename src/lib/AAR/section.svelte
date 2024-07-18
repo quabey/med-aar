@@ -52,7 +52,7 @@
 		{:else if sectionIndex.name == 'vod'}
 			<VOD />
 		{:else}
-			<span>Section not implemented ye1t</span>
+			<span>Section not implemented yet</span>
 		{/if}
 	{:else}
 		<span>Invalid section</span>

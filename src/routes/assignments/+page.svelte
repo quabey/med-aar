@@ -98,7 +98,7 @@
 		let message = '';
 
 		if ($assignmentPlayers.gunship.length > 0 && $assignmentPlayers.gunship[0] !== '') {
-			message += `**__Gunship__** ${$assignmentShips.gunship ?? ''} ${$pilotAssignments.gunship ? ' - *Pilot: ' + $pilotAssignments.gunship.trim() : ''}* \n`;
+			message += `**__Gunship__** ${$assignmentShips.gunship ?? ''} ${$pilotAssignments.gunship ? ' - *Pilot: ' + $pilotAssignments.gunship.trim() + '*' : ''} \n`;
 			$assignmentPlayers.gunship.forEach((player) => {
 				message += `> ${player}\n`;
 			});
