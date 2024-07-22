@@ -1,6 +1,6 @@
 <script>
 	import Section from '$lib/copy-pastes/section.svelte';
-	import status from '$lib/copy-pastes/statusPastes.json';
+	import status from '$lib/copy-pastes/pastes/statusPastes.json';
 	import Paste from '$lib/copy-pastes/Paste.svelte';
 </script>
 

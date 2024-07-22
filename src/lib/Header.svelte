@@ -16,7 +16,7 @@
 					<img src={logo} alt="Med-Tools Logo" class="h-10 w-10" />
 					<span class="font-Mohave text-3xl font-bold">MED-TOOLS</span>
 					<Badge color="red" large>Unofficial</Badge>
-					<Badge color="red" large>Beta v0.5.0</Badge>
+					<Badge color="red" large>Beta v0.5.1</Badge>
 				</div>
 				<ul class="flex gap-10">
 					<li>
@@ -31,7 +31,6 @@
 								class="flex w-full items-center justify-between gap-2 rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
 								Ship Assignments
-								<Badge color="green">New!</Badge>
 							</a>
 						</div>
 					</li>
@@ -42,7 +41,7 @@
 								class="flex w-full items-center justify-between gap-2 rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
 								Copy-Pastes
-								<Badge color="yellow">WIP</Badge>
+								<Badge color="green">NEW!</Badge>
 							</a><!---->
 						</div>
 					</li>
