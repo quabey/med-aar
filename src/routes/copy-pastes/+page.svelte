@@ -18,11 +18,11 @@
 <div class="flex w-full justify-center">
 	<div class="">
 		<div class="mt-3 flex justify-center gap-7 md:w-full">
-			<Card>
+			<Card class="">
 				<Favorites />
 			</Card>
 			<Card class="flex flex-col">
-				<Toggle bind:checked={$hasNitro}>Do you have discord Nitro?</Toggle>
+				<Toggle bind:checked={$hasNitro}>Add Discord Nitro Emotes</Toggle>
 				<Toggle bind:checked={$isReply}>
 					Add "/reply" to message (If sending messages via discord)
 				</Toggle>
@@ -30,6 +30,5 @@
 		</div>
 		<Status />
 		<Greetings />
-		<div class="flex scale-110 flex-row justify-center gap-4 p-2"></div>
 	</div>
 </div>

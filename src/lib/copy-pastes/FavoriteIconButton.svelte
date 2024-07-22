@@ -13,7 +13,7 @@
 	}
 </script>
 
-<button on:click={toggleFavorite}>
+<button on:click={toggleFavorite} class="hover:scale-110">
 	{#if $favorites.includes(paste)}
 		<button><HeartSolid class="h-6 w-6 text-white" /></button>
 	{:else}

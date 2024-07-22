@@ -1,8 +1,8 @@
 [
 	{
 		"id": 1,
-		"name": "Standard",
-		"normal": "**Hello!** \n Thank you for Choosing MedRunner Services! \n\n Your request has been received & a medical team is preparing to assist you shortly. \n\n Please be on standby in game and **in First Person View** to accept a friend request and a party invite from Team Lead; \n*I will notify you when I am about to send the friend request and party invite!*",
+		"name": "Basic Greeting",
+		"normal": "**Hello!** \n Thank you for Choosing MedRunner Services! \n\n Your request has been received & a medical team is preparing to assist you shortly. \n\n Please be on standby in game and **in First Person View** to accept a friend request and a party invite from the Team Lead; \n*I will notify you when I am about to send the friend request and party invite!*",
 		"nitro": false,
 		"black": false,
 		"reply": true
@@ -11,6 +11,14 @@
 		"id": 2,
 		"name": "Questionnaire",
 		"normal": "- Which kind of emergency situation are you in?\n    [e.g. Unconscious, Stranded, Other]\n\n- What is your exact location?\n    [Please name the planet, moon and exact base/bunker you are at if you can]\n\n- Are you injured? [If yes, which Tier injuries do you have?]\n\n- Are you unconscious, if yes how much time do you have left?\n    [Check on the left bottom-half of the screen]\n\n- Have you submitted an in-game beacon?\n    [If yes, please cancel it if you can!]\n\n- Are you there alone? \n    [No, please write your teammates' names in here so we can include them in our services!]\n\n- Are there any enemies at your location?\n    [If yes, how many?]\n\n- Do you have a Crime Stat? \n    [If yes which level and why?]\n\n- What ship did you use to get there? \n    [If you don't know the name, what are the main features? Is it small or big? Does it look industrial or futuristic?]",
+		"nitro": false,
+		"black": false,
+		"reply": true
+	},
+	{
+		"id": 3,
+		"name": "Greet + req. form",
+		"normal": "**Hello!** \n Thank you for Choosing MedRunner Services! \n\n Your request has been received & a medical team is preparing to assist you shortly. \n\n In the meantime please fill out the form.",
 		"nitro": false,
 		"black": false,
 		"reply": true
