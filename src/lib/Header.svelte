@@ -38,6 +38,17 @@
 					<li>
 						<div class="relative">
 							<a
+								href="/dispatch-tool"
+								class="flex w-full items-center justify-between gap-2 rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
+							>
+								Dispatch Tool
+								<Badge color="green">New!</Badge>
+							</a>
+						</div>
+					</li>
+					<li>
+						<div class="relative">
+							<a
 								href="/copy-pastes"
 								class="flex w-full items-center justify-between gap-2 rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
@@ -48,7 +59,7 @@
 					</li>
 				</ul>
 				<div class="flex items-center gap-4 text-primary-300">
-					<a href="https://github.com/quabey/med-aar/" target="_blank"><span>Github</span></a>
+					<a href="https://github.com/quabey/med-aar/" target="_blank"><span>GitHub</span></a>
 					<a href="/credits">
 						<span class=" border-x-2 border-white px-4"> Credits </span>
 					</a>
