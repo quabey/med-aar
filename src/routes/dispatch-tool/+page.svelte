@@ -1,11 +1,13 @@
 <script>
 	import '$lib/dispatch-tool/style.css';
-	import { getStatus, getStatusList } from '$lib/dispatch-tool/status.ts';
-	import { getAllSystems, getSelectedSystem, setSelectedSystem } from '$lib/dispatch-tool/systems.ts';
+	import { dropdownStatuses, getStatus, getStatusList } from '$lib/dispatch-tool/status.ts';
+	import { dropdownSystems, getAllSystems, getSelectedSystem, setSelectedSystem } from '$lib/dispatch-tool/systems.ts';
 	import { loadTeams, rerenderTeams, saveTeams } from '$lib/dispatch-tool/teams.ts';
 	import { generateFeed } from '$lib/dispatch-tool/formatting.ts';
 
 	import { toast } from 'svelte-french-toast';
+	import { Button, Input, Label, Modal, NumberInput, Select } from 'flowbite-svelte';
+	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
 	// TODO: Add input field when an input field is specified in the status list
 	// TODO: Add the settings menu back in
@@ -13,6 +15,8 @@
 	// TODO SETTINGS: Add functionality to change the status list and their colors
 
 	$: TEAMS = loadTeams();
+
+	let clearModal = false;
 
 	function addTeam() {
 		let newNum = 1;
@@ -111,31 +115,38 @@
 
 	function dragStart() {
 		dragStartIndex = +this.getAttribute('data-index');
-		this.classList.add('dragging');
+		this.classList.add('opacity-50');
+		this.classList.add('z-100');
 	}
 
 	function dragOver(e) {
 		e.preventDefault();
-		this.classList.add('over');
+		this.classList.add('border-black');
+		this.classList.add('dark:border-white');
 	}
 
 	function dragEnter() {
-		this.classList.add('over');
+		this.classList.add('border-black');
+		this.classList.add('dark:border-white');
 	}
 
 	function dragLeave() {
-		this.classList.remove('over');
+		this.classList.remove('border-black');
+		this.classList.remove('dark:border-white');
 	}
 
 	function dragDrop() {
 		const dragEndIndex = +this.getAttribute('data-index');
 		swapComponents(dragStartIndex, dragEndIndex);
-		this.classList.remove('over');
+		this.classList.remove('border-black');
+		this.classList.remove('dark:border-white');
 	}
 
 	function dragEnd() {
-		this.classList.remove('over');
-		this.classList.remove('dragging');
+		this.classList.remove('border-black');
+		this.classList.remove('dark:border-white');
+		this.classList.remove('opacity-50');
+		this.classList.remove('z-100');
 	}
 
 	function moveToFirst(teamNum) {
@@ -183,7 +194,8 @@
 	function updateTeamAttribute(teamNum, field, inputField) {
 		let team = TEAMS.find(team => team.num === teamNum);
 		team[field] = inputField.value;
-		saveTeams(TEAMS);
+		console.log(team);
+		TEAMS = rerenderTeams(TEAMS);
 	}
 </script>
 
@@ -191,9 +203,20 @@
 	<title>Dispatch Tool</title>
 </svelte:head>
 
-<div class="justify-center pb-12">
-	<div class="my-2 w-full items-center gap-4 grid grid-cols-2 px-5">
-		<button class="btn btn-green" on:click={addTeam}>
+<Modal bind:open={clearModal} size="xs" autoclose>
+	<div class="text-center">
+		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+			Are you sure you want to clear <b>all</b> teams?
+		</h3>
+		<Button color="red" class="me-2" on:click={() => TEAMS = rerenderTeams([])}>Yes, I'm sure</Button>
+		<Button color="alternative" on:click={() => (clearModal = false)}>No, cancel</Button>
+	</div>
+</Modal>
+
+<div class="w-full justify-center max-w-8xl sm:p-4 md:w-[70rem] m-auto">
+	<div class="my-2 w-full items-center gap-4 grid grid-cols-3 px-5">
+		<Button on:click={addTeam} class="bg-lime-700 hover:bg-lime-900 dark:bg-lime-700 dark:hover:bg-lime-900 focus-within:ring-lime-300 dark:focus-within:ring-lime-800">
 			<svg aria-label="plus outline" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white" color="currentColor"
 					 fill="none" role="img" viewBox="0 0 24 24"
 					 xmlns="http://www.w3.org/2000/svg">
@@ -201,8 +224,8 @@
 							stroke-width="2"></path>
 			</svg>
 			New Team
-		</button>
-		<button class="btn" on:click={copyFeed}>
+		</Button>
+		<Button on:click={copyFeed}>
 			<svg aria-label="copy filled" class="shrink-0 ms-2 mr-2 h-6 w-6 text-white dark:text-white"
 					 color="currentColor" role="img" viewBox="0 0 24 24"
 					 xmlns="http://www.w3.org/2000/svg"><title>file_copy</title>
@@ -211,20 +234,27 @@
 						d="M15 1H4c-1.1 0-2 .9-2 2v13c0 .55.45 1 1 1s1-.45 1-1V4c0-.55.45-1 1-1h10c.55 0 1-.45 1-1s-.45-1-1-1zm.59 4.59 4.83 4.83c.37.37.58.88.58 1.41V21c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h6.17c.53 0 1.04.21 1.42.59zM15 12h4.5L14 6.5V11c0 .55.45 1 1 1z"></path>
 				</g>
 			</svg>
-			Copy
-		</button>
+			Copy Feed
+		</Button>
+		<Button class="bg-red-700 hover:bg-red-900 dark:bg-red-700 dark:hover:bg-red-900 focus-within:ring-red-300 dark:focus-within:ring-red-800" on:click={() => clearModal = true}>
+			<svg aria-label="trash outline" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" color="currentColor"
+					 fill="none" role="img" viewBox="0 0 24 24"
+					 xmlns="http://www.w3.org/2000/svg">
+				<path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+							stroke-width="2"></path>
+			</svg>
+			Delete all teams
+		</Button>
 	</div>
 	<div class="my-2 w-full items-center grid grid-cols-1 px-5">
-		<select bind:value={selectedSystem} class="selector" id="system-selector"
-						on:change={() => setSelectedSystem(selectedSystem)}>
-			{#each getAllSystems() as system}
-				<option value={system}>{system}</option>
-			{/each}
-		</select>
+		<Select
+			bind:value={selectedSystem}
+			items={dropdownSystems()}
+		/>
 	</div>
 	<div class="my-2 w-full items-center gap-4 grid grid-cols-1 xl:grid-cols-2 px-5" id="draggable-wrapper">
 		{#each TEAMS as team}
-			<div class="draggable-component bg-gray-900 dark:bg-gray-900" aria-controls="team-name team-lead" role="group"
+			<div class="border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-900 dark:bg-gray-900 p-3 hover:border-white hover:cursor-move" aria-controls="team-name team-lead" role="group"
 					 draggable="true"
 					 data-index={team.position}
 					 data-team={team.num}
@@ -235,91 +265,74 @@
 					 on:drop={dragDrop}
 					 on:dragend={dragEnd}
 			>
-				<h3 class="mb-4 inline"><span class="inline">{selectedSystem}</span> <input type="number" min="1" max="999"
-																																										id="number-field-{team.num}"
-																																										class="input-number mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none"
-																																										value="{team.num}"
-																																										on:change={(event) => changeTeamNumber(team.num, event.target)} />
-				</h3>
+				<h3 class="mb-4 inline">{selectedSystem}</h3>
+				<NumberInput min="1" max="999"
+										 id="number-field-{team.num}"
+										 class="inline mx-3 w-14 text-sm text-white bg-white border border-gray-600 dark:bg-gray-700 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:outline-none"
+										 value="{team.num}"
+										 on:change={(event) => changeTeamNumber(team.num, event.target)} />
 
-				<div class="form-container">
-					<div class="name-group">
+				<div class="p-2 rounded-lg grid grid-cols-3">
+					<div class="col-span-2 mb-2 block">
 						<!-- TODO (low priority): When the team lead field is changed, check if the user already has a team. If yes, warn the user to change the other beforehand -->
-						<label for="team-name-{team.num}" class="block">Team Lead</label>
-						<input type="text" id="team-name-{team.num}" value="{team.leader}" class="input-field block"
+						<Label for="team-name-{team.num}" class="block">Team Lead</Label>
+						<Input id="team-name-{team.num}" value="{team.leader}" class="block rounded-none"
 									 placeholder="Enter Team Lead Name"
 									 on:input={(event) => updateTeamAttribute(team.num, "leader", event.target)} />
 					</div>
-					<div class="status-group">
-						<label for="team-lead-{team.num}" class="block">Team Status</label>
-						<select id="team-lead-{team.num}" bind:value={TEAMS[team.position - 1].status}
-										class="selector block rounded-none"
-										on:input={(event) => updateTeamAttribute(team.num, "status", event.target)}>
-							{#each getStatusList() as status}
-								<option value={status.name}>{status.name}</option>
-							{/each}
-						</select>
+					<div class="col-span-1 mb-2 block">
+						<Label for="team-lead-{team.num}" class="block">Team Status</Label>
+						<Select id="team-lead-{team.num}" items={dropdownStatuses()} bind:value={TEAMS[team.position - 1].status}
+										class="block rounded-none"
+										on:input={(event) => updateTeamAttribute(team.num, "status", event.target)} />
 					</div>
 				</div>
 
-				<div class="form-container">
-					<div class="comment-group">
+				<div class="p-2 rounded-lg grid grid-cols-3">
+					<div class="col-span-3 mb-2 block">
 						{#if getStatus(team.status).input !== undefined}
-							<input type="text" id="team-comment-{team.num}" value="{team.comment || ''}" class="input-field block"
+							<Input id="team-comment-{team.num}" value="{team.comment || ''}" class="block"
 										 placeholder={getStatus(team.status).input}
 										 on:input={(event) => updateTeamAttribute(team.num, "comment", event.target)} />
 						{:else}
-							<input type="text" class="input-field invisible" id="consistency-preserver-{team.num}" />
+							<Input class="invisible" id="consistency-preserver-{team.num}" />
 						{/if}
 					</div>
 				</div>
-				<div class="relative bottom-0 left-0 p-2">
-					<button on:click={() => moveToFirst(team.num)} class="btn">
+				<div class="flex justify-between bottom-0 left-0 p-1">
+					<Button on:click={() => moveToFirst(team.num)} class="btn">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
-								 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-first outline"
+								 class="shrink-0 mr-2 h-5 w-5 text-white dark:text-white" role="img" aria-label="skip-first outline"
 								 viewBox="0 0 24 24"><title>first_page</title>
 							<g fill="#F7F7F7">
 								<path d="M18.41 16.59 13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z"></path>
 							</g>
 						</svg>
-						Move to first position
-					</button>
-					<button on:click={() => moveToLast(team.num)} class="btn">
+						Move to first
+					</Button>
+					<Button on:click={() => moveToLast(team.num)} class="btn">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
-								 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="skip-last outline"
+								 class="shrink-0 mr-2 h-5 w-5 text-white dark:text-white" role="img" aria-label="skip-last outline"
 								 viewBox="0 0 24 24"><title>last_page</title>
 							<g fill="#F7F7F7">
 								<path d="M5.59 7.41 10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z"></path>
 							</g>
 						</svg>
-						Move to last position
-					</button>
-					<button on:click={() => removeTeam(team.num)} class="btn btn-red">
+						Move to last
+					</Button>
+					<Button on:click={() => removeTeam(team.num)} class="bg-red-700 hover:bg-red-900 dark:bg-red-700 dark:hover:bg-red-900 focus-within:ring-red-300 dark:focus-within:ring-red-800">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" color="currentColor"
-								 class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" role="img" aria-label="trash outline"
+								 class="shrink-0 mr-2 h-5 w-5 text-white dark:text-white" role="img" aria-label="trash outline"
 								 viewBox="0 0 24 24">
 							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
 										d="M6 18L18 6M6 6l12 12"></path>
 						</svg>
 						Delete
-					</button>
+					</Button>
 				</div>
 			</div>
 		{/each}
 	</div>
-</div>
-
-
-<div class="fixed bottom-4 right-4 z-[1000]">
-	<button class="btn btn-red" on:click={() => TEAMS = rerenderTeams([])}>
-		<svg aria-label="trash outline" class="shrink-0 mr-2 h-6 w-6 text-white dark:text-white" color="currentColor"
-				 fill="none" role="img" viewBox="0 0 24 24"
-				 xmlns="http://www.w3.org/2000/svg">
-			<path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-						stroke-width="2"></path>
-		</svg>
-		Delete all teams
-	</button>
 </div>
 
 <footer>
@@ -330,5 +343,3 @@
 		<span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">Until then, feel free to use the "standalone" version of the Dispatch Tool, if you want to use this feature.</span>
 	</div>
 </footer>
-
-

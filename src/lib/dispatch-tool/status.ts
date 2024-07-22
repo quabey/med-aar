@@ -47,6 +47,11 @@ export function getStatusList(): Status[] {
 	return StatusList;
 }
 
+export function dropdownStatuses(): { name: string, value: string }[] {
+	const StatusList = getStatusList();
+	return StatusList.map((status) => ({ name: status.name, value: status.name }));
+}
+
 export function getStatus(status: string) {
 	const StatusList = getStatusList();
 	for (const s of StatusList) {

@@ -6,6 +6,10 @@ export function getAllSystems(): System[] {
 	return Object.values(System);
 }
 
+export function dropdownSystems(): { name: string, value: string }[] {
+	return getAllSystems().map((system) => ({ name: system, value: system }));
+}
+
 export function getSelectedSystem(): System | null {
 	try {
 		const selected = localStorage.getItem('selected-system') || System.STANTON;
