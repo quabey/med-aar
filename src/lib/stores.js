@@ -1,25 +1,26 @@
+import { persistentWritable } from '$lib/persistentStore';
 import { writable } from 'svelte/store';
 
-export const times = writable({
-	received: null,
-	start: null,
-	departed: null,
-	reached: null,
-	completed: null
+export const times = persistentWritable('times', {
+	received: 'unknown',
+	start: 'unknown',
+	departed: 'unknown',
+	reached: 'unknown',
+	completed: 'unknown'
 });
 
-export const ships = writable({
+export const ships = persistentWritable('ships', {
 	gunship: '',
 	medship: '',
 	qrf: []
 });
 
-export const otherShips = writable({
+export const otherShips = persistentWritable('otherShips', {
 	gunship: '',
 	medship: ''
 });
 
-export const injuries = writable({
+export const injuries = persistentWritable('injuries', {
 	head: 'None',
 	chest: 'None',
 	leftArm: 'None',
@@ -28,7 +29,7 @@ export const injuries = writable({
 	rightLeg: 'None'
 });
 
-export const injuriesTreatment = writable('None');
+export const injuriesTreatment = persistentWritable('injuriesTreatment', 'None');
 
 export const sections = writable([
 	{ id: 0, name: 'ships' },
@@ -39,11 +40,11 @@ export const sections = writable([
 	{ id: 5, name: 'extraction' }
 ]);
 
-export const extraction = writable('');
-export const location = writable('');
-export const locationDistance = writable('');
+export const extraction = persistentWritable('extraction', '');
+export const location = persistentWritable('location', '');
+export const locationDistance = persistentWritable('locationDistance', '');
 
-export const texts = writable([
+export const texts = persistentWritable('texts', [
 	{
 		title: '',
 		content: ''
@@ -58,22 +59,18 @@ export const texts = writable([
 	}
 ]);
 
-export const alertBreakdown = writable('');
-export const incidentReport = writable('');
+export const alertBreakdown = persistentWritable('alertBreakdown', '');
+export const incidentReport = persistentWritable('incidentReport', '');
 
-export const vod = writable({
-	url: '',
-	timestamps: false,
-	commsAllowed: false
-});
+export const vod = persistentWritable('vod', '');
 
 export function setAllDefault() {
 	times.set({
-		received: null,
-		start: null,
-		departed: null,
-		reached: null,
-		completed: null
+		received: 'unknown',
+		start: 'unknown',
+		departed: 'unknown',
+		reached: 'unknown',
+		completed: 'unknown'
 	});
 	ships.set({
 		gunship: '',
@@ -112,25 +109,20 @@ export function setAllDefault() {
 	incidentReport.set('');
 	location.set('');
 	locationDistance.set('');
-	vod.set({
-		url: '',
-		timestamps: false,
-		commsAllowed: false
-	});
 }
 
 // ============= Copy-paste ============= //
 
-export const hasNitro = writable(false);
-export const isMRBlack = writable(false);
+export const hasNitro = persistentWritable('hasNitro', false);
+export const isMRBlack = persistentWritable('isMRBlack', false);
 
 // ============= Settings ============= //
-export const settingsModal = writable(false);
-export const settings = writable({
+export const settingsModal = writable(false); // Assuming this doesn't need persistence
+export const settings = persistentWritable('settings', {
 	debug: false,
 	medrunnerBlackMember: false
 });
-export const defaultSections = writable([
+export const defaultSections = persistentWritable('defaultSections', [
 	{ id: 0, name: 'ships' },
 	{ id: 1, name: 'timing' },
 	{ id: 2, name: 'location' },
@@ -140,18 +132,18 @@ export const defaultSections = writable([
 ]);
 
 // ============= Assignments ============= //
-export const assignmentShips = writable({
+export const assignmentShips = persistentWritable('assignmentShips', {
 	gunship: '',
 	medship: ''
 });
 
-export const assignmentPlayers = writable({
+export const assignmentPlayers = persistentWritable('assignmentPlayers', {
 	medship: [],
 	gunship: [],
 	qrf: []
 });
 
-export const pilotAssignments = writable({
+export const pilotAssignments = persistentWritable('pilotAssignments', {
 	gunship: '',
 	medship: ''
 });

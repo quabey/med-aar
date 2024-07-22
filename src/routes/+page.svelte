@@ -11,6 +11,7 @@
 	import toast from 'svelte-french-toast';
 
 	const sectionOptions = [
+		'Timing',
 		'Injury',
 		'Inaccuracy',
 		'Difficulties',
