@@ -1,12 +1,12 @@
 <script>
 	import Section from '$lib/copy-pastes/section.svelte';
-	import status from '$lib/copy-pastes/statusPastes.json';
+	import greetings from '$lib/copy-pastes/greetingsPastes.json';
 	import Paste from '$lib/copy-pastes/Paste.svelte';
 </script>
 
-<Section sectionName="Status">
+<Section sectionName="Greetings">
 	<div class="flex flex-row gap-3">
-		{#each status as paste}
+		{#each greetings as paste}
 			<Paste {paste} />
 		{/each}
 	</div>

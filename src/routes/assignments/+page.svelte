@@ -163,7 +163,6 @@
 
 <svelte:head>
 	<title>Med-Tools: Ship Assignments</title>
-	<title>Medrunner AAR</title>
 	<meta property="og:title" content="Med-Tools: Ship Assignments" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content={`https://med-tools.space/assignments`} />

@@ -4,13 +4,23 @@
 		"name": "Stand-By ",
 		"normal": ":SB1::SB2::SB3::SB4::SB5::SB6::SB7:",
 		"nitro": ":pikacheer: :SB1::SB2::SB3::SB4::SB5::SB6::SB7::pikacheer:",
-		"black": ""
+		"black": "",
+		"reply": false
 	},
 	{
 		"id": 2,
 		"name": "On Alert",
 		"normal": ":AA1::AA2::AA3::AA4::AA5::AA6::AA7::AA8:",
 		"nitro": ":alert::AA1::AA2::AA3::AA4::AA5::AA6::AA7::AA8::alert:",
-		"black": ""
+		"black": "",
+		"reply": false
+	},
+	{
+		"id": 3,
+		"name": "RTB",
+		"normal": ":RTB1::RTB2::RTB3::RTB4::RTB5::RTB6::RTB7::RTB8:",
+		"nitro": ":return::RTB1::RTB2::RTB3::RTB4::RTB5::RTB6::RTB7::RTB8::return:",
+		"black": "",
+		"reply": false
 	}
 ]

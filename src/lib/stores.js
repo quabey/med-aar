@@ -36,8 +36,7 @@ export const sections = writable([
 	{ id: 2, name: 'location' },
 	{ id: 3, name: 'injury' },
 	{ id: 4, name: 'alert breakdown' },
-	{ id: 5, name: 'vod' },
-	{ id: 6, name: 'extraction' }
+	{ id: 5, name: 'extraction' }
 ]);
 
 export const extraction = writable('');
@@ -124,6 +123,9 @@ export function setAllDefault() {
 
 export const hasNitro = writable(false);
 export const isMRBlack = writable(false);
+export const isReply = writable(false);
+
+export const favorites = writable([]);
 
 // ============= Settings ============= //
 export const settingsModal = writable(false);
