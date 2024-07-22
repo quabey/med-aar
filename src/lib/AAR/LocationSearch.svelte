@@ -43,22 +43,24 @@
 	<Search bind:value={searchInput}>
 		<Button class="mr-2" on:click={searchLocation}>Search</Button>
 	</Search>
-	<Table shadow>
-		<TableHead>
-			<TableHeadCell>Name</TableHeadCell>
-			<TableHeadCell>Type</TableHeadCell>
-			<TableHeadCell>Actions</TableHeadCell>
-		</TableHead>
-		<TableBody>
-			{#each results as result}
-				<TableBodyRow>
-					<TableBodyCell>{result.item.name}</TableBodyCell>
-					<TableBodyCell>{result.item.type}</TableBodyCell>
-					<TableBodyCell>
-						<Button on:click={() => (location = result.item.name)}>Select</Button>
-					</TableBodyCell>
-				</TableBodyRow>
-			{/each}
-		</TableBody>
-	</Table>
+	{#if results.length}
+		<Table shadow>
+			<TableHead>
+				<TableHeadCell>Name</TableHeadCell>
+				<TableHeadCell>Type</TableHeadCell>
+				<TableHeadCell>Actions</TableHeadCell>
+			</TableHead>
+			<TableBody>
+				{#each results as result}
+					<TableBodyRow>
+						<TableBodyCell>{result.item.name}</TableBodyCell>
+						<TableBodyCell>{result.item.type}</TableBodyCell>
+						<TableBodyCell>
+							<Button on:click={() => (location = result.item.name)}>Select</Button>
+						</TableBodyCell>
+					</TableBodyRow>
+				{/each}
+			</TableBody>
+		</Table>
+	{/if}
 </div>

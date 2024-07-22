@@ -1,11 +1,11 @@
 import { writable } from 'svelte/store';
 
 export const times = writable({
-	received: 'unknown',
-	start: 'unknown',
-	departed: 'unknown',
-	reached: 'unknown',
-	completed: 'unknown'
+	received: null,
+	start: null,
+	departed: null,
+	reached: null,
+	completed: null
 });
 
 export const ships = writable({
@@ -36,8 +36,7 @@ export const sections = writable([
 	{ id: 2, name: 'location' },
 	{ id: 3, name: 'injury' },
 	{ id: 4, name: 'alert breakdown' },
-	{ id: 5, name: 'vod' },
-	{ id: 6, name: 'extraction' }
+	{ id: 5, name: 'extraction' }
 ]);
 
 export const extraction = writable('');
@@ -70,11 +69,11 @@ export const vod = writable({
 
 export function setAllDefault() {
 	times.set({
-		received: 'unknown',
-		start: 'unknown',
-		departed: 'unknown',
-		reached: 'unknown',
-		completed: 'unknown'
+		received: null,
+		start: null,
+		departed: null,
+		reached: null,
+		completed: null
 	});
 	ships.set({
 		gunship: '',

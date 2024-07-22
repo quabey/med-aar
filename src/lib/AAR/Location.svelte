@@ -1,8 +1,8 @@
 <script>
 	import LocationSearch from '$lib/AAR/LocationSearch.svelte';
 	import { location, locationDistance } from '$lib/stores.js';
-	import { Button, Dropdown, DropdownItem } from 'flowbite-svelte';
-	import { ChevronDownOutline } from 'flowbite-svelte-icons';
+	import { Button, Select, Label } from 'flowbite-svelte';
+	import { PenOutline } from 'flowbite-svelte-icons';
 </script>
 
 <div class="">
@@ -10,22 +10,18 @@
 		<LocationSearch bind:location={$location} />
 	{:else}
 		<div class="flex flex-row items-center justify-between">
-			<div class="">
-				<Button>
-					{$locationDistance || 'Select Proximity'}
-					<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
-				</Button>
-				<Dropdown>
-					{#each ['At', 'In', 'On', 'Near', 'Within'] as preposition}
-						<DropdownItem on:click={() => ($locationDistance = preposition)}>
-							{preposition}
-						</DropdownItem>
-					{/each}
-				</Dropdown>
-
-				{$location}
+			<div class="flex flex-row items-center justify-center gap-2">
+				<Select
+					class=""
+					items={['At', 'In', 'On', 'Near', 'Within'].map((preposition) => ({
+						value: preposition,
+						name: preposition
+					}))}
+					bind:value={$locationDistance}
+				/>
+				<span class="w-full">{$location}</span>
 			</div>
-			<Button on:click={() => ($location = '')}>Edit</Button>
+			<Button on:click={() => ($location = '')}>Edit <PenOutline class="ml-2" /></Button>
 		</div>
 	{/if}
 </div>

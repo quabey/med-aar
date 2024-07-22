@@ -73,7 +73,7 @@ export function createMessage() {
 function createTimingMessage(times) {
 	let message = '**Timing**\n';
 	for (let [key, value] of Object.entries(times)) {
-		if (value !== 'unknown') {
+		if (value) {
 			message += `${key}: <t:${convertToUnixTimestamp(value)}:t>\n`;
 		}
 	}

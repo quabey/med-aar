@@ -1,9 +1,14 @@
 <script>
 	import { injuries } from '$lib/stores.js';
-	import { Dropdown, DropdownItem, Button, ButtonGroup } from 'flowbite-svelte';
-	import { ChevronDownOutline } from 'flowbite-svelte-icons';
+	import { Select, Label, Button, ButtonGroup } from 'flowbite-svelte';
 
-	const injuryOptions = ['None', 'Tier 1', 'Tier 2', 'Tier 3', 'Unknown'];
+	const injuryOptions = [
+		{ value: 'None', name: 'None' },
+		{ value: 'Tier 1', name: 'Tier 1' },
+		{ value: 'Tier 2', name: 'Tier 2' },
+		{ value: 'Tier 3', name: 'Tier 3' },
+		{ value: 'Unknown', name: 'Unknown' }
+	];
 
 	function setNone() {
 		$injuries['head'] = 'None';
@@ -26,24 +31,12 @@
 
 <div class="flex flex-col gap-2 rounded-lg">
 	{#each ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as part}
-		<div class=" flex flex-row items-center justify-between">
+		<div class="flex flex-row items-center justify-between">
 			{@html part.replace(/([A-Z])/g, ' $1').toLowerCase()}:
 			<div class="">
-				<Button size="sm">
-					{$injuries[part] || `Select ${part.replace(/([A-Z])/g, ' $1').toLowerCase()} Injury`}
-					<ChevronDownOutline class="ms-2 h-6 w-6 text-white dark:text-white" />
-				</Button>
-				<Dropdown class="" bind:value={$injuries[part]}>
-					{#each injuryOptions as option}
-						<DropdownItem
-							on:click={() => {
-								$injuries[part] = option;
-							}}
-						>
-							{option}
-						</DropdownItem>
-					{/each}
-				</Dropdown>
+				<Label>
+					<Select class="" items={injuryOptions} bind:value={$injuries[part]} />
+				</Label>
 			</div>
 		</div>
 	{/each}
@@ -51,7 +44,7 @@
 	<div class="flex flex-row items-center justify-center gap-3">
 		<ButtonGroup>
 			<Button on:click={setNone}>Set None</Button>
-			<Button class="" on:click={setUnknown}>Set Unknown</Button>
+			<Button on:click={setUnknown}>Set Unknown</Button>
 		</ButtonGroup>
 	</div>
 </div>

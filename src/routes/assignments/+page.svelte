@@ -1,15 +1,6 @@
 <script>
 	import { assignmentPlayers, assignmentShips, pilotAssignments } from '$lib/stores.js';
-	import {
-		Button,
-		Card,
-		Select,
-		Label,
-		Input,
-		Badge,
-		Checkbox,
-		ButtonGroup
-	} from 'flowbite-svelte';
+	import { Button, Card, Select, Input, Badge, Checkbox, ButtonGroup } from 'flowbite-svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import {
 		ChevronRightOutline,
@@ -17,20 +8,7 @@
 		ChevronDoubleUpOutline
 	} from 'flowbite-svelte-icons';
 	import { get } from 'svelte/store';
-
-	const medshipOptions = [
-		{ name: 'Cutlass Red', value: 'Cutlass Red' },
-		{ name: 'Pisces Rescue', value: 'Pisces Rescue' },
-		{ name: 'Carrack', value: 'Carrack' },
-		{ name: 'Origin 890J', value: 'Origin 890J' }
-	];
-	const gunshipOptions = [
-		{ name: 'Aegis Redeemer', value: 'Aegis Redeemer' },
-		{ name: 'RSI Constellation X', value: 'RSI Constellation X' },
-		{ name: 'Drake Corsair', value: 'Drake Corsair' },
-		{ name: 'Hammerhead', value: 'Hammerhead' },
-		{ name: 'Aegis Vanguard Hoplite', value: 'Aegis Vanguard Hoplite' }
-	];
+	import ships from '$lib/data/ships.json';
 
 	let newGunshipPlayer = '';
 	let newMedshipPlayer = '';
@@ -185,7 +163,7 @@
 					{/if}
 				</div>
 				<Select
-					items={gunshipOptions}
+					items={ships.combat}
 					bind:value={$assignmentShips.gunship}
 					placeholder="Choose a gunship..."
 					class="w-48"
@@ -260,7 +238,7 @@
 					{/if}
 				</div>
 				<Select
-					items={medshipOptions}
+					items={ships.medical}
 					bind:value={$assignmentShips.medship}
 					placeholder="Choose a medship..."
 					class="w-48"
