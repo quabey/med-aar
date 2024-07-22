@@ -1,5 +1,5 @@
 <script>
-	import Section from '$lib/copy-pastes/section.svelte';
+	import Section from '$lib/copy-pastes/Section.svelte';
 	import greetings from '$lib/copy-pastes/pastes/greetingsPastes.json';
 	import Paste from '$lib/copy-pastes/Paste.svelte';
 </script>
