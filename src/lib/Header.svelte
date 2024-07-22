@@ -16,7 +16,7 @@
 					<img src={logo} alt="Med-Tools Logo" class="h-10 w-10" />
 					<span class="font-Mohave text-3xl font-bold">MED-TOOLS</span>
 					<Badge color="red" large>Unofficial</Badge>
-					<Badge color="red" large>Beta v0.4.3</Badge>
+					<Badge color="red" large>Beta v0.5.0</Badge>
 				</div>
 				<ul class="flex gap-10">
 					<li>
