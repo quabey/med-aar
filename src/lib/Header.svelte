@@ -42,6 +42,7 @@
 								class="flex w-full items-center justify-between gap-2 rounded py-2 pl-3 pr-4 lg:w-auto lg:border-0 lg:p-0 lg:hover:bg-transparent lg:dark:hover:bg-transparent"
 							>
 								Dispatch Tool
+								<Badge color="green">New!</Badge>
 							</a>
 						</div>
 					</li>
