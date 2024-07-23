@@ -12,12 +12,13 @@
 		<div class="flex flex-row items-center justify-between">
 			<div class="flex flex-row items-center justify-center gap-2">
 				<Select
-					class=""
+					class="w-64"
 					items={['At', 'In', 'On', 'Near', 'Within'].map((preposition) => ({
 						value: preposition,
 						name: preposition
 					}))}
 					bind:value={$locationDistance}
+					placeholder="Select Proximity..."
 				/>
 				<span class="w-full">{$location}</span>
 			</div>

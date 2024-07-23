@@ -24,16 +24,24 @@
 	export let location;
 	let results = [];
 
+	$: searchLocation(), searchInput;
+
 	function searchLocation() {
-		console.log('searching for ' + searchInput);
+		let sanitizedInput = searchInput.trim();
+		searchInput = sanitizedInput.replace(/[^a-zA-Z0-9 ]/g, '');
+
+		if (!searchInput) {
+			return;
+		}
 		results = fuse.search(searchInput);
 		if (results.length === 0) {
 			results = [{ name: searchInput, type: '' }];
 		}
 		// cut array to 10 results and add the input as the last result
 		results = results.slice(0, 10);
-		results[results.length] = { item: { name: searchInput, type: 'Manual' } };
-		console.log(results);
+		results[results[0].item ? results.length : 0] = {
+			item: { name: searchInput, type: 'Manual' }
+		};
 	}
 
 	let searchInput = '';
@@ -53,7 +61,7 @@
 			<TableBody>
 				{#each results as result}
 					<TableBodyRow>
-						<TableBodyCell>{result.item.name}</TableBodyCell>
+						<TableBodyCell>{result.item.name ?? ''}</TableBodyCell>
 						<TableBodyCell>{result.item.type}</TableBodyCell>
 						<TableBodyCell>
 							<Button on:click={() => (location = result.item.name)}>Select</Button>
