@@ -33,7 +33,7 @@
 <div class="flex flex-col gap-2 rounded-lg">
 	{#each ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as part}
 		<div class="flex flex-row items-center justify-between">
-			{ @html capitalizeFirstLetters(part.replace(/([A-Z])/g, ' $1')) }:
+			{ capitalizeFirstLetters(part.replace(/([A-Z])/g, ' $1')) }:
 			<div class="">
 				<Label>
 					<Select class="" items={injuryOptions} bind:value={$injuries[part]} />
