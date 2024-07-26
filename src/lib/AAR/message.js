@@ -15,6 +15,7 @@ import {
 	vod
 } from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
+import { capitalizeFirstLetters } from '$lib/util.js';
 
 export function createMessage() {
 	const sectionsData = get(sections);
@@ -74,6 +75,7 @@ function createTimingMessage(times) {
 	let message = '**Timing**\n';
 	for (let [key, value] of Object.entries(times)) {
 		if (value) {
+			key = capitalizeFirstLetters(key.replace(/([A-Z])/g, ' $1'));
 			message += `${key}: <t:${convertToUnixTimestamp(value)}:t>\n`;
 		}
 	}
@@ -109,7 +111,7 @@ function createInjuryMessage(injuries) {
 	let message = '**Injuries**\n';
 	for (let [key, value] of Object.entries(injuries)) {
 		if (value !== 'None') {
-			key = key.replace(/([A-Z])/g, ' $1').toLowerCase();
+			key = capitalizeFirstLetters(key.replace(/([A-Z])/g, ' $1'));
 			key = message += `- ${key}: ${value}\n`;
 		}
 		if (value != 'Unknown') {
