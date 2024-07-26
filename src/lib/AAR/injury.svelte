@@ -1,6 +1,7 @@
 <script>
 	import { injuries } from '$lib/stores.js';
 	import { Select, Label, Button, ButtonGroup } from 'flowbite-svelte';
+	import { capitalizeFirstLetters } from '$lib/util.js';
 
 	const injuryOptions = [
 		{ value: 'None', name: 'None' },
@@ -32,7 +33,7 @@
 <div class="flex flex-col gap-2 rounded-lg">
 	{#each ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as part}
 		<div class="flex flex-row items-center justify-between">
-			{@html part.replace(/([A-Z])/g, ' $1').toLowerCase()}:
+			{ @html capitalizeFirstLetters(part.replace(/([A-Z])/g, ' $1')) }:
 			<div class="">
 				<Label>
 					<Select class="" items={injuryOptions} bind:value={$injuries[part]} />
