@@ -19,7 +19,7 @@ export const otherShips = writable({
 	medship: ''
 });
 
-export const alertType = writable('None');
+export const alertType = writable('');
 export const alertTypeOther = writable('');
 
 export const injuries = writable({
