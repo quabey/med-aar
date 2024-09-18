@@ -9,6 +9,7 @@
 	import Text from '$lib/AAR/Text.svelte';
 	import AlertBreakdown from '$lib/AAR/AlertBreakdown.svelte';
 	import VOD from '$lib/AAR/VOD.svelte';
+	import AlertType from './AlertType.svelte';
 	import { Card } from 'flowbite-svelte';
 	import { CloseOutline } from 'flowbite-svelte-icons';
 
@@ -51,6 +52,8 @@
 			<IncidentReport />
 		{:else if sectionIndex.name == 'vod'}
 			<VOD />
+		{:else if sectionIndex.name == 'alert type'}
+			<AlertType />
 		{:else}
 			<span>Section not implemented yet</span>
 		{/if}

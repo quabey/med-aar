@@ -11,6 +11,9 @@
 	import toast from 'svelte-french-toast';
 
 	const sectionOptions = [
+		'Alert Type',
+		'Timing',
+		'Ships',
 		'Injury',
 		'Inaccuracy',
 		'Difficulties',

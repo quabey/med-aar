@@ -12,7 +12,9 @@ import {
 	otherShips,
 	injuriesTreatment,
 	incidentReport,
-	vod
+	vod,
+	alertType,
+	alertTypeOther
 } from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
 import { capitalizeFirstLetters } from '$lib/util.js';
@@ -30,12 +32,17 @@ export function createMessage() {
 	const alertBreakdownData = get(alertBreakdown);
 	const injuriesTreatmentData = get(injuriesTreatment);
 	const incidentReportData = get(incidentReport);
+	const alertTypeData = get(alertType);
+	const alertTypeOtherData = get(alertTypeOther);
 	const vodData = get(vod);
 
 	let message = '';
 	sectionsData.forEach((section) => {
 		console.log('adding section', section.name);
 		switch (section.name) {
+			case 'alert type':
+				message += createAlertTypeMessage(alertTypeData, alertTypeOtherData);
+				break;
 			case 'timing':
 				message += createTimingMessage(timesData);
 				break;
@@ -191,4 +198,15 @@ function createVodMessage(vod) {
 		return message;
 	}
 	return '';
+}
+
+function createAlertTypeMessage(alertType, alertTypeOther) {
+	let message = '';
+	if (alertType !== '' && alertType !== 'Other') {
+		message += `**Alert Type: ${alertType}**\n`;
+	}
+	if (alertTypeOther !== '' && alertType == 'Other') {
+		message += `**Alert Type (Other): ${alertTypeOther}**\n`;
+	}
+	return message;
 }

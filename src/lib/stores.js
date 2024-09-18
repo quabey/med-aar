@@ -19,6 +19,9 @@ export const otherShips = writable({
 	medship: ''
 });
 
+export const alertType = writable('None');
+export const alertTypeOther = writable('');
+
 export const injuries = writable({
 	head: 'None',
 	chest: 'None',
@@ -31,12 +34,13 @@ export const injuries = writable({
 export const injuriesTreatment = writable('None');
 
 export const sections = writable([
-	{ id: 0, name: 'ships' },
-	{ id: 1, name: 'timing' },
-	{ id: 2, name: 'location' },
-	{ id: 3, name: 'injury' },
-	{ id: 4, name: 'alert breakdown' },
-	{ id: 5, name: 'extraction' }
+	{ id: 0, name: 'alert type' },
+	{ id: 1, name: 'ships' },
+	{ id: 2, name: 'timing' },
+	{ id: 3, name: 'location' },
+	{ id: 4, name: 'injury' },
+	{ id: 5, name: 'alert breakdown' },
+	{ id: 6, name: 'extraction' }
 ]);
 
 export const extraction = writable('');
