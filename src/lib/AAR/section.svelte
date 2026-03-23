@@ -1,7 +1,6 @@
 <script>
 	import IncidentReport from '$lib/AAR/IncidentReport.svelte';
 	import Extraction from '$lib/AAR/extraction.svelte';
-	import { sections } from '$lib/stores.js';
 	import Ships from '$lib/AAR/ships.svelte';
 	import Timing from '$lib/AAR/timing.svelte';
 	import Injury from '$lib/AAR/injury.svelte';
@@ -9,55 +8,88 @@
 	import Text from '$lib/AAR/Text.svelte';
 	import AlertBreakdown from '$lib/AAR/AlertBreakdown.svelte';
 	import VOD from '$lib/AAR/VOD.svelte';
-	import AlertType from './AlertType.svelte';
-	import { Card } from 'flowbite-svelte';
-	import { CloseOutline } from 'flowbite-svelte-icons';
+	import AlertType from '$lib/AAR/AlertType.svelte';
+	import Encounters from '$lib/AAR/Encounters.svelte';
+	import Issues from '$lib/AAR/Issues.svelte';
+	import Result from '$lib/AAR/Result.svelte';
+	import Summary from '$lib/AAR/Summary.svelte';
+	import IntersystemResponse from '$lib/AAR/IntersystemResponse.svelte';
+	import { assignmentShips } from '$lib/stores.js';
+	import { get } from 'svelte/store';
+	import { successToast } from '$lib/state/toast.svelte.js';
 
-	export let sectionIndex;
+	let { sectionItem, data, onremove } = $props();
 
-	function removeCard() {
-		$sections = $sections.filter((section) => section != sectionIndex);
+	function importShipsFromAssignments() {
+		const ships = get(assignmentShips);
+		if (ships.gunship) data.ships.gunship = ships.gunship;
+		if (ships.medship) data.ships.medship = ships.medship;
+		successToast('Ships imported from assignments');
 	}
 </script>
 
-<Card class="m-2 w-full max-w-7xl sm:p-4 md:w-[50rem]">
-	{#if sectionIndex && sectionIndex.name}
-		<div class="mb-2 flex flex-row items-center justify-between">
-			<span class="font-Mohave text-2xl font-semibold uppercase dark:text-white">
-				{sectionIndex.name}
-			</span>
-			<button on:click={removeCard}>
-				<CloseOutline class="h-6 w-6 text-white dark:text-white" />
-			</button>
+<div class="rounded-xl border border-gray-700/50 bg-gray-800 p-4 shadow-md transition-colors hover:border-gray-600/50 sm:p-5">
+	{#if sectionItem && sectionItem.name}
+		<div class="mb-3 flex items-center justify-between">
+			<h3 class="font-Mohave text-lg font-semibold uppercase tracking-wide text-gray-200">
+				{sectionItem.name}
+			</h3>
+			<div class="flex items-center gap-1.5">
+				{#if sectionItem.name === 'ships'}
+					<button
+						onclick={importShipsFromAssignments}
+						class="btn-sm btn-outline text-xs"
+					>
+						Import from Assignments
+					</button>
+				{/if}
+				<button
+					onclick={onremove}
+					class="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-700 hover:text-red-400"
+					title="Remove section"
+				>
+					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+			</div>
 		</div>
-		{#if sectionIndex.name == 'injury'}
-			<Injury />
-		{:else if sectionIndex.name == 'timing'}
-			<Timing />
-		{:else if sectionIndex.name == 'ships'}
-			<Ships />
-		{:else if sectionIndex.name == 'location'}
-			<Location />
-		{:else if sectionIndex.name == 'accident report'}
-			<span>Section not implemented yet</span>
-		{:else if sectionIndex.name == 'team remarks'}
-			<span>Section not implemented yet</span>
-		{:else if sectionIndex.name == 'extraction'}
-			<Extraction />
-		{:else if sectionIndex.name.includes('text')}
-			<Text index={sectionIndex.name.slice(-1) - 1} />
-		{:else if sectionIndex.name == 'alert breakdown'}
-			<AlertBreakdown />
-		{:else if sectionIndex.name == 'incident report'}
-			<IncidentReport />
-		{:else if sectionIndex.name == 'vod'}
-			<VOD />
-		{:else if sectionIndex.name == 'alert type'}
-			<AlertType />
-		{:else}
-			<span>Section not implemented yet</span>
-		{/if}
+		<div class="section-content">
+			{#if sectionItem.name === 'injury'}
+				<Injury {data} />
+			{:else if sectionItem.name === 'timing'}
+				<Timing {data} />
+			{:else if sectionItem.name === 'ships'}
+				<Ships {data} />
+			{:else if sectionItem.name === 'location'}
+				<Location {data} />
+			{:else if sectionItem.name === 'extraction'}
+				<Extraction {data} />
+			{:else if sectionItem.name.includes('text')}
+				<Text {data} index={Number(sectionItem.name.slice(-1)) - 1} />
+			{:else if sectionItem.name === 'alert breakdown'}
+				<AlertBreakdown {data} />
+			{:else if sectionItem.name === 'incident report'}
+				<IncidentReport {data} />
+			{:else if sectionItem.name === 'vod'}
+				<VOD {data} />
+			{:else if sectionItem.name === 'alert type'}
+				<AlertType {data} />
+			{:else if sectionItem.name === 'encounters'}
+				<Encounters {data} />
+			{:else if sectionItem.name === 'issues'}
+				<Issues {data} />
+			{:else if sectionItem.name === 'result'}
+				<Result {data} />
+			{:else if sectionItem.name === 'summary'}
+				<Summary {data} />
+			{:else if sectionItem.name === 'intersystem response'}
+				<IntersystemResponse {data} />
+			{:else}
+				<p class="text-sm text-gray-500 italic">Section not implemented yet</p>
+			{/if}
+		</div>
 	{:else}
-		<span>Invalid section</span>
+		<p class="text-sm text-gray-500 italic">Invalid section</p>
 	{/if}
-</Card>
+</div>

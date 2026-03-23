@@ -1,0 +1,7 @@
+name = "med-aar"
+compatibility_date = "2024-09-23"
+
+[[kv_namespaces]]
+binding = "CONFIG_KV"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_YOUR_PREVIEW_KV_NAMESPACE_ID"

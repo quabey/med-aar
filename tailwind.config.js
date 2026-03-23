@@ -1,29 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 export default {
 	darkMode: 'class',
-	content: [
-		'./src/**/*.{html,js,svelte,ts}',
-		'./node_modules/flowbite-svelte/**/*.{html,js,svelte,ts}'
-	],
-
+	content: ['./src/**/*.{html,js,svelte,ts}'],
 	theme: {
 		extend: {
 			screens: {
 				'3xl': '1920px'
 			},
 			colors: {
-				'primary-900': '#170602',
-				'primary-800': '#461307',
-				'primary-700': '#2c5278e6',
-				// slowly building up to the primary colors
+				'primary-900': '#0d1b2a',
+				'primary-800': '#1b2838',
+				'primary-700': '#234060',
 				'primary-600': '#2c5278',
-
-				'primary-500': '#D13815',
-				'primary-400': 'rgb(44 82 120)',
-				'primary-300': 'rgb(164 202 254)',
-				'primary-200': '#F39F8B',
-				'primary-100': '#F8C5B9',
-				'primary-50': '#FDECE8'
+				'primary-500': '#3a6d9e',
+				'primary-400': '#4a8bc4',
+				'primary-300': '#a4cafe',
+				'primary-200': '#c5dcf7',
+				'primary-100': '#e2edf9',
+				'primary-50': '#f0f6fc'
 			},
 			fontFamily: {
 				Mohave: ['Mohave', 'sans-serif'],
@@ -31,5 +25,5 @@ export default {
 			}
 		}
 	},
-	plugins: [require('flowbite/plugin')]
+	plugins: []
 };

@@ -1,10 +1,16 @@
 <script>
 	import { hasNitro, isMRBlack } from '$lib/stores.js';
-	import { Toggle } from 'flowbite-svelte';
 	import Status from '$lib/copy-pastes/Status.svelte';
 </script>
 
-<Toggle bind:value={$hasNitro}>Do you have discord Nitro?</Toggle>
-<Toggle class="" bind:value={$isMRBlack}>Medrunner Black</Toggle>
-
-<Status />
+<div class="mx-auto max-w-2xl space-y-4 p-4">
+	<label class="flex items-center gap-3 text-gray-300">
+		<input type="checkbox" class="checkbox" bind:checked={$hasNitro} />
+		Do you have discord Nitro?
+	</label>
+	<label class="flex items-center gap-3 text-gray-300">
+		<input type="checkbox" class="checkbox" bind:checked={$isMRBlack} />
+		Medrunner Black
+	</label>
+	<Status />
+</div>

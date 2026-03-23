@@ -1,17 +1,23 @@
 {
 	"medical": [
 		{ "name": "Cutlass Red", "value": "Cutlass Red" },
+		{ "name": "C8R Pisces Rescue", "value": "C8R Pisces Rescue" },
 		{ "name": "Terrapin Medic", "value": "Terrapin Medic" },
-		{ "name": "Pisces Rescue", "value": "Pisces Rescue" },
 		{ "name": "Carrack", "value": "Carrack" },
 		{ "name": "Origin 890J", "value": "Origin 890J" }
 	],
 	"combat": [
 		{ "name": "Aegis Redeemer", "value": "Aegis Redeemer" },
 		{ "name": "RSI Constellation X", "value": "RSI Constellation X" },
-		{ "name": "Polaris", "value": "Polaris" },
+		{ "name": "RSI Polaris", "value": "RSI Polaris" },
 		{ "name": "Drake Corsair", "value": "Drake Corsair" },
+		{ "name": "RSI Constellation Andromeda", "value": "RSI Constellation Andromeda" },
 		{ "name": "Hammerhead", "value": "Hammerhead" },
 		{ "name": "Aegis Vanguard Hoplite", "value": "Aegis Vanguard Hoplite" }
+	],
+	"cap": [
+		{ "name": "Arrow", "value": "Arrow" },
+		{ "name": "Hornet", "value": "Hornet" },
+		{ "name": "Sabre", "value": "Sabre" }
 	]
 }

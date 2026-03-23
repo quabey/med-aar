@@ -1,43 +1,37 @@
 <script>
-	import { texts } from '$lib/stores.js';
-	import { Input, Label, Textarea, Button, ButtonGroup } from 'flowbite-svelte';
-	import { toast } from 'svelte-french-toast';
+	import { successToast } from '$lib/state/toast.svelte.js';
 
-	export let index;
+	let { data, index } = $props();
 
-	function clear(params) {
-		$texts[index].title = '';
-		$texts[index].content = '';
-		toast.success('Cleared text', {
-			style: 'background-color: #2c5278; color: white;',
-			position: 'top-right'
-		});
+	function clear() {
+		data.texts[index].title = '';
+		data.texts[index].content = '';
+		successToast('Cleared text');
 	}
 </script>
 
 <div class="flex flex-col gap-3">
-	<div class="">
-		<Label for="title" class="mb-2 text-sm font-medium text-black dark:text-white">Title</Label>
-		<Input
-			id="title"
+	<div>
+		<label for="text-title-{index}" class="mb-1 block text-sm text-gray-400">Title</label>
+		<input
+			id="text-title-{index}"
 			type="text"
-			placeholder="Enter your title..."
-			class="rounded-lg border-none bg-primary-600 py-2 text-sm font-medium text-black hover:bg-primary-600/90 dark:text-white"
-			bind:value={$texts[index].title}
+			bind:value={data.texts[index].title}
+			class="input w-full"
+			placeholder="Enter title..."
 		/>
 	</div>
-	<div class="">
-		<Label for="content" class="mb-2 text-sm font-medium text-black dark:text-white">Content</Label>
-		<Textarea
-			id="content"
-			placeholder="Enter your content..."
-			class="rounded-lg border-none bg-primary-600 py-2 text-sm font-medium text-black hover:bg-primary-600/90 dark:text-white"
-			bind:value={$texts[index].content}
-		/>
+	<div>
+		<label for="text-content-{index}" class="mb-1 block text-sm text-gray-400">Content</label>
+		<textarea
+			id="text-content-{index}"
+			bind:value={data.texts[index].content}
+			class="textarea w-full"
+			rows="6"
+			placeholder="Enter content..."
+		></textarea>
 	</div>
-	<div class="flex flex-row items-center justify-center gap-3">
-		<ButtonGroup>
-			<Button class="" on:click={clear}>Clear</Button>
-		</ButtonGroup>
+	<div class="flex justify-center">
+		<button class="btn btn-secondary text-sm" onclick={clear}>Clear</button>
 	</div>
 </div>

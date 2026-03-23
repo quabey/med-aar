@@ -1,10 +1,15 @@
 <script>
-	import { settingsModal } from '$lib/stores.js';
 	import Header from '$lib/Header.svelte';
+	import Toast from '$lib/components/Toast.svelte';
+	import { alertStore } from '$lib/state/alerts.svelte.js';
+	import { onMount } from 'svelte';
 	import '../app.css';
-	import { Modal } from 'flowbite-svelte';
-	import Settings from '$lib/Settings.svelte';
-	import toast, { Toaster } from 'svelte-french-toast';
+
+	let { children } = $props();
+
+	onMount(() => {
+		alertStore.initialize();
+	});
 </script>
 
 <svelte:head>
@@ -15,47 +20,30 @@
 	/>
 </svelte:head>
 
-<html class="dark" lang="en">
-	<div class="h-max min-h-screen w-full bg-gray-800 font-Mohave font-medium">
-		<Modal bind:open={$settingsModal} size="lg" title="Settings">
-			<Settings />
-		</Modal>
-		<Header />
-		<Toaster />
-
-		<slot></slot>
-	</div>
-</html>
+<div class="flex h-screen flex-col overflow-hidden bg-gray-900 font-Mohave font-medium text-white">
+	<Header />
+	<main class="relative flex min-h-0 flex-1 flex-col">
+		{@render children()}
+	</main>
+	<Toast />
+</div>
 
 <style>
-	* {
-		color: white;
+	:global(::-webkit-scrollbar) {
+		width: 6px;
+		height: 6px;
 	}
 
-	button:hover {
-		background-color: rgb(44 82 120 / 90%) !important;
+	:global(::-webkit-scrollbar-track) {
+		background: rgb(17 24 39);
 	}
 
-	/* Hide the scrollbar tracks and buttons */
-	::-webkit-scrollbar {
-		width: 8px; /* Adjust width to your preference */
-		height: 8px; /* Adjust height to your preference */
+	:global(::-webkit-scrollbar-thumb) {
+		background-color: rgb(75 85 99);
+		border-radius: 10px;
 	}
 
-	::-webkit-scrollbar-track {
-		background: rgb(31 41 55);
-	}
-
-	::-webkit-scrollbar-thumb {
-		background-color: white; /* Change to your desired color */
-		border-radius: 10px; /* Adjust the roundness */
-	}
-
-	::-webkit-scrollbar-thumb:hover {
-		@apply bg-slate-200; /* Color when hovering */
-	}
-
-	.focus-within\:ring-2:focus-within {
-		box-shadow: none !important;
+	:global(::-webkit-scrollbar-thumb:hover) {
+		background-color: rgb(107 114 128);
 	}
 </style>

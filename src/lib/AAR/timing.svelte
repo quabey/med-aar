@@ -1,70 +1,64 @@
 <script>
-	import { times } from '$lib/stores.js';
-	import { Button, ButtonGroup } from 'flowbite-svelte';
+	let { data } = $props();
 
-	function setStartTime() {
-		$times = {
-			received: $times['received'],
-			start: $times['received'],
-			departed: $times['received'],
-			reached: $times['received'],
-			completed: $times['received']
-		};
+	const timeFields = ['received', 'start', 'departed', 'reached', 'completed'];
+
+	function setNow(field) {
+		data.times[field] = new Date().toLocaleTimeString('en-GB', {
+			hour: '2-digit',
+			minute: '2-digit'
+		});
 	}
 
-	// its in 24 hour format
 	function setNowToAll() {
 		const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-		$times = {
-			received: now,
-			start: now,
-			departed: now,
-			reached: now,
-			completed: now
-		};
+		for (const field of timeFields) {
+			data.times[field] = now;
+		}
 	}
 
-	function setNow(time) {
-		$times[time] = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+	function setAllToReceived() {
+		if (!data.times.received) return;
+		for (const field of timeFields) {
+			data.times[field] = data.times.received;
+		}
+	}
+
+	function capitalize(str) {
+		return str.charAt(0).toUpperCase() + str.slice(1);
 	}
 </script>
 
-<div class="flex flex-col gap-2">
-	{#each ['received', 'start', 'departed', 'reached', 'completed'] as time}
-		<div class=" flex flex-row items-center justify-between">
-			{time.charAt(0).toUpperCase() + time.slice(1)} at:
-			<div class="flex flex-row items-center justify-center gap-2">
-				<ButtonGroup>
-					<Button
-						outline
-						class="font-bold dark:border-primary-400 dark:text-primary-400"
-						on:click={() => ($times[time] = null)}
-					>
-						Clear
-					</Button>
-					<Button
-						outline
-						class="font-bold dark:border-primary-400 dark:text-primary-400"
-						on:click={() => setNow(time)}
-					>
-						Set Now
-					</Button>
-				</ButtonGroup>
+<div class="flex flex-col gap-3">
+	{#each timeFields as field}
+		<div class="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
+			<label for="time-{field}" class="text-sm text-gray-300">{capitalize(field)} at:</label>
+			<div class="flex items-center gap-2">
+				<button
+					class="btn-sm btn-outline"
+					onclick={() => (data.times[field] = null)}
+				>
+					Clear
+				</button>
+				<button class="btn-sm btn-outline" onclick={() => setNow(field)}>
+					Now
+				</button>
 				<input
+					id="time-{field}"
 					type="time"
-					class="scale-110 rounded-lg border-none bg-primary-600 py-2 text-sm font-medium text-black hover:bg-primary-600/90 dark:text-white"
-					bind:value={$times[time]}
+					bind:value={data.times[field]}
+					class="input w-32"
 				/>
 			</div>
 		</div>
 	{/each}
-	<div class="flex flex-row items-center justify-center gap-3">
-		<ButtonGroup>
-			<Button on:click={setStartTime} disabled={times['received'] == 'unknown'}>
-				Set All to Received
-			</Button>
-			<Button class="" on:click={setNowToAll}>Set Now to All</Button>
-		</ButtonGroup>
+	<div class="flex justify-center gap-2 pt-2">
+		<button class="btn btn-secondary text-sm" onclick={setAllToReceived} disabled={!data.times.received}>
+			Set All to Received
+		</button>
+		<button class="btn btn-secondary text-sm" onclick={setNowToAll}>
+			Set Now to All
+		</button>
 	</div>
 </div>
 
