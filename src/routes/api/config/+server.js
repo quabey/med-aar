@@ -30,7 +30,7 @@ export async function GET({ platform }) {
 
 export async function PUT({ request, platform }) {
 	const kv = platform?.env?.CONFIG_KV;
-	const adminPassword = env.ADMIN_PASSWORD;
+	const adminPassword = platform?.env?.ADMIN_PASSWORD ?? env.ADMIN_PASSWORD;
 
 	if (!kv || !adminPassword) {
 		return json({ error: 'Server not configured' }, { status: 500 });

@@ -2,8 +2,8 @@ import { json } from '@sveltejs/kit';
 import { verifyPassword } from '$lib/server/auth.js';
 import { env } from '$env/dynamic/private';
 
-export async function POST({ request }) {
-	const adminPassword = env.ADMIN_PASSWORD;
+export async function POST({ request, platform }) {
+	const adminPassword = platform?.env?.ADMIN_PASSWORD ?? env.ADMIN_PASSWORD;
 	if (!adminPassword) {
 		return json({ error: 'Server not configured' }, { status: 500 });
 	}

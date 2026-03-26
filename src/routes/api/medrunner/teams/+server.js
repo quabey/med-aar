@@ -4,8 +4,8 @@ import { env } from '$env/dynamic/private';
 
 const API_BASE = 'https://api.medrunner.space';
 
-export async function GET() {
-	const token = env.MEDRUNNER_TOKEN;
+export async function GET({ platform }) {
+	const token = platform?.env?.MEDRUNNER_TOKEN ?? env.MEDRUNNER_TOKEN;
 	if (!token) {
 		return json({ error: 'Medrunner API token not configured' }, { status: 500 });
 	}

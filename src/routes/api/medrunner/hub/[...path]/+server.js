@@ -4,23 +4,26 @@ import { env } from '$env/dynamic/private';
 const API_BASE = 'https://api.medrunner.space';
 
 let cachedApi = null;
-function getApi() {
-	if (!cachedApi) {
-		cachedApi = MedrunnerApiClient.buildClient({ refreshToken: env.MEDRUNNER_TOKEN });
+let cachedToken = null;
+
+function getApi(token) {
+	if (!cachedApi || cachedToken !== token) {
+		cachedApi = MedrunnerApiClient.buildClient({ refreshToken: token });
+		cachedToken = token;
 	}
 	return cachedApi;
 }
 
-async function proxy({ request, params, url }) {
-	const token = env.MEDRUNNER_TOKEN;
+async function proxy({ request, params, url, platform }) {
+	const token = platform?.env?.MEDRUNNER_TOKEN ?? env.MEDRUNNER_TOKEN;
 	if (!token) return new Response('Not configured', { status: 500 });
 
 	let accessToken;
 	try {
-		accessToken = await getApi().emergency.tokenManager.getAccessToken('hub-proxy');
+		accessToken = await getApi(token).emergency.tokenManager.getAccessToken('hub-proxy');
 	} catch {
 		cachedApi = null;
-		accessToken = await getApi().emergency.tokenManager.getAccessToken('hub-proxy');
+		accessToken = await getApi(token).emergency.tokenManager.getAccessToken('hub-proxy');
 	}
 
 	const path = params.path || '';

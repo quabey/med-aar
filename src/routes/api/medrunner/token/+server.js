@@ -2,8 +2,8 @@ import { json } from '@sveltejs/kit';
 import { MedrunnerApiClient } from '@medrunner/api-client';
 import { env } from '$env/dynamic/private';
 
-export async function GET() {
-	const token = env.MEDRUNNER_TOKEN;
+export async function GET({ platform }) {
+	const token = platform?.env?.MEDRUNNER_TOKEN ?? env.MEDRUNNER_TOKEN;
 	if (!token) {
 		return json({ error: 'Medrunner API token not configured' }, { status: 500 });
 	}
