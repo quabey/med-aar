@@ -1,4 +1,19 @@
 {
+	"official": {
+		"name": "Official",
+		"description": "Standard Medrunner AAR format with all official sections",
+		"icon": "📋",
+		"recommended": true,
+		"sections": [
+			{ "id": 0, "name": "ships" },
+			{ "id": 1, "name": "location" },
+			{ "id": 2, "name": "timing" },
+			{ "id": 3, "name": "encounters" },
+			{ "id": 4, "name": "issues" },
+			{ "id": 5, "name": "summary" },
+			{ "id": 6, "name": "result" }
+		]
+	},
 	"classic": {
 		"name": "Classic Med-Tools",
 		"description": "The original med-tools template with commonly used sections",
@@ -13,18 +28,15 @@
 			{ "id": 6, "name": "extraction" }
 		]
 	},
-	"official": {
-		"name": "Official",
-		"description": "Standard Medrunner AAR format with all official sections",
-		"icon": "📋",
+	"cancelled": {
+		"name": "Cancelled Alert",
+		"description": "Template for cancelled or stood-down alerts",
+		"icon": "🚫",
 		"sections": [
-			{ "id": 0, "name": "ships" },
-			{ "id": 1, "name": "location" },
-			{ "id": 2, "name": "timing" },
-			{ "id": 3, "name": "encounters" },
-			{ "id": 4, "name": "issues" },
-			{ "id": 5, "name": "summary" },
-			{ "id": 6, "name": "result" }
+			{ "id": 0, "name": "alert type" },
+			{ "id": 1, "name": "timing" },
+			{ "id": 2, "name": "location" },
+			{ "id": 3, "name": "summary" }
 		]
 	},
 	"empty": {

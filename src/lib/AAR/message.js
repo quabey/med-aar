@@ -70,13 +70,32 @@ export function createMessage(data) {
 function createTimingMessage(times) {
 	let message = '**Timing**\n';
 	let hasContent = false;
-	for (let [key, value] of Object.entries(times)) {
-		if (value) {
-			hasContent = true;
-			key = capitalizeFirstLetters(key.replace(/([A-Z])/g, ' $1'));
-			message += `${key}: <t:${convertToUnixTimestamp(value)}:t>\n`;
+
+	if (times.offsetMode) {
+		const offsets = [
+			{ key: 'offsetAlert', label: 'Alert' },
+			{ key: 'offsetDepart', label: 'Depart' },
+			{ key: 'offsetClient', label: 'Client' },
+			{ key: 'offsetRTB', label: 'RTB' }
+		];
+		for (const { key, label } of offsets) {
+			if (times[key] != null && times[key] !== '') {
+				hasContent = true;
+				message += `${label}: T+${times[key]} min\n`;
+			}
+		}
+	} else {
+		const timeFields = ['received', 'start', 'departed', 'reached', 'completed'];
+		for (const field of timeFields) {
+			const value = times[field];
+			if (value) {
+				hasContent = true;
+				const label = capitalizeFirstLetters(field.replace(/([A-Z])/g, ' $1'));
+				message += `${label}: <t:${convertToUnixTimestamp(value)}:t>\n`;
+			}
 		}
 	}
+
 	return hasContent ? message : '';
 }
 
@@ -206,6 +225,7 @@ function createEncountersMessage(encounters) {
 function createIssuesMessage(issues) {
 	if (!issues) return '';
 	let lines = [];
+	if (issues.types && issues.types.length > 0) lines.push(`Types: ${issues.types.join(', ')}`);
 	if (issues.problems) lines.push(`Problems: ${issues.problems}`);
 	if (issues.briefFix) lines.push(`Brief Fix: ${issues.briefFix}`);
 	if (lines.length === 0) return '';

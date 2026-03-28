@@ -1,0 +1,527 @@
+{
+    "systems": {
+        "STANTON": {
+            "name": "Stanton",
+            "jumpPointStations": ["Pyro Gateway"],
+            "planets": {
+                "HURSTON": {
+                    "name": "Hurston",
+                    "designation": "Stanton I",
+                    "type": "planet",
+                    "landingZones": ["Lorville"],
+                    "settlements": [
+                        "Cutter's Rig",
+                        "Finn's Folly",
+                        "Ludlow",
+                        "Maker's Point",
+                        "Picker's Field",
+                        "Rappel",
+                        "Weeping Cove",
+                        "Zephyr"
+                    ],
+                    "pois": [
+                        "Broken Patch",
+                        "Covalex Distribution Centre S1DC06",
+                        "Downed Relay AC-652",
+                        "Dupree Industrial Manufacturing Facility",
+                        "Echo Isle",
+                        "Greycat Stanton I Production Complex-B",
+                        "HDMO-Calthrope",
+                        "HDMS-Edmond",
+                        "HDMS-Hadley",
+                        "HDMS-Oparei",
+                        "HDMS-Pinewood",
+                        "HDMS-Stanhope",
+                        "HDMS-Thedus",
+                        "HDOF-Palomar",
+                        "HDPC-Cassillo",
+                        "HDPC-Farnesway",
+                        "HDRSO-Baier",
+                        "HDRSO-Bardie",
+                        "HDRSO-Bersch",
+                        "HDRSO-Bowes",
+                        "HDRSO-Brel",
+                        "HDRSO-Cronshaw",
+                        "HDRSO-Foster",
+                        "HDRSO-Franz",
+                        "HDRSO-Giblin",
+                        "HDRSO-Hosley",
+                        "HDRSO-Malloy",
+                        "HDRSO-Marling",
+                        "HDRSO-McKuen",
+                        "HDRSO-Newman",
+                        "HDRSO-Olliff",
+                        "HDRSO-Pearce",
+                        "HDRSO-Sheppard",
+                        "HDRSO-Simms",
+                        "HDRSO-Stott",
+                        "HDRSO-Tillman",
+                        "HDRSO-Walker",
+                        "HDRSO-Wyatt",
+                        "HDSF-Adlai",
+                        "HDSF-Barnabas",
+                        "HDSF-Breckinridge",
+                        "HDSF-Colfax",
+                        "HDSF-Damaris",
+                        "HDSF-Elbridge",
+                        "HDSF-Hendricks",
+                        "HDSF-Hiram",
+                        "HDSF-Hobart",
+                        "HDSF-Ishmael",
+                        "HDSF-Millerand",
+                        "HDSF-Rufus",
+                        "HDSF-Sherman",
+                        "HDSF-Tamar",
+                        "HDSF-Tompkins",
+                        "HDSF-Zacharias",
+                        "Lorville Outskirts",
+                        "Lowdown",
+                        "Reclamation & Disposal Orinth",
+                        "Rico's Remains",
+                        "Sakura Sun Magnolia Workcenter",
+                        "Trilo"
+                    ],
+                    "stations": ["Everus Harbor"],
+                    "lagrangeStations": [
+                        "HUR-L1 (Rest & Relax)",
+                        "HUR-L2 (Faithful Dream)",
+                        "HUR-L3 (Thundering Express)",
+                        "HUR-L4 (Ambitious Dream)",
+                        "HUR-L5 (Beautiful Glen)"
+                    ],
+                    "moons": {
+                        "ARIAL": {
+                            "name": "Arial",
+                            "designation": "Stanton 1a",
+                            "pois": [
+                                "HDMS-Bezdek",
+                                "HDMS-Lathan",
+                                "CommArray ST1-13",
+                                "Coven",
+                                "Onyx Facility S1A8",
+                                "Smokestack",
+                                "The Dregs"
+                            ]
+                        },
+                        "ABERDEEN": {
+                            "name": "Aberdeen",
+                            "designation": "Stanton 1b",
+                            "pois": [
+                                "HDMS-Anderson",
+                                "HDMS-Norgaard",
+                                "Klescher Rehabilitation Facility",
+                                "Barton Flats Aid Shelter",
+                                "HDMO-Dobbs",
+                                "CommArray ST1-92",
+                                "The Grove",
+                                "Boondoggle",
+                                "Rupture OLP",
+                                "Vivere OLP"
+                            ]
+                        },
+                        "MAGDA": { "name": "Magda", "designation": "Stanton 1c", "pois": ["HDMS-Hahn", "HDMS-Perlman", "CommArray ST1-48"] },
+                        "ITA": {
+                            "name": "Ita",
+                            "designation": "Stanton 1d",
+                            "pois": ["HDMS-Woodruff", "HDMS-Ryder", "The Shades", "Thimblerig", "CommArray ST1-13"]
+                        }
+                    }
+                },
+                "CRUSADER": {
+                    "name": "Crusader",
+                    "designation": "Stanton II",
+                    "type": "gas_giant",
+                    "landingZones": ["Orison"],
+                    "settlements": ["Cloudrest Retreat", "Empyrean Park", "Prospect Point"],
+                    "stations": ["Port Olisar", "Security Post Kareah", "Seraphim Station", "CommArray ST2-55", "GrimHEX"],
+                    "lagrangeStations": ["CRU-L1 (Ambitious Dream)", "CRU-L4 (Shallow Frontier)", "CRU-L5 (Beautiful Glen)"],
+                    "moons": {
+                        "CELLIN": {
+                            "name": "Cellin",
+                            "designation": "Stanton 2a",
+                            "pois": [
+                                "Gallete Family Farms",
+                                "Terra Mills HydroFarm",
+                                "Tram & Myers Mining",
+                                "Hickes Research Outpost",
+                                "Security Post Criska",
+                                "Security Post Dipur",
+                                "Security Post Lespin",
+                                "Ashburn Channel Aid Shelter",
+                                "Flanagan's Ravine Aid Shelter",
+                                "Julep Ravine Aid Shelter",
+                                "Mogote Aid Shelter",
+                                "NT-999-XV",
+                                "Stash House (Cellin)",
+                                "Unnamed Abandoned Outpost",
+                                "CommArray ST2-28"
+                            ]
+                        },
+                        "DAYMAR": {
+                            "name": "Daymar",
+                            "designation": "Stanton 2b",
+                            "pois": [
+                                "Bountiful Harvest Hydroponics",
+                                "ArcCorp Mining Area 141",
+                                "Kudre Ore",
+                                "Shubin Mining Facility SCD-1",
+                                "Security Post Moluto",
+                                "Security Post Prashad",
+                                "Security Post Thaquray",
+                                "NT-999-XVI",
+                                "The Garden",
+                                "TPF",
+                                "Wailing Rock",
+                                "Kudre Ore Mine (Closed)",
+                                "Dunlow Ridge Aid Shelter",
+                                "Eager Flats Aid Shelter",
+                                "Tamdon Plains Aid Shelter",
+                                "Wolf Point Aid Shelter",
+                                "Brio's Breaker Yard",
+                                "Whistlers Crypt",
+                                "Yadar Valley",
+                                "Nuen Waste Management",
+                                "UEES Flyssa Wreck",
+                                "Covalex Hub Gundo",
+                                "CommArray ST2-47"
+                            ]
+                        },
+                        "YELA": {
+                            "name": "Yela",
+                            "designation": "Stanton 2c",
+                            "pois": [
+                                "Abandoned Outpost (Mining Facility)",
+                                "ArcCorp Mining Area 157",
+                                "Benson Mining Outpost",
+                                "Deakins Research Outpost",
+                                "Jumptown",
+                                "Security Post Opal",
+                                "Security Post Wan",
+                                "Aston Ridge Aid Shelter",
+                                "Kosso Basin Aid Shelter",
+                                "Nakamura Valley Aid Shelter",
+                                "Talarine Divide Aid Shelter",
+                                "Afterlife",
+                                "Connor's",
+                                "Utopia",
+                                "NT-999-XX",
+                                "NT-999-XXII",
+                                "Half Stack",
+                                "Mainline",
+                                "Miner's Lament",
+                                "Rolo's Crater",
+                                "Benny Henge",
+                                "CommArray ST2-76"
+                            ],
+                            "stations": ["GrimHEX"]
+                        }
+                    }
+                },
+                "ARCCORP": {
+                    "name": "ArcCorp",
+                    "designation": "Stanton III",
+                    "type": "planet",
+                    "landingZones": ["Area 18"],
+                    "settlements": ["Area04", "Area06", "Area07", "Area11", "Area17", "Area20", "Area26", "Area39"],
+                    "pois": ["The Sky Scraper", "Ermer Family Farms Creamery", "CommArray ST3-90"],
+                    "stations": ["Baijini Point"],
+                    "lagrangeStations": [
+                        "ARC-L1 (Wide Forest)",
+                        "ARC-L2 (Lively Pathway)",
+                        "ARC-L3 (Modern Icarus)",
+                        "ARC-L4 (Faint Glen)",
+                        "ARC-L5 (Stately Home)"
+                    ],
+                    "moons": {
+                        "LYRIA": {
+                            "name": "Lyria",
+                            "designation": "Stanton 3a",
+                            "pois": [
+                                "Humboldt Mines",
+                                "Loveridge Mineral Reserve",
+                                "Shubin Mining Facility SAL-2",
+                                "Shubin Mining Facility SAL-5",
+                                "Shubin Processing Facility SPAL-3",
+                                "Shubin Processing Facility SPAL-7",
+                                "Shubin Processing Facility SPAL-9",
+                                "Shubin Processing Facility SPAL-12",
+                                "Shubin Processing Facility SPAL-16",
+                                "Shubin Processing Facility SPAL-21",
+                                "Security Depot Lyria-1",
+                                "Elsewhere",
+                                "Teddy's Playhouse",
+                                "The Orphanage",
+                                "The Pit",
+                                "Wheeler's",
+                                "Paradise Cove",
+                                "Buckets",
+                                "Launch Pad",
+                                "CommArray ST3-18"
+                            ]
+                        },
+                        "WALA": {
+                            "name": "Wala",
+                            "designation": "Stanton 3b",
+                            "pois": [
+                                "Shady Glen Farms",
+                                "ArcCorp Mining Area 045",
+                                "ArcCorp Mining Area 048",
+                                "ArcCorp Mining Area 056",
+                                "ArcCorp Mining Area 061",
+                                "ArcCorp Processing Center 115",
+                                "ArcCorp Processing Center 123",
+                                "Lost and Found",
+                                "Good Times Temple",
+                                "Samson & Sons Salvage Center",
+                                "CommArray ST3-35"
+                            ]
+                        }
+                    }
+                },
+                "MICROTECH": {
+                    "name": "microTech",
+                    "designation": "Stanton IV",
+                    "type": "planet",
+                    "landingZones": ["New Babbage"],
+                    "settlements": [
+                        "Astor's Clearing",
+                        "Bloodshot Ridge",
+                        "Dunboro",
+                        "Frostbite",
+                        "Ghost Hollow",
+                        "Harper's Point",
+                        "Moreland Hills",
+                        "Razor's Edge"
+                    ],
+                    "pois": [
+                        "MT DataCenter 2UB-RB9-5",
+                        "MT DataCenter 4HJ-LVE-A",
+                        "MT DataCenter 5WQ-R2V-C",
+                        "MT DataCenter 8FK-Q2X-K",
+                        "MT DataCenter D79-ECG-R",
+                        "MT DataCenter E2Q-NSG-Y",
+                        "MT DataCenter TMG-XEV-2",
+                        "MT DataCenter QVX-J88-J",
+                        "MT DataCenter L8P-JUC-8",
+                        "MT DataCenter KH3-AAE-L",
+                        "Calhoun Pass Emergency Shelter",
+                        "Point Wain Emergency Shelter",
+                        "Nuiqsut Emergency Shelter",
+                        "Clear View Emergency Shelter",
+                        "Shubin Mining Facility SM0-10",
+                        "Shubin Mining Facility SM0-13",
+                        "Shubin Mining Facility SM0-18",
+                        "Shubin Mining Facility SM0-22",
+                        "Rayari Deltana Research Outpost",
+                        "Rayari Livengood Research Outpost",
+                        "MT OpCenter LTI-4",
+                        "Outpost 54",
+                        "The Necropolis",
+                        "Covalex Distribution Centre S4DC05",
+                        "Greycat Stanton IV Production Complex-A",
+                        "Cry-Astro Processing Plant 34-12",
+                        "Cry-Astro Processing Plant 19-02",
+                        "MicroTech Logistics Depot S4LD01",
+                        "MicroTech Logistics Depot S4LD13",
+                        "Sakura Sun Goldenrod Workcenter"
+                    ],
+                    "stations": ["Port Tressler"],
+                    "lagrangeStations": [
+                        "MIC-L1 (Shallow Frontier)",
+                        "MIC-L2 (Long Forest)",
+                        "MIC-L3 (Endless Odyssey)",
+                        "MIC-L4 (Melodic Fields)",
+                        "MIC-L5 (Shady Stockade)"
+                    ],
+                    "moons": {
+                        "CALLIOPE": {
+                            "name": "Calliope",
+                            "designation": "Stanton 4a",
+                            "pois": [
+                                "Shubin Mining Facility SMCa-6",
+                                "Shubin Mining Facility SMCa-8",
+                                "Shubin Processing Facility SPMC-1",
+                                "Shubin Processing Facility SPMC-3",
+                                "Shubin Processing Facility SPMC-5",
+                                "Shubin Processing Facility SPMC-10",
+                                "Shubin Processing Facility SPMC-11",
+                                "Shubin Processing Facility SPMC-14",
+                                "Rayari Anvik Research Outpost",
+                                "Rayari Kaltag Research Outpost",
+                                "Raven's Roost",
+                                "CommArray ST4-31",
+                                "Blighter's Run",
+                                "Hard Knocks",
+                                "Hasbin Hall",
+                                "Regiment Downs"
+                            ]
+                        },
+                        "CLIO": {
+                            "name": "Clio",
+                            "designation": "Stanton 4b",
+                            "pois": ["Rayari Cantwell Research Outpost", "Rayari McGrath Research Outpost", "CommArray ST4-59"]
+                        },
+                        "EUTERPE": {
+                            "name": "Euterpe",
+                            "designation": "Stanton 4c",
+                            "pois": ["Bud's Growery", "The Icebreaker", "Devlin Scrap & Salvage", "CommArray ST4-64"]
+                        }
+                    }
+                }
+            }
+        },
+        "PYRO": {
+            "name": "Pyro",
+            "jumpPointStations": ["Stanton Gateway"],
+            "planets": {
+                "PYRO1": {
+                    "name": "Pyro I",
+                    "designation": "Pyro I",
+                    "type": "planet",
+                    "pois": [
+                        "Gray Gardens Depot",
+                        "Rustville",
+                        "Stag's Rut",
+                        "Lazarus Phoenix Research Lab",
+                        "Lazarus Tithonus Research Lab",
+                        "Lazarus Transport Hub Phoenix-I",
+                        "Lazarus Transport Hub Phoenix-II",
+                        "Lazarus Transport Hub Phoenix-III",
+                        "Lazarus Transport Hub Tithonus-I",
+                        "Lazarus Transport Hub Tithonus-II",
+                        "Lazarus Transport Hub Tithonus-III"
+                    ],
+                    "lagrangeStations": ["PYAM-FARSTAT-1-2 (L2)", "PYAM-FARSTAT-1-3 (L3 - Akiro Cluster)", "PYAM-FARSTAT-1-5 (L5)"]
+                },
+                "MONOX": {
+                    "name": "Monox",
+                    "designation": "Pyro II",
+                    "type": "planet",
+                    "pois": ["Arid Reach", "Jackson's Swap", "Last Ditch", "Ostler's Claim", "Slowburn Depot", "Sunset Mesa", "Yang's Place"],
+                    "lagrangeStations": ["Checkmate Station (L4)"]
+                },
+                "BLOOM": {
+                    "name": "Bloom",
+                    "designation": "Pyro III",
+                    "type": "planet",
+                    "pois": [
+                        "Bueno Ravine",
+                        "Frigid Knot",
+                        "Narena's Rest",
+                        "Shepherd's Rest",
+                        "Carver's Ridge",
+                        "The Golden Riviera",
+                        "The Yard",
+                        "Windfall",
+                        "Shadowfall",
+                        "Prospect Depot"
+                    ],
+                    "stations": ["Orbituary"],
+                    "lagrangeStations": [
+                        "Starlight Service Station (L1)",
+                        "PYAM-FARSTAT-3-2 (L2)",
+                        "Patch City (L3)",
+                        "PYAM-FARSTAT-3-4 (L4)",
+                        "PYAM-FARSTAT-3-5 (L5)"
+                    ]
+                },
+                "PYRO4": {
+                    "name": "Pyro IV",
+                    "designation": "Pyro IV",
+                    "type": "planet",
+                    "pois": [
+                        "Sacren's Plot",
+                        "Chawla's Beach",
+                        "Dinger's Depot",
+                        "Fallow Field",
+                        "Farro Data Center I",
+                        "Farro Data Center II",
+                        "Farro Data Center III",
+                        "Farro Data Center IV",
+                        "Farro Data Center V",
+                        "Farro Data Center VI",
+                        "Farro Data Center VII",
+                        "Farro Data Center VIII",
+                        "Farro Data Center IX",
+                        "Farro Data Center X",
+                        "Goner's Deal"
+                    ]
+                },
+                "PYRO5": {
+                    "name": "Pyro V",
+                    "designation": "Pyro V",
+                    "type": "gas_giant",
+                    "lagrangeStations": [
+                        "PYAM-FARSTAT-5-1 (L1)",
+                        "Gaslight (L2)",
+                        "PYAM-FARSTAT-5-3 (L3)",
+                        "Rod's Fuel 'N Supplies (L4)",
+                        "Rat's Nest (L5)"
+                    ],
+                    "moons": {
+                        "IGNIS": { "name": "Ignis", "designation": "Pyro 5a", "pois": ["Ashland", "Kabir's Post"] },
+                        "VATRA": { "name": "Vatra", "designation": "Pyro 5b", "pois": ["Seer's Canyon"] },
+                        "ADIR": { "name": "Adir", "designation": "Pyro 5c", "pois": ["Prophet's Peak", "Derelict Outpost", "Obsidian Crack"] },
+                        "FAIRO": { "name": "Fairo", "designation": "Pyro 5d", "pois": ["Outpost 08P", "FEO Canyon Depot", "YW-2455-WS"] },
+                        "FUEGO": { "name": "Fuego", "designation": "Pyro 5e", "pois": ["RAB-Lamda", "RAB-Over", "RAB-Victory"] },
+                        "VUUR": { "name": "Vuur", "designation": "Pyro 5f", "pois": [] }
+                    }
+                },
+                "TERMINUS": {
+                    "name": "Terminus",
+                    "designation": "Pyro VI",
+                    "type": "planet",
+                    "pois": [
+                        "Blackrock Exchange",
+                        "Bullock's Reach",
+                        "Canard View",
+                        "Kinder Plots",
+                        "Last Landings",
+                        "Rough Landing",
+                        "Scarper's Turn",
+                        "Stonetree",
+                        "Supply Gap",
+                        "Watcher's Depot"
+                    ],
+                    "stations": ["Ruin Station"],
+                    "lagrangeStations": ["PYAM-FARSTAT-6-2 (L2)", "Endgame (L3)", "Dudley & Daughters (L4)", "Megumi Refueling (L5)"]
+                }
+            }
+        },
+        "NYX": {
+            "name": "Nyx",
+            "jumpPointStations": ["Stanton Gateway", "Pyro Gateway", "Castra Gateway"],
+            "planets": {
+                "GLACIANBELT": {
+                    "name": "Glacian Belt",
+                    "designation": "Belt",
+                    "type": "belt",
+                    "pois": [],
+                    "stations": ["Levski"],
+                    "lagrangeStations": ["QV Sites"]
+                }
+            }
+        }
+    },
+    "locationTypes": {
+        "city": "Landing Zone / City",
+        "settlement": "Settlement / Outpost",
+        "station": "Space Station",
+        "lagrange": "Lagrange Station",
+        "mining": "Mining Facility / Outpost",
+        "processing": "Processing Facility",
+        "research": "Research Outpost",
+        "security": "Security Post / Bunker",
+        "distribution": "Distribution Center",
+        "data": "Data Center",
+        "farm": "Agricultural / Farm",
+        "shelter": "Aid Shelter / Emergency Shelter",
+        "salvage": "Salvage Yard",
+        "cave": "Cave System",
+        "wreck": "Derelict / Wreck",
+        "racetrack": "Racetrack",
+        "prison": "Prison / Rehabilitation Facility",
+        "commarray": "Communication Array",
+        "other": "Other Point of Interest"
+    }
+}

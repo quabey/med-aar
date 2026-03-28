@@ -161,6 +161,7 @@ class AlertStore {
 	}
 
 	getAlertLabel(alert) {
+		if (alert.missionName) return alert.missionName;
 		const handle = alert.clientRsiHandle || 'Unknown';
 		const loc = [alert.system, alert.subsystem].filter(Boolean).join(' / ');
 		return loc ? `${handle} — ${loc}` : handle;

@@ -1,7 +1,7 @@
 <script>
 	import { assignmentPlayers, assignmentShips, pilotAssignments } from '$lib/stores.js';
 	import { get } from 'svelte/store';
-	import ships from '$lib/data/ships.json';
+	import ships from '$lib/config/ships.json';
 	import { MEDRUNNER_ROLES, getRoleLabel } from '$lib/data/roles.js';
 	import { successToast, errorToast } from '$lib/state/toast.svelte.js';
 	import Modal from '$lib/components/Modal.svelte';
@@ -12,6 +12,7 @@
 	let collapsed = $state(false);
 
 	// Import state
+	let showImportWarning = $state(false);
 	let showImportModal = $state(false);
 	let importLoading = $state(false);
 	let importTeams = $state([]);
@@ -77,31 +78,58 @@
 		}
 	}
 
-	function getPlayerMention(player) {
-		if (typeof player !== 'string' && player.discordId) {
-			return `<@${player.discordId}>`;
-		}
-		return getPlayerName(player);
-	}
+	const DISCORD_EMOJIS = {
+		header: '<:Medrunner:1054921406091112558>',
+		gunship: '<:MDRgun:1104388682116518018>',
+		medship: '<:MDRhug:1127961815977046130>',
+		cap: '<:MDRknife:1104388679641874522>',
+		roles: {
+			1: '<:MRS_Medical:984839920755568680>',
+			2: '<:MRS_Security:984839924523962388>',
+			3: '<:MRS_Pilot:984839922748813362>',
+			4: '<:MRS_Teamlead:1073627559272652820>',
+			9: '<:CAP:1355255191854645407>'
+		},
+		positions: [
+			'',
+			'<:P1:1432823559364935852>',
+			'<:P2:1432823555698982973>',
+			'<:P3:1432823553186861109>',
+			'<:P4:1432823550997299330>',
+			'<:P5:1432823547902034010>',
+			'<:P6:1432823545746161734>',
+			'<:P7:1432823543518724157>'
+		]
+	};
 
 	function copyAssignments() {
-		let message = '';
-		if ($assignmentPlayers.gunship.length > 0) {
-			message += `**__Gunship__** ${$assignmentShips.gunship ?? ''}${$pilotAssignments.gunship ? ' - *Pilot: ' + $pilotAssignments.gunship.trim() + '*' : ''}\n`;
-			$assignmentPlayers.gunship.forEach((p) => (message += `> ${getPlayerMention(p)}\n`));
-			message += '\n';
+		const lines = [];
+		lines.push(`# __${DISCORD_EMOJIS.header}SHIP ASSIGNMENTS${DISCORD_EMOJIS.header}__`);
+
+		function buildGroup(label, groupEmoji, players) {
+			if (players.length === 0) return;
+			lines.push(`## __**${label}**__ ${groupEmoji}`);
+			for (const p of players) {
+				const roleEmoji = DISCORD_EMOJIS.roles[getPlayerRole(p)] ?? '';
+				const order = getPlayerJoinOrder(p);
+				const posEmoji = order && order >= 1 && order <= 7 ? DISCORD_EMOJIS.positions[order] : '';
+				const mention = typeof p !== 'string' && p.discordId ? `<@${p.discordId}>` : getPlayerName(p);
+				let line = '> ';
+				if (roleEmoji) line += `${roleEmoji} - `;
+				line += mention;
+				if (posEmoji) line += ` ${posEmoji}`;
+				lines.push(line);
+			}
 		}
-		if ($assignmentPlayers.medship.length > 0) {
-			message += `**__Medship__** *${$assignmentShips.medship ?? ''}${$pilotAssignments.medship ? ' - Pilot: ' + $pilotAssignments.medship.trim() : ''}*\n`;
-			$assignmentPlayers.medship.forEach((p) => (message += `> ${getPlayerMention(p)}\n`));
-			message += '\n';
-		}
-		if ($assignmentPlayers.cap.length > 0) {
-			message += `**__CAP__** ${$assignmentShips.cap ?? ''}\n`;
-			$assignmentPlayers.cap.forEach((p) => (message += `> ${getPlayerMention(p)}\n`));
-			message += '\n';
-		}
-		navigator.clipboard.writeText(message);
+
+		buildGroup('Gunship', DISCORD_EMOJIS.gunship, $assignmentPlayers.gunship);
+		buildGroup('Medship', DISCORD_EMOJIS.medship, $assignmentPlayers.medship);
+		buildGroup('CAP', DISCORD_EMOJIS.cap, $assignmentPlayers.cap);
+
+		const timestamp = Math.floor(Date.now() / 1000);
+		lines.push(`-# Updated <t:${timestamp}:R>`);
+
+		navigator.clipboard.writeText(lines.join('\n'));
 		successToast('Assignments copied');
 	}
 
@@ -142,6 +170,71 @@
 	function getPlayerJoinOrder(player) {
 		if (typeof player === 'string') return null;
 		return player.joinOrder ?? null;
+	}
+
+	// Join order editing — popover with number buttons
+	let editingPlayerKey = $state(null); // format: "group/index"
+
+	function getTotalPlayerCount() {
+		const players = get(assignmentPlayers);
+		return players.gunship.length + players.medship.length + players.cap.length;
+	}
+
+	function startEditOrder(group, index) {
+		editingPlayerKey = editingPlayerKey === `${group}/${index}` ? null : `${group}/${index}`;
+	}
+
+	function setJoinOrder(group, index, newOrder) {
+		editingPlayerKey = null;
+		assignmentPlayers.update((players) => {
+			const currentPlayer = players[group][index];
+			const currentOrder = getPlayerJoinOrder(currentPlayer);
+			if (newOrder === currentOrder) return players;
+
+			const allGroups = ['gunship', 'medship', 'cap'];
+
+			if (currentOrder != null && newOrder < currentOrder) {
+				// Moving up: everyone between newOrder and currentOrder-1 shifts down by 1
+				for (const g of allGroups) {
+					for (let i = 0; i < players[g].length; i++) {
+						const order = getPlayerJoinOrder(players[g][i]);
+						if (order != null && order >= newOrder && order < currentOrder) {
+							players[g][i] = { ...players[g][i], joinOrder: order + 1 };
+						}
+					}
+				}
+			} else if (currentOrder != null && newOrder > currentOrder) {
+				// Moving down: everyone between currentOrder+1 and newOrder shifts up by 1
+				for (const g of allGroups) {
+					for (let i = 0; i < players[g].length; i++) {
+						const order = getPlayerJoinOrder(players[g][i]);
+						if (order != null && order > currentOrder && order <= newOrder) {
+							players[g][i] = { ...players[g][i], joinOrder: order - 1 };
+						}
+					}
+				}
+			}
+
+			players[group][index] = { ...players[group][index], joinOrder: newOrder };
+
+			return { gunship: [...players.gunship], medship: [...players.medship], cap: [...players.cap] };
+		});
+	}
+
+	async function handleImportClick() {
+		const players = get(assignmentPlayers);
+		const hasAssignments = players.gunship.length + players.medship.length + players.cap.length > 0;
+		if (hasAssignments) {
+			showImportWarning = true;
+		} else {
+			await fetchActiveTeams();
+		}
+	}
+
+	async function clearAndImport() {
+		showImportWarning = false;
+		clearAssignments();
+		await fetchActiveTeams();
 	}
 
 	function importSelectedTeam() {
@@ -198,16 +291,16 @@
 		// Team Leads → gunship
 		for (const p of teamLeads) gunship.push(p);
 
-		// Medics: 1st → medship, 2nd → gunship, 3rd → medship, etc.
+		// Medics: 1st → medship, rest → gunship
 		medics.forEach((p, i) => {
-			if (i % 2 === 0) medship.push(p);
+			if (i === 0) medship.push(p);
 			else gunship.push(p);
 		});
 
-		// Security: 1st → gunship, 2nd → medship, 3rd → gunship, etc.
+		// Security: 1st → medship, rest → gunship
 		security.forEach((p, i) => {
-			if (i % 2 === 0) gunship.push(p);
-			else medship.push(p);
+			if (i === 0) medship.push(p);
+			else gunship.push(p);
 		});
 
 		// CAP → cap group
@@ -304,11 +397,12 @@
 					players[group].push(player);
 					added++;
 				} else {
-					// Existing member — update join order
+					// Existing member — update role but preserve manually changed joinOrder
 					for (const group of allGroups) {
 						const idx = players[group].findIndex((p) => typeof p !== 'string' && p.discordId === m.discordId);
 						if (idx !== -1) {
-							players[group][idx] = { ...players[group][idx], joinOrder: order, role: m.class };
+							const existing = players[group][idx];
+							players[group][idx] = { ...existing, role: m.class };
 							break;
 						}
 					}
@@ -355,7 +449,7 @@
 			{/if}
 			<button
 				class="btn-sm btn-primary text-xs"
-				onclick={fetchActiveTeams}
+				onclick={handleImportClick}
 				disabled={importLoading}
 			>
 				{importLoading ? 'Loading...' : 'Import'}
@@ -403,15 +497,27 @@
 						onclick={() => { addPlayer('gunship', newGunshipPlayer); newGunshipPlayer = ''; }}
 					>+</button>
 				</div>
-				{#each $assignmentPlayers.gunship as player}
-					<div class="mt-1.5 flex items-center justify-between rounded bg-gray-700/40 px-2 py-1.5">
-						<div class="flex items-center gap-1.5">
-							{#if getPlayerRole(player) != null}
-								<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300">{getRoleLabel(getPlayerRole(player))}</span>
-							{/if}
-							{#if getPlayerJoinOrder(player)}
-								<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300" title="Join order #{getPlayerJoinOrder(player)}">#{getPlayerJoinOrder(player)}</span>
-							{/if}
+			{#each $assignmentPlayers.gunship as player, playerIdx}
+				<div class="mt-1.5 flex items-center justify-between rounded bg-gray-700/40 px-2 py-1.5">
+					<div class="flex items-center gap-1.5">
+						{#if getPlayerRole(player) != null}
+							<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300">{getRoleLabel(getPlayerRole(player))}</span>
+						{/if}
+						{#if getPlayerJoinOrder(player) != null}
+							<div class="relative">
+								<button class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300 hover:bg-primary-500/40" title="Click to change position" onclick={() => startEditOrder('gunship', playerIdx)}>#{getPlayerJoinOrder(player)}</button>
+								{#if editingPlayerKey === `gunship/${playerIdx}`}
+									<div class="absolute left-0 top-full z-50 mt-1 flex flex-wrap gap-0.5 rounded-lg border border-gray-600 bg-gray-800 p-1.5 shadow-xl" style="width: max-content; max-width: 140px;">
+										{#each Array.from({ length: getTotalPlayerCount() }, (_, i) => i + 1) as num}
+											<button
+												class="h-6 w-6 rounded text-[10px] font-bold transition-colors {num === getPlayerJoinOrder(player) ? 'bg-primary-500 text-white' : 'bg-gray-700 text-gray-300 hover:bg-primary-500/40 hover:text-white'}"
+												onclick={() => setJoinOrder('gunship', playerIdx, num)}
+											>{num}</button>
+										{/each}
+									</div>
+								{/if}
+							</div>
+						{/if}
 							<span class="text-xs text-gray-200">{getPlayerName(player)}</span>
 						</div>
 						<div class="flex gap-1">
@@ -453,15 +559,27 @@
 						onclick={() => { addPlayer('medship', newMedshipPlayer); newMedshipPlayer = ''; }}
 					>+</button>
 				</div>
-				{#each $assignmentPlayers.medship as player}
-					<div class="mt-1.5 flex items-center justify-between rounded bg-gray-700/40 px-2 py-1.5">
-						<div class="flex items-center gap-1.5">
-							{#if getPlayerRole(player) != null}
-								<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300">{getRoleLabel(getPlayerRole(player))}</span>
-							{/if}
-							{#if getPlayerJoinOrder(player)}
-								<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300" title="Join order #{getPlayerJoinOrder(player)}">#{getPlayerJoinOrder(player)}</span>
-							{/if}
+			{#each $assignmentPlayers.medship as player, playerIdx}
+				<div class="mt-1.5 flex items-center justify-between rounded bg-gray-700/40 px-2 py-1.5">
+					<div class="flex items-center gap-1.5">
+						{#if getPlayerRole(player) != null}
+							<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300">{getRoleLabel(getPlayerRole(player))}</span>
+						{/if}
+						{#if getPlayerJoinOrder(player) != null}
+							<div class="relative">
+								<button class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300 hover:bg-primary-500/40" title="Click to change position" onclick={() => startEditOrder('medship', playerIdx)}>#{getPlayerJoinOrder(player)}</button>
+								{#if editingPlayerKey === `medship/${playerIdx}`}
+									<div class="absolute left-0 top-full z-50 mt-1 flex flex-wrap gap-0.5 rounded-lg border border-gray-600 bg-gray-800 p-1.5 shadow-xl" style="width: max-content; max-width: 140px;">
+										{#each Array.from({ length: getTotalPlayerCount() }, (_, i) => i + 1) as num}
+											<button
+												class="h-6 w-6 rounded text-[10px] font-bold transition-colors {num === getPlayerJoinOrder(player) ? 'bg-primary-500 text-white' : 'bg-gray-700 text-gray-300 hover:bg-primary-500/40 hover:text-white'}"
+												onclick={() => setJoinOrder('medship', playerIdx, num)}
+											>{num}</button>
+										{/each}
+									</div>
+								{/if}
+							</div>
+						{/if}
 							<span class="text-xs text-gray-200">{getPlayerName(player)}</span>
 						</div>
 						<div class="flex gap-1">
@@ -492,15 +610,27 @@
 						onclick={() => { addPlayer('cap', newCAPPlayer); newCAPPlayer = ''; }}
 					>+</button>
 				</div>
-				{#each $assignmentPlayers.cap as player}
-					<div class="mt-1.5 flex items-center justify-between rounded bg-gray-700/40 px-2 py-1.5">
-						<div class="flex items-center gap-1.5">
-							{#if getPlayerRole(player) != null}
-								<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300">{getRoleLabel(getPlayerRole(player))}</span>
-							{/if}
-							{#if getPlayerJoinOrder(player)}
-								<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300" title="Join order #{getPlayerJoinOrder(player)}">#{getPlayerJoinOrder(player)}</span>
-							{/if}
+			{#each $assignmentPlayers.cap as player, playerIdx}
+				<div class="mt-1.5 flex items-center justify-between rounded bg-gray-700/40 px-2 py-1.5">
+					<div class="flex items-center gap-1.5">
+						{#if getPlayerRole(player) != null}
+							<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300">{getRoleLabel(getPlayerRole(player))}</span>
+						{/if}
+						{#if getPlayerJoinOrder(player) != null}
+							<div class="relative">
+								<button class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-bold text-primary-300 hover:bg-primary-500/40" title="Click to change position" onclick={() => startEditOrder('cap', playerIdx)}>#{getPlayerJoinOrder(player)}</button>
+								{#if editingPlayerKey === `cap/${playerIdx}`}
+									<div class="absolute left-0 top-full z-50 mt-1 flex flex-wrap gap-0.5 rounded-lg border border-gray-600 bg-gray-800 p-1.5 shadow-xl" style="width: max-content; max-width: 140px;">
+										{#each Array.from({ length: getTotalPlayerCount() }, (_, i) => i + 1) as num}
+											<button
+												class="h-6 w-6 rounded text-[10px] font-bold transition-colors {num === getPlayerJoinOrder(player) ? 'bg-primary-500 text-white' : 'bg-gray-700 text-gray-300 hover:bg-primary-500/40 hover:text-white'}"
+												onclick={() => setJoinOrder('cap', playerIdx, num)}
+											>{num}</button>
+										{/each}
+									</div>
+								{/if}
+							</div>
+						{/if}
 							<span class="text-xs text-gray-200">{getPlayerName(player)}</span>
 						</div>
 						<div class="flex gap-1">
@@ -520,12 +650,38 @@
 	{/if}
 </div>
 
+<!-- Import Warning Modal -->
+{#if showImportWarning}
+	<Modal title="Import Assignments" onclose={() => (showImportWarning = false)} size="sm">
+		<div class="space-y-4">
+			<div class="flex items-start gap-3">
+				<svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.5c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+				</svg>
+				<p class="text-sm text-gray-300">You already have assignments loaded. How would you like to proceed?</p>
+			</div>
+			<div class="flex flex-col gap-2">
+				{#if importedTeamId}
+					<button class="btn btn-primary w-full text-sm" onclick={async () => { showImportWarning = false; await updateTeam(); }}>
+						Update current team
+					</button>
+				{/if}
+				<button class="btn btn-danger w-full text-sm" onclick={clearAndImport}>
+					Clear & import new team
+				</button>
+				<button class="btn btn-secondary w-full text-sm" onclick={() => (showImportWarning = false)}>
+					Cancel
+				</button>
+			</div>
+		</div>
+	</Modal>
+{/if}
+
 <!-- Import Team Modal -->
 {#if showImportModal}
 	<Modal title="Import Active Team" onclose={() => (showImportModal = false)} size="md">
 		<div class="space-y-4">
-			<p class="text-sm text-gray-400">Select a team to import. Members will be auto-assigned based on their role.</p>
-			<div class="space-y-2">
+			<p class="text-sm text-gray-400">Select a team to import. Members will be auto-assigned based on their role.</p>			<div class="space-y-2">
 				{#each importTeams as team}
 					<button
 						class="w-full rounded-lg border p-3 text-left transition-colors {selectedTeamId === team.id

@@ -42,12 +42,17 @@
 				>
 					<div class="flex items-center gap-3">
 						<span class="text-2xl">{template.icon}</span>
-						<div>
-							<h3
-								class="font-Mohave text-base font-semibold transition-colors {selectedTemplate === id ? 'text-primary-300' : 'text-white group-hover:text-primary-300'}"
-							>
-								{template.name}
-							</h3>
+						<div class="flex-1">
+							<div class="flex items-center gap-2">
+								<h3
+									class="font-Mohave text-base font-semibold transition-colors {selectedTemplate === id ? 'text-primary-300' : 'text-white group-hover:text-primary-300'}"
+								>
+									{template.name}
+								</h3>
+								{#if template.recommended}
+									<span class="rounded bg-primary-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-primary-300">Recommended</span>
+								{/if}
+							</div>
 							<p class="text-xs text-gray-400">{template.sections.length} section{template.sections.length !== 1 ? 's' : ''}</p>
 						</div>
 					</div>
@@ -88,9 +93,9 @@
 										{new Date(alert.creationTimestamp * 1000).toLocaleString()}
 									</span>
 								</div>
-								{#if alert.missionName}
-									<p class="mt-0.5 text-xs text-gray-400">{alert.missionName}</p>
-								{/if}
+								<p class="mt-0.5 text-xs text-gray-400">
+									{alert.clientRsiHandle}{[alert.system, alert.subsystem].filter(Boolean).length > 0 ? ' — ' + [alert.system, alert.subsystem].filter(Boolean).join(' / ') : ''}
+								</p>
 							</button>
 						{/each}
 					</div>

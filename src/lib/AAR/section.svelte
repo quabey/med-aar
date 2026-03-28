@@ -18,7 +18,7 @@
 	import { get } from 'svelte/store';
 	import { successToast } from '$lib/state/toast.svelte.js';
 
-	let { sectionItem, data, onremove } = $props();
+	let { sectionItem, data } = $props();
 
 	function importShipsFromAssignments() {
 		const ships = get(assignmentShips);
@@ -28,31 +28,20 @@
 	}
 </script>
 
-<div class="rounded-xl border border-gray-700/50 bg-gray-800 p-4 shadow-md transition-colors hover:border-gray-600/50 sm:p-5">
+<div class="border-l-2 border-primary-500/30 pl-4">
 	{#if sectionItem && sectionItem.name}
-		<div class="mb-3 flex items-center justify-between">
-			<h3 class="font-Mohave text-lg font-semibold uppercase tracking-wide text-gray-200">
+		<div class="mb-3 flex items-center gap-2">
+			<h3 class="font-Mohave text-sm font-bold uppercase tracking-widest text-gray-400">
 				{sectionItem.name}
 			</h3>
-			<div class="flex items-center gap-1.5">
-				{#if sectionItem.name === 'ships'}
-					<button
-						onclick={importShipsFromAssignments}
-						class="btn-sm btn-outline text-xs"
-					>
-						Import from Assignments
-					</button>
-				{/if}
+			{#if sectionItem.name === 'ships'}
 				<button
-					onclick={onremove}
-					class="rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-700 hover:text-red-400"
-					title="Remove section"
+					onclick={importShipsFromAssignments}
+					class="btn-sm btn-outline text-xs"
 				>
-					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-					</svg>
+					Import from Assignments
 				</button>
-			</div>
+			{/if}
 		</div>
 		<div class="section-content">
 			{#if sectionItem.name === 'injury'}

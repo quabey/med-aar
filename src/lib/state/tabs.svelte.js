@@ -9,7 +9,18 @@ function generateId() {
 export function createDefaultData() {
 	return {
 		sections: [],
-		times: { received: null, start: null, departed: null, reached: null, completed: null },
+		times: {
+			received: null,
+			start: null,
+			departed: null,
+			reached: null,
+			completed: null,
+			offsetMode: typeof window !== 'undefined' && localStorage.getItem('medtools:timingOffsetMode') === 'true',
+			offsetAlert: 0,
+			offsetDepart: null,
+			offsetClient: null,
+			offsetRTB: null
+		},
 		ships: { gunship: '', medship: '', cap: [], reason: '' },
 		otherShips: { gunship: '', medship: '' },
 		alertType: '',
@@ -28,6 +39,7 @@ export function createDefaultData() {
 		locationDistance: '',
 		planetaryBody: '',
 		locationType: '',
+		isManualLocation: false,
 		texts: [
 			{ title: '', content: '' },
 			{ title: '', content: '' },
@@ -37,7 +49,7 @@ export function createDefaultData() {
 		incidentReport: '',
 		vod: { url: '', timestamps: false, commsAllowed: false },
 		encounters: { pve: '', pvp: '', actionsTaken: '' },
-		issues: { problems: '', briefFix: '' },
+		issues: { problems: '', briefFix: '', types: [] },
 		result: { extractedTo: '', challenges: '', failureReason: '' },
 		summary: '',
 		intersystemResponse: { required: false, details: '' }

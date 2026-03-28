@@ -8,17 +8,23 @@
 	import MessagePreview from '$lib/AAR/MessagePreview.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import AssignmentPanel from '$lib/components/AssignmentPanel.svelte';
+	import CopyPastePanel from '$lib/components/CopyPastePanel.svelte';
 	import { successToast } from '$lib/state/toast.svelte.js';
-	import { flip } from 'svelte/animate';
-	import { dndzone } from 'svelte-dnd-action';
 
 	let showAssignments = $state(true);
+	let showCopyPaste = $state(true);
 	let sidebarWidth = $state(
 		typeof window !== 'undefined'
-			? parseInt(localStorage.getItem('medtools:sidebarWidth') || '320', 10)
-			: 320
+			? parseInt(localStorage.getItem('medtools:sidebarWidth') || '585', 10)
+			: 585
+	);
+	let copyPasteWidth = $state(
+		typeof window !== 'undefined'
+			? parseInt(localStorage.getItem('medtools:copyPasteWidth') || '260', 10)
+			: 260
 	);
 	let isResizing = $state(false);
+	let isResizingCopyPaste = $state(false);
 
 	function startResize(e) {
 		isResizing = true;
@@ -26,13 +32,31 @@
 		const startWidth = sidebarWidth;
 		function onMove(ev) {
 			const delta = startX - ev.clientX;
-			sidebarWidth = Math.max(240, Math.min(600, startWidth + delta));
+			sidebarWidth = Math.max(400, Math.min(900, startWidth + delta));
 		}
 		function onUp() {
 			isResizing = false;
 			window.removeEventListener('mousemove', onMove);
 			window.removeEventListener('mouseup', onUp);
 			localStorage.setItem('medtools:sidebarWidth', String(sidebarWidth));
+		}
+		window.addEventListener('mousemove', onMove);
+		window.addEventListener('mouseup', onUp);
+	}
+
+	function startResizeCopyPaste(e) {
+		isResizingCopyPaste = true;
+		const startX = e.clientX;
+		const startWidth = copyPasteWidth;
+		function onMove(ev) {
+			const delta = startX - ev.clientX;
+			copyPasteWidth = Math.max(280, Math.min(500, startWidth + delta));
+		}
+		function onUp() {
+			isResizingCopyPaste = false;
+			window.removeEventListener('mousemove', onMove);
+			window.removeEventListener('mouseup', onUp);
+			localStorage.setItem('medtools:copyPasteWidth', String(copyPasteWidth));
 		}
 		window.addEventListener('mousemove', onMove);
 		window.addEventListener('mouseup', onUp);
@@ -82,27 +106,6 @@
 		showAddSection = false;
 	}
 
-	function removeSection(sectionItem) {
-		const data = tabStore.activeData;
-		if (!data) return;
-		const idx = data.sections.findIndex((s) => s.id === sectionItem.id);
-		if (idx !== -1) data.sections.splice(idx, 1);
-	}
-
-	const flipDurationMs = 300;
-
-	function handleDndConsider(e) {
-		if (tabStore.activeData) {
-			tabStore.activeData.sections = e.detail.items;
-		}
-	}
-
-	function handleDndFinalize(e) {
-		if (tabStore.activeData) {
-			tabStore.activeData.sections = e.detail.items;
-		}
-	}
-
 	function confirmClear(type) {
 		clearType = type;
 		showClearConfirm = true;
@@ -143,31 +146,19 @@
 		{#if !tabStore.hasActiveTab}
 			<TemplateSelector onselect={selectTemplate} />
 		{:else if tabStore.activeData}
-			<div class="relative flex justify-center pb-12">
+			<div class="relative flex justify-center gap-4 pb-12">
 				<div class="my-4 flex w-full flex-col items-center gap-3">
 					<!-- Sections -->
 					<div class="w-full max-w-3xl px-4">
 						{#if tabStore.activeData.sections.length > 0}
-							<section
-								use:dndzone={{
-									items: tabStore.activeData.sections,
-									flipDurationMs,
-									dropTargetStyle: {}
-								}}
-								onconsider={handleDndConsider}
-								onfinalize={handleDndFinalize}
-								class="flex flex-col gap-3"
-							>
+							<div class="flex flex-col gap-6">
 								{#each tabStore.activeData.sections as item (item.id)}
-									<div animate:flip={{ duration: flipDurationMs }} class="outline-none">
-										<Section
-											sectionItem={item}
-											data={tabStore.activeData}
-											onremove={() => removeSection(item)}
-										/>
-									</div>
+									<Section
+										sectionItem={item}
+										data={tabStore.activeData}
+									/>
 								{/each}
-							</section>
+							</div>
 						{:else}
 							<div class="py-12 text-center text-gray-500">
 								<p class="text-lg">No sections yet</p>
@@ -177,8 +168,8 @@
 					</div>
 				</div>
 
-				<!-- Floating action card (vertical, top-right) -->
-				<div class="absolute right-4 top-4 z-40 flex flex-col gap-2 rounded-xl border border-gray-700/50 bg-gray-800/95 p-3 shadow-2xl backdrop-blur-sm">
+				<!-- Sticky action card (right side, stays in view while scrolling) -->
+				<div class="sticky top-4 mt-4 mr-6 flex h-fit flex-col gap-2 rounded-xl border border-gray-700/50 bg-gray-800/95 p-3 shadow-2xl backdrop-blur-sm">
 					<button class="btn btn-primary text-sm" onclick={() => (showPreview = true)}>
 						Preview
 					</button>
@@ -246,6 +237,21 @@
 			</div>
 		</div>
 	{/if}
+
+	<!-- Copy-paste sidebar -->
+	{#if showCopyPaste}
+		<div class="relative flex flex-shrink-0 border-l border-gray-700 bg-gray-900" style="width: {copyPasteWidth}px">
+			<!-- Resize handle -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="absolute left-0 top-0 z-10 h-full w-1.5 cursor-col-resize hover:bg-primary-400/30 {isResizingCopyPaste ? 'bg-primary-400/40' : ''}"
+				onmousedown={startResizeCopyPaste}
+			></div>
+			<div class="flex-1 overflow-hidden">
+				<CopyPastePanel />
+			</div>
+		</div>
+	{/if}
 </div>
 
 <!-- Toggle assignments button -->
@@ -256,6 +262,17 @@
 >
 	<svg class="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+	</svg>
+</button>
+
+<!-- Toggle copy-paste button -->
+<button
+	class="fixed bottom-4 right-16 z-50 rounded-full bg-gray-700 p-2.5 shadow-lg transition-colors hover:bg-gray-600"
+	onclick={() => (showCopyPaste = !showCopyPaste)}
+	title={showCopyPaste ? 'Hide Copy Pastes' : 'Show Copy Pastes'}
+>
+	<svg class="h-5 w-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
 	</svg>
 </button>
 
@@ -284,10 +301,11 @@
 				/>
 			</svg>
 			<p class="mb-6 text-gray-300">
-				Are you sure you want to clear <span class="font-semibold text-white">{clearType}</span>?
+				Are you sure you want to clear <span class="font-semibold text-white">{clearType}</span>? You can also create a new empty tab instead.
 			</p>
 			<div class="flex justify-center gap-3">
 				<button class="btn btn-danger" onclick={executeClear}>Yes, clear</button>
+				<button class="btn btn-primary" onclick={() => { tabStore.createTab('empty', [], null); showClearConfirm = false; successToast('New tab created'); }}>New Tab</button>
 				<button class="btn btn-secondary" onclick={() => (showClearConfirm = false)}>
 					Cancel
 				</button>

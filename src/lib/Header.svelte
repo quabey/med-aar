@@ -5,8 +5,7 @@
 
 	const navLinks = [
 		{ href: '/', label: 'AAR Builder' },
-		{ href: '/dispatch-tool', label: 'Dispatch Tool' },
-		{ href: '/copy-pastes', label: 'Copy-Pastes', badge: 'WIP' }
+		{ href: '/dispatch-tool', label: 'Dispatch Tool' }
 	];
 </script>
 
