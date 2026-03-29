@@ -3,6 +3,9 @@
 
 	const LS_FAVORITES = 'medtools:copyPasteFavorites';
 	const LS_CUSTOM = 'medtools:copyPasteCustom';
+	const LS_NAME = 'medtools:copyPasteName';
+
+	const NAME_PLACEHOLDER = '[INSERT NAME HERE]';
 
 	const defaultMessages = [
 		{ id: 'status-sb', category: 'Status', label: 'Stand-By', text: ':SB1::SB2::SB3::SB4::SB5::SB6::SB7:' },
@@ -52,10 +55,20 @@
 	let favorites = $state(loadFavorites());
 	let customMessages = $state(loadCustom());
 	let showAdd = $state(false);
+	let showSettings = $state(false);
 	let newLabel = $state('');
 	let newText = $state('');
 	let newCategory = $state('Custom');
 	let collapsed = $state(false);
+	let userName = $state(typeof window !== 'undefined' ? (localStorage.getItem(LS_NAME) || '') : '');
+
+	function needsName(text) {
+		return text.includes(NAME_PLACEHOLDER);
+	}
+
+	function saveName() {
+		localStorage.setItem(LS_NAME, userName);
+	}
 
 	function saveFavorites() {
 		localStorage.setItem(LS_FAVORITES, JSON.stringify([...favorites]));
@@ -77,6 +90,9 @@
 
 	function copyMessage(text, category) {
 		let finalText = text;
+		if (userName) {
+			finalText = finalText.replaceAll(NAME_PLACEHOLDER, userName);
+		}
 		if (category === 'Status') {
 			const ts = Math.floor(Date.now() / 1000);
 			finalText = `${text} <t:${ts}:R>`;
@@ -139,6 +155,16 @@
 			</button>
 			<button
 				class="rounded p-1 text-gray-400 transition-colors hover:text-white"
+				onclick={() => (showSettings = !showSettings)}
+				title="Settings"
+			>
+				<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+				</svg>
+			</button>
+			<button
+				class="rounded p-1 text-gray-400 transition-colors hover:text-white"
 				onclick={() => (collapsed = !collapsed)}
 				title={collapsed ? 'Expand' : 'Collapse'}
 			>
@@ -150,6 +176,25 @@
 	</div>
 
 	{#if !collapsed}
+		<!-- Settings panel -->
+		{#if showSettings}
+			<div class="border-b border-gray-700 bg-gray-800/60 p-3 flex flex-col gap-2">
+				<p class="text-[10px] font-semibold uppercase tracking-widest text-gray-500">Settings</p>
+				<div class="flex flex-col gap-1">
+					<label for="cp-name" class="text-xs text-gray-400">Your name (replaces [INSERT NAME HERE])</label>
+					<input
+						id="cp-name"
+						type="text"
+						class="input text-xs"
+						placeholder="Enter your name..."
+						bind:value={userName}
+						oninput={saveName}
+					/>
+				</div>
+				<button class="btn-sm btn-outline text-xs self-end" onclick={() => (showSettings = false)}>Close</button>
+			</div>
+		{/if}
+
 		<!-- Add new message form -->
 		{#if showAdd}
 			<div class="border-b border-gray-700 bg-gray-800/60 p-3 flex flex-col gap-2">
@@ -190,10 +235,20 @@
 								title="Unfavorite"
 							>★</button>
 							<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
-							<button
-								class="btn-sm btn-primary text-[10px] flex-shrink-0"
-								onclick={() => copyMessage(msg.text, msg.category)}
-							>Copy</button>
+							{#if needsName(msg.text) && !userName}
+								<span class="relative group flex-shrink-0">
+									<button
+										class="btn-sm text-[10px] bg-gray-600 text-gray-400 cursor-not-allowed"
+										disabled
+									>Copy</button>
+									<span class="pointer-events-none absolute bottom-full right-0 mb-1 hidden whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-[10px] text-gray-300 shadow-lg group-hover:block">Set your name in settings</span>
+								</span>
+							{:else}
+								<button
+									class="btn-sm btn-primary text-[10px] flex-shrink-0"
+									onclick={() => copyMessage(msg.text, msg.category)}
+								>Copy</button>
+							{/if}
 						</div>
 					{/each}
 				</div>
@@ -210,10 +265,20 @@
 								title={favorites.has(msg.id) ? 'Unfavorite' : 'Favorite'}
 							>★</button>
 							<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
-							<button
-								class="btn-sm btn-primary text-[10px] flex-shrink-0"
-								onclick={() => copyMessage(msg.text, msg.category)}
-							>Copy</button>
+							{#if needsName(msg.text) && !userName}
+								<span class="relative group flex-shrink-0">
+									<button
+										class="btn-sm text-[10px] bg-gray-600 text-gray-400 cursor-not-allowed"
+										disabled
+									>Copy</button>
+									<span class="pointer-events-none absolute bottom-full right-0 mb-1 hidden whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-[10px] text-gray-300 shadow-lg group-hover:block">Set your name in settings</span>
+								</span>
+							{:else}
+								<button
+									class="btn-sm btn-primary text-[10px] flex-shrink-0"
+									onclick={() => copyMessage(msg.text, msg.category)}
+								>Copy</button>
+							{/if}
 							{#if msg.id.startsWith('custom-')}
 								<button
 									class="flex-shrink-0 rounded p-0.5 text-gray-600 transition-colors hover:text-red-400"
