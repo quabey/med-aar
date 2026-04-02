@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 import { env } from '$env/dynamic/private';
 import { sendApprovalWebhook } from '$lib/server/discord-webhook.js';
+import { log } from '$lib/server/logger.js';
 
 const GUILD_ID = '730982567972700281';
 const REQUIRED_ROLE_ID = '1061421870404079716';
@@ -101,6 +102,9 @@ export async function POST({ request }) {
 				avatar: discordUser.avatar
 			});
 		}
+
+		const displayName = discordUser.global_name || discordUser.username || 'Unknown';
+		await log('user.signup', `${displayName} (${discordUser.id || 'unknown'}) registered${isFirstUser ? ' as first user (auto-admin)' : ''}`);
 
 		return json({ ok: true, status: isFirstUser ? 'approved' : 'pending' });
 	}

@@ -117,6 +117,7 @@
 		if (tab === 'ships') loadShips();
 		if (tab === 'templates') loadTemplates();
 		if (tab === 'locations') loadLocations();
+		if (tab === 'logs') loadLogs(true);
 	});
 
 	const filteredUsers = $derived(
@@ -131,31 +132,37 @@
 
 	// ── Users CRUD ──────────────────────────────────────────
 	async function approveUser(userId) {
+		const user = users.find((u) => u.id === userId);
 		const { error } = await supabase
 			.from('profiles')
 			.update({ is_approved: true, approval_status: 'approved' })
 			.eq('id', userId);
 		if (error) return errorToast('Failed to approve user');
+		adminLog('user.approved', `Approved ${user?.discord_username || userId}`);
 		successToast('User approved');
 		loadUsers();
 	}
 
 	async function rejectUser(userId) {
+		const user = users.find((u) => u.id === userId);
 		const { error } = await supabase
 			.from('profiles')
 			.update({ is_approved: false, approval_status: 'rejected' })
 			.eq('id', userId);
 		if (error) return errorToast('Failed to reject user');
+		adminLog('user.rejected', `Rejected ${user?.discord_username || userId}`);
 		successToast('User rejected');
 		loadUsers();
 	}
 
 	async function toggleAdmin(userId, currentlyAdmin) {
+		const user = users.find((u) => u.id === userId);
 		const { error } = await supabase
 			.from('profiles')
 			.update({ is_admin: !currentlyAdmin })
 			.eq('id', userId);
 		if (error) return errorToast('Failed to update admin status');
+		adminLog('user.admin_toggled', `${currentlyAdmin ? 'Removed' : 'Granted'} admin for ${user?.discord_username || userId}`);
 		successToast(currentlyAdmin ? 'Admin removed' : 'Admin granted');
 		loadUsers();
 	}
@@ -181,12 +188,14 @@
 				.update({ name: newPaste.name, category: newPaste.category, content_normal: newPaste.content_normal, sort_order: newPaste.sort_order })
 				.eq('id', editingPaste.id);
 			if (error) return errorToast('Failed to update');
+			adminLog('copypaste.updated', `Updated "${newPaste.name}"`);
 			successToast('Copypaste updated');
 		} else {
 			const { error } = await supabase
 				.from('copypastes')
 				.insert({ name: newPaste.name, category: newPaste.category || 'Custom', content_normal: newPaste.content_normal, sort_order: newPaste.sort_order });
 			if (error) return errorToast('Failed to create');
+			adminLog('copypaste.created', `Created "${newPaste.name}"`);
 			successToast('Copypaste created');
 		}
 		showPasteModal = false;
@@ -194,8 +203,10 @@
 	}
 
 	async function deletePaste(id) {
+		const paste = copypastes.find((p) => p.id === id);
 		const { error } = await supabase.from('copypastes').delete().eq('id', id);
 		if (error) return errorToast('Failed to delete');
+		adminLog('copypaste.deleted', `Deleted "${paste?.name || id}"`);
 		successToast('Copypaste deleted');
 		loadCopypastes();
 	}
@@ -205,7 +216,10 @@
 		saving = true;
 		try {
 			const ok = await config.saveAlertTypes();
-			if (ok) successToast('Alert types saved');
+			if (ok) {
+				adminLog('alertTypes.saved', `Saved ${config.alertTypes.length} alert types`);
+				successToast('Alert types saved');
+			}
 			else errorToast('Failed to save');
 		} catch {
 			errorToast('Failed to save');
@@ -235,6 +249,7 @@
 			sort_order: dbShips.filter((s) => s.category === editingShip.category).length
 		});
 		if (error) return errorToast('Failed to add ship');
+		adminLog('ship.added', `Added "${editingShip.name}" (${editingShip.category})`);
 		successToast('Ship added');
 		editingShip = { name: '', value: '', category: editingShip.category };
 		loadShips();
@@ -242,8 +257,10 @@
 	}
 
 	async function removeShipFromDB(id) {
+		const ship = dbShips.find((s) => s.id === id);
 		const { error } = await supabase.from('ships').delete().eq('id', id);
 		if (error) return errorToast('Failed to remove ship');
+		adminLog('ship.removed', `Removed "${ship?.name || id}"`);
 		successToast('Ship removed');
 		loadShips();
 		config.reload();
@@ -259,6 +276,7 @@
 			sort_order: dbLocations.length
 		});
 		if (error) return errorToast('Failed to add location');
+		adminLog('location.added', `Added "${editingLocation.name}"`);
 		successToast('Location added');
 		editingLocation = { name: '', type: '', planetary_body: '' };
 		loadLocations();
@@ -266,8 +284,10 @@
 	}
 
 	async function removeLocationFromDB(id) {
+		const loc = dbLocations.find((l) => l.id === id);
 		const { error } = await supabase.from('locations').delete().eq('id', id);
 		if (error) return errorToast('Failed to remove location');
+		adminLog('location.removed', `Removed "${loc?.name || id}"`);
 		successToast('Location removed');
 		loadLocations();
 		config.reload();
@@ -334,10 +354,12 @@
 		if (editingTemplate) {
 			const { error } = await supabase.from('templates').update(payload).eq('id', editingTemplate.id);
 			if (error) return errorToast('Failed to update template');
+			adminLog('template.updated', `Updated "${newTemplate.name}"`);
 			successToast('Template updated');
 		} else {
 			const { error } = await supabase.from('templates').insert(payload);
 			if (error) return errorToast('Failed to create template');
+			adminLog('template.created', `Created "${newTemplate.name}"`);
 			successToast('Template created');
 		}
 		showTemplateModal = false;
@@ -346,8 +368,10 @@
 	}
 
 	async function deleteTemplate(id) {
+		const tmpl = dbTemplates.find((t) => t.id === id);
 		const { error } = await supabase.from('templates').delete().eq('id', id);
 		if (error) return errorToast('Failed to delete template');
+		adminLog('template.deleted', `Deleted "${tmpl?.name || id}"`);
 		successToast('Template deleted');
 		loadTemplates();
 		config.reload();
@@ -402,6 +426,23 @@
 	// Webhook test state
 	let webhookTesting = $state(false);
 
+	// Logs state
+	let logs = $state([]);
+	let logsLoading = $state(false);
+	let logsTotal = $state(0);
+	let logsOffset = $state(0);
+	let logsHasMore = $derived(logsOffset + logs.length < logsTotal);
+	let logsSentinel = $state(null);
+
+	/** Fire-and-forget admin log from client side */
+	function adminLog(action, details) {
+		fetch('/api/admin/log', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ action, details })
+		}).catch(() => {});
+	}
+
 	async function testWebhook() {
 		webhookTesting = true;
 		try {
@@ -415,6 +456,54 @@
 		webhookTesting = false;
 	}
 
+	// ── Logs ────────────────────────────────────────────────
+	async function loadLogs(reset = false) {
+		if (logsLoading) return;
+		logsLoading = true;
+		if (reset) {
+			logsOffset = 0;
+			logs = [];
+		}
+		try {
+			const res = await fetch(`/api/admin/logs?limit=50&offset=${logsOffset}`);
+			const data = await res.json();
+			if (data.logs) {
+				logs = reset ? data.logs : [...logs, ...data.logs];
+				logsTotal = data.total || 0;
+				logsOffset = logs.length;
+			}
+		} catch {
+			errorToast('Failed to load logs');
+		}
+		logsLoading = false;
+	}
+
+	function setupLogsSentinel(node) {
+		const observer = new IntersectionObserver((entries) => {
+			if (entries[0].isIntersecting && logsHasMore && !logsLoading) {
+				loadLogs();
+			}
+		}, { rootMargin: '200px' });
+		observer.observe(node);
+		return { destroy: () => observer.disconnect() };
+	}
+
+	// ── Completed alerts sync ───────────────────────────────
+	let syncLoading = $state(false);
+
+	async function syncCompletedAlerts() {
+		syncLoading = true;
+		try {
+			const res = await fetch('/api/cron/sync-completed-alerts');
+			const data = await res.json();
+			if (res.ok) successToast(`Synced ${data.upserted} completed alerts`);
+			else errorToast(data.error || 'Sync failed');
+		} catch {
+			errorToast('Sync failed');
+		}
+		syncLoading = false;
+	}
+
 	const editors = [
 		{ key: 'users', label: 'Users' },
 		{ key: 'copypastes', label: 'Copypastes' },
@@ -423,7 +512,8 @@
 		{ key: 'locations', label: 'Locations' },
 		{ key: 'templates', label: 'Templates' },
 		{ key: 'staffLookup', label: 'Staff Lookup' },
-		{ key: 'webhook', label: 'Webhook' }
+		{ key: 'webhook', label: 'Webhook' },
+		{ key: 'logs', label: 'Logs' }
 	];
 </script>
 
@@ -774,6 +864,63 @@
 			>
 				{webhookTesting ? 'Sending...' : 'Send Test Webhook'}
 			</button>
+
+			<hr class="border-gray-700" />
+
+			<h2 class="text-lg font-semibold text-gray-200">Completed Alerts Sync</h2>
+			<p class="text-sm text-gray-400">Manually trigger a sync of completed alerts from the Medrunner API. This normally runs every hour via cron.</p>
+			<button
+				class="btn btn-primary text-sm"
+				onclick={syncCompletedAlerts}
+				disabled={syncLoading}
+			>
+				{syncLoading ? 'Syncing...' : 'Sync Now'}
+			</button>
+		</div>
+	{/if}
+
+	<!-- ═══ Logs ═══ -->
+	{#if activeEditor === 'logs'}
+		<div class="space-y-4">
+			<div class="flex items-center justify-between">
+				<h2 class="text-lg font-semibold text-gray-200">Activity Logs</h2>
+				<span class="text-xs text-gray-500">{logsTotal} total entries</span>
+			</div>
+
+			{#if logs.length > 0}
+				<div class="rounded-lg border border-gray-700 bg-gray-800/50">
+					{#each logs as entry}
+						<div class="flex items-start justify-between border-b border-gray-700/50 px-4 py-3 last:border-b-0">
+							<div class="min-w-0 flex-1">
+								<div class="flex items-center gap-2">
+									<span class="rounded bg-gray-700 px-1.5 py-0.5 text-[10px] font-mono text-gray-300">{entry.action}</span>
+									<span class="text-xs text-gray-500">{entry.actor_name}</span>
+								</div>
+								{#if entry.details}
+									<p class="mt-1 truncate text-sm text-gray-300">{entry.details}</p>
+								{/if}
+							</div>
+							<span class="ml-4 shrink-0 text-xs text-gray-500" title={new Date(entry.created_at).toLocaleString()}>
+								{timeAgo(new Date(entry.created_at).getTime() / 1000)}
+							</span>
+						</div>
+					{/each}
+				</div>
+
+				{#if logsHasMore}
+					<div use:setupLogsSentinel class="flex justify-center py-4">
+						{#if logsLoading}
+							<LoadingSpinner />
+						{:else}
+							<span class="text-xs text-gray-500">Scroll for more...</span>
+						{/if}
+					</div>
+				{/if}
+			{:else if logsLoading}
+				<div class="flex justify-center py-8"><LoadingSpinner /></div>
+			{:else}
+				<p class="text-sm text-gray-500 italic">No logs yet.</p>
+			{/if}
 		</div>
 	{/if}
 </div>
