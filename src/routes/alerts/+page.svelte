@@ -388,7 +388,11 @@
 													<span class="text-xs text-gray-500">Team Members ({allMembers.length})</span>
 													<div class="mt-1 flex flex-wrap gap-2">
 														{#each allMembers as member}
-															<span class="rounded bg-gray-700 px-2 py-1 text-xs text-gray-300">
+															<a
+																	href="/medrunner/{encodeURIComponent(member.rsiHandle || member.discordId)}"
+																class="rounded bg-gray-700 px-2 py-1 text-xs text-gray-300 transition-colors hover:bg-gray-600 hover:text-white"
+																onclick={(e) => e.stopPropagation()}
+															>
 																{member.rsiHandle || member.discordUsername || member.discordId}
 																{#if (alert.responding_team?.staff || []).some(s => s.discordId === member.discordId)}
 																	<span class="ml-1 text-[10px] text-yellow-400">staff</span>
@@ -396,7 +400,7 @@
 																{#if (alert.responding_team?.dispatchers || []).some(d => d.discordId === member.discordId)}
 																	<span class="ml-1 text-[10px] text-blue-400">dispatch</span>
 																{/if}
-															</span>
+															</a>
 														{/each}
 													</div>
 												</div>

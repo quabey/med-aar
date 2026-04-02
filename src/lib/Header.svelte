@@ -10,7 +10,8 @@
 	const navLinks = [
 		{ href: '/', label: 'AAR Builder' },
 		{ href: '/dispatch-tool', label: 'Dispatch Tool' },
-		{ href: '/alerts', label: 'Alerts' }
+		{ href: '/alerts', label: 'Alerts' },
+		{ href: '/medrunner', label: 'Profiles' }
 	];
 
 	async function logout() {

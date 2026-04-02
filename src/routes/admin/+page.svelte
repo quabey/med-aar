@@ -1,4 +1,5 @@
 <script>
+	import { untrack } from 'svelte';
 	import { config } from '$lib/config/index.svelte.js';
 	import Modal from '$lib/components/Modal.svelte';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
@@ -112,12 +113,14 @@
 
 	$effect(() => {
 		const tab = activeEditor;
-		if (tab === 'users') loadUsers();
-		if (tab === 'copypastes') loadCopypastes();
-		if (tab === 'ships') loadShips();
-		if (tab === 'templates') loadTemplates();
-		if (tab === 'locations') loadLocations();
-		if (tab === 'logs') loadLogs(true);
+		untrack(() => {
+			if (tab === 'users') loadUsers();
+			if (tab === 'copypastes') loadCopypastes();
+			if (tab === 'ships') loadShips();
+			if (tab === 'templates') loadTemplates();
+			if (tab === 'locations') loadLocations();
+			if (tab === 'logs') loadLogs(true);
+		});
 	});
 
 	const filteredUsers = $derived(
