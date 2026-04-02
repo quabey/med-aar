@@ -1,6 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { createClient } from '@supabase/supabase-js';
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { env as publicEnv } from '$env/dynamic/public';
 import { env } from '$env/dynamic/private';
 import { sendApprovalWebhook } from '$lib/server/discord-webhook.js';
 
@@ -54,7 +54,7 @@ export async function POST({ request }) {
 
 	// User is verified — update profile using service role client
 	const supabaseAdmin = createClient(
-		PUBLIC_SUPABASE_URL,
+		publicEnv.PUBLIC_SUPABASE_URL,
 		env.SUPABASE_SECRET_KEY
 	);
 
