@@ -1,27 +1,50 @@
 import { json } from '@sveltejs/kit';
+import { createClient } from '@supabase/supabase-js';
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { env } from '$env/dynamic/private';
 
-const ALERTS_KEY = 'recent-alerts';
 const MAX_ALERTS = 100;
 
-export async function GET({ platform }) {
-	const kv = platform?.env?.CONFIG_KV;
-	if (!kv) return json({ alerts: [] });
+function getSupabaseAdmin() {
+	return createClient(PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY);
+}
 
+export async function GET() {
 	try {
-		const raw = await kv.get(ALERTS_KEY);
-		if (!raw) return json({ alerts: [] });
-		return json({ alerts: JSON.parse(raw) });
+		const supabase = getSupabaseAdmin();
+		const { data, error } = await supabase
+			.from('cached_alerts')
+			.select('*')
+			.order('creation_timestamp', { ascending: false })
+			.limit(MAX_ALERTS);
+
+		if (error) {
+			console.error('Alert fetch error:', error);
+			return json({ alerts: [] });
+		}
+
+		// Map DB columns back to camelCase for client compatibility
+		const alerts = (data || []).map((row) => ({
+			id: row.id,
+			clientRsiHandle: row.client_rsi_handle,
+			missionName: row.mission_name,
+			system: row.system,
+			subsystem: row.subsystem,
+			tertiaryLocation: row.tertiary_location,
+			threatLevel: row.threat_level,
+			status: row.status,
+			creationTimestamp: row.creation_timestamp,
+			test: row.test,
+			storedAt: row.stored_at
+		}));
+
+		return json({ alerts });
 	} catch {
 		return json({ alerts: [] });
 	}
 }
 
-export async function POST({ request, platform }) {
-	const kv = platform?.env?.CONFIG_KV;
-	if (!kv) {
-		return json({ error: 'KV not configured' }, { status: 500 });
-	}
-
+export async function POST({ request }) {
 	let alert;
 	try {
 		alert = await request.json();
@@ -34,33 +57,43 @@ export async function POST({ request, platform }) {
 	}
 
 	try {
-		const raw = await kv.get(ALERTS_KEY);
-		const alerts = raw ? JSON.parse(raw) : [];
+		const supabase = getSupabaseAdmin();
 
-		// Don't store duplicates
-		if (alerts.some((a) => a.id === alert.id)) {
-			return json({ success: true, duplicate: true });
-		}
-
-		// Store only relevant fields
-		const stored = {
+		const row = {
 			id: alert.id,
-			clientRsiHandle: alert.clientRsiHandle || '',
-			missionName: alert.missionName || '',
+			client_rsi_handle: alert.clientRsiHandle || '',
+			mission_name: alert.missionName || '',
 			system: alert.system || '',
 			subsystem: alert.subsystem || '',
-			tertiaryLocation: alert.tertiaryLocation || '',
-			threatLevel: alert.threatLevel ?? 0,
+			tertiary_location: alert.tertiaryLocation || '',
+			threat_level: alert.threatLevel ?? 0,
 			status: alert.status ?? 0,
-			creationTimestamp: alert.creationTimestamp || Date.now(),
+			creation_timestamp: alert.creationTimestamp || Date.now(),
 			test: alert.test || false,
-			storedAt: Date.now()
+			stored_at: Date.now()
 		};
 
-		alerts.unshift(stored);
-		if (alerts.length > MAX_ALERTS) alerts.length = MAX_ALERTS;
+		const { error } = await supabase
+			.from('cached_alerts')
+			.upsert(row, { onConflict: 'id' });
 
-		await kv.put(ALERTS_KEY, JSON.stringify(alerts));
+		if (error) {
+			console.error('Alert store error:', error);
+			return json({ error: 'Failed to store alert' }, { status: 500 });
+		}
+
+		// Prune old alerts beyond MAX_ALERTS
+		const { data: oldest } = await supabase
+			.from('cached_alerts')
+			.select('id')
+			.order('creation_timestamp', { ascending: false })
+			.range(MAX_ALERTS, MAX_ALERTS + 1000);
+
+		if (oldest?.length) {
+			const idsToDelete = oldest.map((r) => r.id);
+			await supabase.from('cached_alerts').delete().in('id', idsToDelete);
+		}
+
 		return json({ success: true });
 	} catch (err) {
 		console.error('Alert store error:', err);

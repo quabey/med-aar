@@ -1,59 +1,14 @@
 <script>
 	import { successToast } from '$lib/state/toast.svelte.js';
+	import { supabase } from '$lib/supabaseClient.js';
 
-	const LS_FAVORITES = 'medtools:copyPasteFavorites';
-	const LS_CUSTOM = 'medtools:copyPasteCustom';
 	const LS_NAME = 'medtools:copyPasteName';
-
 	const NAME_PLACEHOLDER = '[INSERT NAME HERE]';
 
-	const defaultMessages = [
-		{ id: 'status-sb', category: 'Status', label: 'Stand-By', text: ':SB1::SB2::SB3::SB4::SB5::SB6::SB7:' },
-		{ id: 'status-aa', category: 'Status', label: 'On Alert', text: ':AA1::AA2::AA3::AA4::AA5::AA6::AA7::AA8:' },
-		{ id: 'greet-before-questions', category: 'Greetings', label: 'Before questions answered', text: '**Thank you for choosing Medrunner Services!**\n\n Once the Questionnaire has been submitted we can proceed.' },
-		{ id: 'greet-reminder-questionnaire', category: 'Greetings', label: 'Reminder to fill in the Questionnaire', text: 'Could you please fill in the Questionnaire?\n If you have already, be sure to press submit for I don\'t see them.' },
-		{ id: 'greet-without-dispatch', category: 'Greetings', label: 'Without Dispatch', text: 'Hello! My name is **[INSERT NAME HERE]**, and I\'ll be leading the team dispatched to your location.\n\n I will be sending you a friend request and/or party invite.\n (To accept the invite, make sure you\'re in first-person view and spam the key to the right of `P` — typically the `[` key - though it may vary depending on your keyboard layout.)\n\n **Please confirm here when you are ready to receive the invites!**' },
-		{ id: 'greet-no-teams', category: 'Greetings', label: 'No teams available', text: '**Thank you for choosing Medrunner Services!**\n\nWe\'ve received your alert — no need to worry. All active teams are currently deployed, but one will be assigned to you shortly.\n In the meantime, if you haven\'t already, please complete and submit the questionnaire.\n\n **Thank you for your patience!**' },
-		{ id: 'greet-confirm-invites', category: 'Greetings', label: 'Confirmation for invites (if ignored)', text: 'Please let me know when you are ready to receive the invites!' },
-		{ id: 'nocontact-warning', category: 'Without Contact', label: 'No Contact Warning', text: 'Just as fair warning, if we haven\'t heard from you within the next 5 minutes, we will hope all is well and close this alert.' },
-		{ id: 'nocontact-standdown', category: 'Without Contact', label: 'No Contact standdown', text: 'Standing down due to no contact. You\'re welcome to resubmit, but please know that you will need to be ready to accept friend and party invites and answer the questions in order for us to respond.' },
-		{ id: 'fr-check-key', category: 'Friend Request Bugged', label: 'Check their accept key', text: 'Hmm it was not accepted, is your default accept key the Left Bracket `[` ?' },
-		{ id: 'fr-bugged-spectrum', category: 'Friend Request Bugged', label: 'Bugged, need Spectrum', text: 'The Friend Request has bugged, this is a known problem.\n Please can you navigate to https://robertsspaceindustries.com/spectrum to accept the Friend Request.\n\n Please confirm here once you have accepted it.' },
-		{ id: 'invite-fr-sent', category: 'Invites & Joining', label: 'Friend Request sent', text: 'Friend Request sent, please spam the accept key!' },
-		{ id: 'invite-party-sent', category: 'Invites & Joining', label: 'Party Invite sent', text: 'Party Invite sent, please spam the accept key!' },
-		{ id: 'invite-joining-server', category: 'Invites & Joining', label: 'Joining server', text: 'Perfect! Our Team is joining your Server now. I will notify you when we are en route.' },
-		{ id: 'invite-server-full', category: 'Invites & Joining', label: 'If server full', text: 'Perfect! Our Team is joining your Server now. I will notify you when we are en route.\n Do note your server is full, there may be a short delay. I apologize for this in advance.' },
-		{ id: 'invite-joining-friends', category: 'Invites & Joining', label: 'Joining server then inviting friends', text: 'I will get your friend(s) in the party as well. Please provide me a moment to load into the server.' },
-		{ id: 'deploy-confirm-friends', category: 'Deploying Comms', label: 'Confirming you can invite friends', text: 'I can now invite your friend(s) to the party. Please confirm here when they are ready to accept.' },
-		{ id: 'deploy-no-markers', category: 'Deploying Comms', label: 'No Party markers', text: 'We sadly do not have your party marker.\n\n Could you please open up your console, type `r_displayinfo 2`, close the console, and send me a screenshot of your screen with the info at the top right visible?\n\n Upload it to https://imgur.com/upload and drop the link here.' },
-		{ id: 'deploy-more-info', category: 'Deploying Comms', label: 'More information', text: '**To help ensure we provide an efficient service, please answer the following 2 questions:**\n\n 1) Will you be needing to use our Medical Bed?\n 2) Will you be needing an Extraction to the Closest Station?' },
-		{ id: 'deploy-enroute', category: 'Deploying Comms', label: 'En Route', text: 'Our Team is en route. I will update you when we are shortly arriving.' },
-		{ id: 'deploy-arriving', category: 'Deploying Comms', label: 'Shortly Arriving', text: 'Depending on the situation, we may not pick you up immediately. Please be patient while we secure the area.\n\n We will reach you soon. Switching over to in-game party chat now.\n *Note: If you are downed, it will be harder to read until you are revived.*' },
-		{ id: 'close-success', category: 'Closing Comms', label: 'Success', text: '*As we conclude our service, we\'d like to sincerely thank you for trusting us. We hope today\'s response was prompt, professional, and met your expectations. Your health and satisfaction are our top priorities, and we hope to assist you again in the future if needed.*\n\n If you have a moment, we\'d greatly appreciate it if you could leave a rating and comment on the alert card to let us know how we did today!' },
-		{ id: 'close-failure', category: 'Closing Comms', label: 'Failure', text: '*As we conclude our service, we\'d like to sincerely thank you for trusting us. We\'re sorry that we were unable to rescue you this time. Your health and satisfaction are our top priorities, and we hope that we will be able to assist you in the future if needed.*\n\n If you have a moment, we\'d greatly appreciate it if you could leave a rating and comment on the alert card to let us know how we handled your case today!' },
-		{ id: 'close-other', category: 'Closing Comms', label: 'Non-Success/Non-Failure', text: '*As we conclude our service, we\'d like to sincerely thank you for trusting us. We\'re sorry that we were unable to rescue you this time. Your health and satisfaction are our top priorities, and we hope that we will be able to assist you in the future if needed.*\n\n Until then, we wish you safe travels in the \'Verse.' }
-	];
-
-	function loadFavorites() {
-		if (typeof window === 'undefined') return new Set();
-		try {
-			return new Set(JSON.parse(localStorage.getItem(LS_FAVORITES) || '[]'));
-		} catch {
-			return new Set();
-		}
-	}
-
-	function loadCustom() {
-		if (typeof window === 'undefined') return [];
-		try {
-			return JSON.parse(localStorage.getItem(LS_CUSTOM) || '[]');
-		} catch {
-			return [];
-		}
-	}
-
-	let favorites = $state(loadFavorites());
-	let customMessages = $state(loadCustom());
+	let sharedMessages = $state([]);
+	let customMessages = $state([]);
+	let favoriteIds = $state(new Set());
+	let loaded = $state(false);
 	let showAdd = $state(false);
 	let showSettings = $state(false);
 	let newLabel = $state('');
@@ -61,6 +16,20 @@
 	let newCategory = $state('Custom');
 	let collapsed = $state(false);
 	let userName = $state(typeof window !== 'undefined' ? (localStorage.getItem(LS_NAME) || '') : '');
+
+	async function loadData() {
+		const [sharedRes, favsRes, customRes] = await Promise.all([
+			supabase.from('copypastes').select('*').order('sort_order', { ascending: true }),
+			supabase.from('user_favorites').select('copypaste_id'),
+			supabase.from('user_custom_pastes').select('*').order('sort_order', { ascending: true })
+		]);
+		if (sharedRes.data) sharedMessages = sharedRes.data;
+		if (favsRes.data) favoriteIds = new Set(favsRes.data.map((f) => f.copypaste_id));
+		if (customRes.data) customMessages = customRes.data;
+		loaded = true;
+	}
+
+	if (typeof window !== 'undefined') loadData();
 
 	function needsName(text) {
 		return text.includes(NAME_PLACEHOLDER);
@@ -70,22 +39,19 @@
 		localStorage.setItem(LS_NAME, userName);
 	}
 
-	function saveFavorites() {
-		localStorage.setItem(LS_FAVORITES, JSON.stringify([...favorites]));
-	}
-
-	function saveCustom() {
-		localStorage.setItem(LS_CUSTOM, JSON.stringify(customMessages));
-	}
-
-	function toggleFavorite(id) {
-		if (favorites.has(id)) {
-			favorites.delete(id);
+	async function toggleFavorite(id) {
+		if (favoriteIds.has(id)) {
+			favoriteIds.delete(id);
+			favoriteIds = new Set(favoriteIds);
+			await supabase.from('user_favorites').delete().eq('copypaste_id', id);
 		} else {
-			favorites.add(id);
+			favoriteIds.add(id);
+			favoriteIds = new Set(favoriteIds);
+			const { data: { user } } = await supabase.auth.getUser();
+			if (user) {
+				await supabase.from('user_favorites').insert({ user_id: user.id, copypaste_id: id });
+			}
 		}
-		favorites = new Set(favorites);
-		saveFavorites();
 	}
 
 	function copyMessage(text, category) {
@@ -100,42 +66,38 @@
 		navigator.clipboard.writeText(finalText).then(() => successToast('Copied!'));
 	}
 
-	function addCustom() {
+	async function addCustom() {
 		if (!newLabel.trim() || !newText.trim()) return;
-		const msg = {
-			id: 'custom-' + Date.now(),
-			category: newCategory.trim() || 'Custom',
-			label: newLabel.trim(),
-			text: newText.trim()
-		};
-		customMessages = [...customMessages, msg];
-		saveCustom();
-		newLabel = '';
-		newText = '';
-		newCategory = 'Custom';
-		showAdd = false;
-		successToast('Message added');
+		const { data: { user } } = await supabase.auth.getUser();
+		if (!user) return;
+		const { data, error } = await supabase
+			.from('user_custom_pastes')
+			.insert({ user_id: user.id, name: newLabel.trim(), category: newCategory.trim() || 'Custom', content: newText.trim() })
+			.select()
+			.single();
+		if (!error && data) {
+			customMessages = [...customMessages, data];
+			newLabel = '';
+			newText = '';
+			newCategory = 'Custom';
+			showAdd = false;
+			successToast('Message added');
+		}
 	}
 
-	function deleteCustom(id) {
+	async function deleteCustom(id) {
+		await supabase.from('user_custom_pastes').delete().eq('id', id);
 		customMessages = customMessages.filter((m) => m.id !== id);
-		favorites.delete(id);
-		favorites = new Set(favorites);
-		saveCustom();
-		saveFavorites();
+		successToast('Message deleted');
 	}
 
-	const allMessages = $derived([...defaultMessages, ...customMessages]);
+	// Build unified message list: shared + custom
+	const allMessages = $derived([
+		...sharedMessages.map((m) => ({ id: m.id, category: m.category, label: m.name, text: m.content_normal, isCustom: false })),
+		...customMessages.map((m) => ({ id: m.id, category: m.category, label: m.name, text: m.content, isCustom: true }))
+	]);
 
-	const favoritedMessages = $derived(allMessages.filter((m) => favorites.has(m.id)));
-
-	const sortedMessages = $derived(
-		[...allMessages].sort((a, b) => {
-			const aFav = favorites.has(a.id) ? 0 : 1;
-			const bFav = favorites.has(b.id) ? 0 : 1;
-			return aFav - bFav;
-		})
-	);
+	const favoritedMessages = $derived(allMessages.filter((m) => favoriteIds.has(m.id)));
 
 	const categories = $derived([...new Set(allMessages.map((m) => m.category))]);
 </script>
@@ -260,9 +222,9 @@
 					{#each allMessages.filter((m) => m.category === category) as msg}
 						<div class="mb-1 flex items-center gap-1 rounded bg-gray-700/40 px-2 py-1.5">
 							<button
-								class="flex-shrink-0 text-base leading-none transition-colors {favorites.has(msg.id) ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}"
+								class="flex-shrink-0 text-base leading-none transition-colors {favoriteIds.has(msg.id) ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}"
 								onclick={() => toggleFavorite(msg.id)}
-								title={favorites.has(msg.id) ? 'Unfavorite' : 'Favorite'}
+								title={favoriteIds.has(msg.id) ? 'Unfavorite' : 'Favorite'}
 							>★</button>
 							<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
 							{#if needsName(msg.text) && !userName}
@@ -279,7 +241,7 @@
 									onclick={() => copyMessage(msg.text, msg.category)}
 								>Copy</button>
 							{/if}
-							{#if msg.id.startsWith('custom-')}
+							{#if msg.isCustom}
 								<button
 									class="flex-shrink-0 rounded p-0.5 text-gray-600 transition-colors hover:text-red-400"
 									onclick={() => deleteCustom(msg.id)}

@@ -1,0 +1,59 @@
+## Greetings:
+
+### Before questions answered:
+- **Thank you for choosing Medrunner Services!**\n\n Once the Questionnaire has been submitted we can proceed.
+### Reminder to fill in the Questionnaire:
+- Could you please fill in the Questionnaire?\n If you have already, be sure to press submit for I don't see them.
+### Without Dispatch:
+- Hello! My name is **[INSERT NAME HERE]**, and I’ll be leading the team dispatched to your location.\n\n I will be sending you a friend request and/or party invite.\n (To accept the invite, make sure you're in first-person view and spam the key to the right of `P` — typically the `[` key - though it may vary depending on your keyboard layout.)\n\n **Please confirm here when you are ready to receive the invites!**
+### No teams available:
+- **Thank you for choosing Medrunner Services!**\n\nWe’ve received your alert — no need to worry. All active teams are currently deployed, but one will be assigned to you shortly.\n In the meantime, if you haven’t already, please complete and submit the questionnaire.\n\n **Thank you for your patience!**
+### Confirmation for invites (if ignored):
+- Please let me know when you are ready to receive the invites!
+
+## Without Contact:
+### No Contact Warning:
+- Just as fair warning, if we haven't heard from you within the next 5 minutes, we will hope all is well and close this alert.
+### No Contact standdown:
+- Standing down due to no contact. You're welcome to resubmit, but please know that you will need to be ready to accept friend and party invites and answer the questions in order for us to respond.
+
+## Friend Request bugged:
+
+### Check their accept key:
+- Hmm it was not accepted, is your default accept key the Left Bracket `[` ?
+### Bugged, need Spectrum:
+- The Friend Request has bugged, this is a known problem.\n Please can you navigate to https://robertsspaceindustries.com/spectrum to accept the Friend Request.\n\n Please confirm here once you have accepted it.
+
+## Invites & Joining:
+
+### Invites sent:
+- Friend Request sent, please spam the accept key!
+- Party Invite sent, please spam the accept key!
+### Joining server:
+- Perfect! Our Team is joining your Server now. I will notify you when we are en route.
+### If server full:
+- Perfect! Our Team is joining your Server now. I will notify you when we are en route.\n Do note your server is full, there may be a short delay. I apologize for this in advance.
+### Joining server then inviting friends:
+- I will get your friend(s) in the party as well. Please provide me a moment to load into the server.
+
+## Deploying Comms
+
+### Confirming you can invite friends:
+- I can now invite your friend(s) to the party. Please confirm here when they are ready to accept.
+### No Party markers:
+- We sadly do not have your party marker.\n\n Could you please open up your console, type `r_displayinfo 2`, close the console, and send me a screenshot of your screen with the info at the top right visible?\n\n Upload it to https://imgur.com/upload and drop the link here.
+### More information:
+- **To help ensure we provide an efficient service, please answer the following 2 questions:**\n\n 1) Will you be needing to use our Medical Bed?\n 2) Will you be needing an Extraction to the Closest Station?
+### En Route:
+- Our Team is en route. I will update you when we are shortly arriving.
+### Shortly Arriving:
+- Depending on the situation, we may not pick you up immediately. Please be patient while we secure the area.\n\n We will reach you soon. Switching over to in-game party chat now.\n *Note: If you are downed, it will be harder to read until you are revived.*
+
+## Closing comms
+
+### Success:
+- *As we conclude our service, we’d like to sincerely thank you for trusting us. We hope today’s response was prompt, professional, and met your expectations. Your health and satisfaction are our top priorities, and we hope to assist you again in the future if needed.*\n\n If you have a moment, we’d greatly appreciate it if you could leave a rating and comment on the alert card to let us know how we did today!
+### Failure:
+- *As we conclude our service, we’d like to sincerely thank you for trusting us. We’re sorry that we were unable to rescue you this time. Your health and satisfaction are our top priorities, and we hope that we will be able to assist you in the future if needed.*\n\n If you have a moment, we’d greatly appreciate it if you could leave a rating and comment on the alert card to let us know how we handled your case today!
+### Non-Success/Non-Failure scenarios:
+- *As we conclude our service, we’d like to sincerely thank you for trusting us. We’re sorry that we were unable to rescue you this time. Your health and satisfaction are our top priorities, and we hope that we will be able to assist you in the future if needed.*\n\n Until then, we wish you safe travels in the ’Verse.

@@ -3,12 +3,22 @@
 	import Toast from '$lib/components/Toast.svelte';
 	import { alertStore } from '$lib/state/alerts.svelte.js';
 	import { onMount } from 'svelte';
+	import { supabase } from '$lib/supabaseClient.js';
+	import { invalidateAll } from '$app/navigation';
 	import '../app.css';
 
-	let { children } = $props();
+	let { data, children } = $props();
 
 	onMount(() => {
 		alertStore.initialize();
+
+		const {
+			data: { subscription }
+		} = supabase.auth.onAuthStateChange(() => {
+			invalidateAll();
+		});
+
+		return () => subscription.unsubscribe();
 	});
 </script>
 
@@ -21,7 +31,7 @@
 </svelte:head>
 
 <div class="flex h-screen flex-col overflow-hidden bg-gray-900 font-Mohave font-medium text-white">
-	<Header />
+	<Header profile={data.profile} />
 	<main class="relative flex min-h-0 flex-1 flex-col">
 		{@render children()}
 	</main>

@@ -28,7 +28,7 @@
 	}
 </script>
 
-<div class="relative z-50 border-b border-gray-700 bg-gray-800/50">
+<div class="relative z-30 border-b border-gray-700 bg-gray-800/50">
 	<div class="flex items-center gap-1 px-4 py-1">
 		<div class="flex flex-1 items-center gap-1 overflow-x-auto">
 			{#each tabStore.tabs as tab (tab.id)}

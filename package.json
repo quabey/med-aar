@@ -18,6 +18,7 @@
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.46.0",
 		"globals": "^15.0.0",
+		"pg": "^8.20.0",
 		"postcss": "^8.4.38",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.3.0",
@@ -31,6 +32,8 @@
 	"dependencies": {
 		"@medrunner/api-client": "^0.6.3",
 		"@microsoft/signalr": "^10.0.0",
+		"@supabase/ssr": "^0.10.0",
+		"@supabase/supabase-js": "^2.101.1",
 		"fuse.js": "^7.0.0"
 	}
 }
