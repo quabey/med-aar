@@ -1,12 +1,12 @@
 import { json } from '@sveltejs/kit';
 import { createClient } from '@supabase/supabase-js';
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { env as publicEnv } from '$env/dynamic/public';
 import { env } from '$env/dynamic/private';
 
 const MAX_ALERTS = 100;
 
 function getSupabaseAdmin() {
-	return createClient(PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY);
+	return createClient(publicEnv.PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY);
 }
 
 export async function GET() {
