@@ -1,34 +1,26 @@
 <script>
 	import LocationSearch from '$lib/AAR/LocationSearch.svelte';
-	import { extraction } from '$lib/stores.js';
-	import { Button } from 'flowbite-svelte';
+
+	let { data } = $props();
 </script>
 
-<div class="">
-	{#if !$extraction}
-		<LocationSearch bind:location={$extraction} />
-	{:else if $extraction == 'refused'}
-		<div class="flex flex-row items-center justify-between">
-			<div class="">
-				<span>Client refused Extration.</span>
-			</div>
-			<Button on:click={() => ($extraction = '')}>Clear</Button>
+<div>
+	{#if !data.extraction}
+		<LocationSearch onselect={(loc) => (data.extraction = loc)} />
+		<div class="mt-3 flex justify-end">
+			<button class="btn-sm btn-outline" onclick={() => (data.extraction = 'refused')}>
+				Refused by client
+			</button>
+		</div>
+	{:else if data.extraction === 'refused'}
+		<div class="flex items-center justify-between">
+			<span class="text-sm text-gray-300">Client refused extraction.</span>
+			<button class="btn-sm btn-outline" onclick={() => (data.extraction = '')}>Clear</button>
 		</div>
 	{:else}
-		<div class="flex flex-row items-center justify-between">
-			<div class="">
-				{$extraction}
-			</div>
-			<Button on:click={() => ($extraction = '')}>Edit</Button>
+		<div class="flex items-center justify-between">
+			<span class="text-gray-200">{data.extraction}</span>
+			<button class="btn-sm btn-outline" onclick={() => (data.extraction = '')}>Change</button>
 		</div>
 	{/if}
-	<div class="mt-2 flex justify-end">
-		{#if $extraction != 'refused'}
-			<Button
-				outline
-				class="font-bold dark:border-primary-400 dark:text-primary-400"
-				on:click={() => ($extraction = 'refused')}>Refused by client</Button
-			>
-		{/if}
-	</div>
 </div>

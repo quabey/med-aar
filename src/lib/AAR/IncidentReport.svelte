@@ -1,14 +1,12 @@
 <script>
-	import { Textarea } from 'flowbite-svelte';
-	import { incidentReport } from '$lib/stores.js';
+	let { data } = $props();
 </script>
 
-<div class="">
-	<Textarea
-		id="incidentReport"
-		placeholder="Write the incident Report here..."
-		class=""
-		rows="16"
-		bind:value={$incidentReport}
-	/>
+<div>
+	<textarea
+		bind:value={data.incidentReport}
+		class="textarea w-full"
+		rows="10"
+		placeholder="Write the incident report here..."
+	></textarea>
 </div>

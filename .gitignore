@@ -19,3 +19,8 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+.wrangler/state/v3/kv/REPLACE_WITH_YOUR_PREVIEW_KV_NAMESPACE_ID/blobs/e695739bf0bc9306c3048aa4de22f0533b622ba136f483caa6654039f184c71f0000019d1909b71c
+.wrangler/state/v3/kv/miniflare-KVNamespaceObject/020635935d9092bb3f42ec11785ffeee2a10988e5013b18794b83e621dc2fe6a.sqlite
+*.sqlite
+
+supabase

@@ -1,24 +1,18 @@
 <script>
-	import { toast } from 'svelte-french-toast';
-	import { Button } from 'flowbite-svelte';
+	import { successToast, errorToast } from '$lib/state/toast.svelte.js';
 	import { createMessage } from '$lib/AAR/message.js';
+
+	let { data } = $props();
 
 	function copyMessage() {
 		try {
-			let message = createMessage();
-			console.log(message);
+			const message = createMessage(data);
 			navigator.clipboard.writeText(message);
-			toast.success('Message copied', {
-				style: 'background-color: #2c5278; color: white;',
-				position: 'top-right'
-			});
-		} catch (error) {
-			toast.error('Error copying message, try view the message instead', {
-				style: 'background-color: #2c5278; color: white;',
-				position: 'top-right'
-			});
+			successToast('AAR copied to clipboard');
+		} catch {
+			errorToast('Failed to copy — try the preview instead');
 		}
 	}
 </script>
 
-<Button on:click={copyMessage}>Copy AAR</Button>
+<button class="btn btn-primary" onclick={copyMessage}>Copy AAR</button>

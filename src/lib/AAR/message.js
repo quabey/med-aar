@@ -1,212 +1,255 @@
-import { get } from 'svelte/store';
-import {
-	sections,
-	times,
-	ships,
-	injuries,
-	extraction,
-	texts,
-	location,
-	locationDistance,
-	alertBreakdown,
-	otherShips,
-	injuriesTreatment,
-	incidentReport,
-	vod,
-	alertType,
-	alertTypeOther
-} from '../stores.js';
 import { convertToUnixTimestamp } from './helper.js';
-import { capitalizeFirstLetters } from '$lib/util.js';
 
-export function createMessage() {
-	const sectionsData = get(sections);
-	const timesData = get(times);
-	const shipsData = get(ships);
-	const otherShipsData = get(otherShips);
-	const injuriesData = get(injuries);
-	const extractionData = get(extraction);
-	const textsData = get(texts);
-	const locationData = get(location);
-	const locationDistanceData = get(locationDistance);
-	const alertBreakdownData = get(alertBreakdown);
-	const injuriesTreatmentData = get(injuriesTreatment);
-	const incidentReportData = get(incidentReport);
-	const alertTypeData = get(alertType);
-	const alertTypeOtherData = get(alertTypeOther);
-	const vodData = get(vod);
+function capitalizeFirstLetters(string) {
+	return string
+		.split(' ')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+		.join(' ');
+}
 
+export function createMessage(data) {
 	let message = '';
-	sectionsData.forEach((section) => {
-		console.log('adding section', section.name);
+
+	for (const section of data.sections) {
+		let sectionMsg = '';
 		switch (section.name) {
 			case 'alert type':
-				message += createAlertTypeMessage(alertTypeData, alertTypeOtherData);
+				sectionMsg = createAlertTypeMessage(data.alertType, data.alertTypeOther);
 				break;
 			case 'timing':
-				message += createTimingMessage(timesData);
+				sectionMsg = createTimingMessage(data.times);
 				break;
 			case 'ships':
-				message += createShipsMessage(shipsData, otherShipsData);
+				sectionMsg = createShipsMessage(data.ships, data.otherShips);
 				break;
 			case 'injury':
-				message += createInjuryMessage(injuriesData);
+				sectionMsg = createInjuryMessage(data.injuries);
 				break;
 			case 'extraction':
-				message += createExtractionMessage(extractionData);
+				sectionMsg = createExtractionMessage(data.extraction);
 				break;
 			case 'location':
-				message += createLocationMessage(locationData, locationDistanceData);
+				sectionMsg = createLocationMessage(data);
 				break;
 			case 'alert breakdown':
-				message += createAlertBreakdownMessage(alertBreakdownData);
+				sectionMsg = createAlertBreakdownMessage(data.alertBreakdown);
 				break;
 			case 'incident report':
-				message += createIncidentReportMessage(incidentReportData);
+				sectionMsg = createIncidentReportMessage(data.incidentReport);
 				break;
 			case 'vod':
-				message += createVodMessage(vodData);
+				sectionMsg = createVodMessage(data.vod);
+				break;
+			case 'encounters':
+				sectionMsg = createEncountersMessage(data.encounters);
+				break;
+			case 'issues':
+				sectionMsg = createIssuesMessage(data.issues);
+				break;
+			case 'result':
+				sectionMsg = createResultMessage(data.result);
+				break;
+			case 'summary':
+				sectionMsg = createSummaryMessage(data.summary);
+				break;
+			case 'intersystem response':
+				sectionMsg = createIntersystemMessage(data.intersystemResponse);
+				break;
+			default:
+				if (section.name.includes('text')) {
+					sectionMsg = createTextMessage(data.texts);
+				}
 				break;
 		}
-		if (section.name.includes('text')) {
-			console.log('adding text', section.name);
-			message += createTextMessage(textsData);
-		}
-		message += '\n';
-	});
-	console.log('message', message);
-	return message;
+		if (sectionMsg) message += sectionMsg + '\n';
+	}
+
+	return message.trim();
 }
 
 function createTimingMessage(times) {
 	let message = '**Timing**\n';
-	for (let [key, value] of Object.entries(times)) {
-		if (value) {
-			key = capitalizeFirstLetters(key.replace(/([A-Z])/g, ' $1'));
-			message += `${key}: <t:${convertToUnixTimestamp(value)}:t>\n`;
+	let hasContent = false;
+
+	if (times.offsetMode) {
+		const offsets = [
+			{ key: 'offsetAlert', label: 'Alert' },
+			{ key: 'offsetDepart', label: 'Depart' },
+			{ key: 'offsetClient', label: 'Client' },
+			{ key: 'offsetRTB', label: 'RTB' }
+		];
+		for (const { key, label } of offsets) {
+			if (times[key] != null && times[key] !== '') {
+				hasContent = true;
+				message += `${label}: T+${times[key]} min\n`;
+			}
+		}
+	} else {
+		const timeFields = ['received', 'start', 'departed', 'reached', 'completed'];
+		for (const field of timeFields) {
+			const value = times[field];
+			if (value) {
+				hasContent = true;
+				const label = capitalizeFirstLetters(field.replace(/([A-Z])/g, ' $1'));
+				message += `${label}: <t:${convertToUnixTimestamp(value)}:t>\n`;
+			}
 		}
 	}
-	if (message === '**Timing**\n') {
-		return '';
-	}
-	return message;
+
+	return hasContent ? message : '';
 }
 
 function createShipsMessage(ships, otherShips) {
-	console.log(ships);
-	let message = '**Ships**\n';
 	let gunship = ships.gunship;
 	let medship = ships.medship;
-	if (gunship == 'Other' && otherShips.gunship !== '') {
-		gunship = otherShips.gunship;
+	if (gunship === 'Other' && otherShips.gunship) gunship = otherShips.gunship;
+	if (medship === 'Other' && otherShips.medship) medship = otherShips.medship;
+
+	let lines = [];
+	if (medship) lines.push(`Medical Ship: ${medship}`);
+	if (gunship) lines.push(`Gunship: ${gunship}`);
+	const capShips = ships.cap || [];
+	if (capShips.length > 0) {
+		lines.push(`CAP: ${capShips.join(', ')}`);
 	}
-	if (medship == 'Other' && otherShips.medship !== '') {
-		medship = otherShips.medship;
-	}
-	message += `Medical Ship: ${medship == '' ? 'Unknown' : medship}\n`;
-	message += `Gunship: ${gunship == '' ? 'Unknown' : gunship}\n`;
-	if (ships.qrf.length > 0 && ships.qrf[0] !== '') {
-		message += `QRF: ${ships.qrf.join(', ')}\n`;
-	}
-	// remove all double newlines
-	message = message.replace(/\n\n/g, '\n');
-	return message;
+	if (ships.reason) lines.push(`Reason: ${ships.reason}`);
+
+	if (lines.length === 0) return '';
+	return '**Ships Used**\n' + lines.join('\n') + '\n';
 }
 
 function createInjuryMessage(injuries) {
 	let allUnknown = true;
 	let message = '**Injuries**\n';
+	let hasInjury = false;
+
 	for (let [key, value] of Object.entries(injuries)) {
 		if (value !== 'None') {
-			key = capitalizeFirstLetters(key.replace(/([A-Z])/g, ' $1'));
-			key = message += `- ${key}: ${value}\n`;
+			hasInjury = true;
+			const label = capitalizeFirstLetters(key.replace(/([A-Z])/g, ' $1'));
+			message += `- ${label}: ${value}\n`;
 		}
-		if (value != 'Unknown') {
+		if (value !== 'Unknown') {
 			allUnknown = false;
 		}
 	}
+
 	if (allUnknown) {
-		message = '**Injuries**\n';
-		message += 'Unknown if client had any injuries.\n';
+		return '**Injuries**\nUnknown if client had any injuries.\n';
 	}
-	if (message === '**Injuries**\n') {
-		message += 'No injuries reported.\n';
+	if (!hasInjury) {
+		return '**Injuries**\nNo injuries reported.\n';
 	}
 	return message;
 }
 
 function createExtractionMessage(extraction) {
-	if (extraction !== '' && extraction !== 'refused') {
-		let message = '**Extraction**\n';
-		message += `The client was extracted to ${extraction}\n`;
-		return message;
-	} else if (extraction === 'refused') {
+	if (extraction === 'refused') {
 		return '**Extraction**\nThe client refused extraction.\n';
-	} else {
-		return '';
 	}
+	if (extraction) {
+		return `**Extraction**\nThe client was extracted to ${extraction}\n`;
+	}
+	return '';
 }
 
 function createTextMessage(texts) {
-	console.log('texts', texts);
 	let message = '';
-	texts.forEach((text) => {
-		if (text.title !== '' && text.content !== '') {
-			console.log('adding this text', text);
+	for (const text of texts) {
+		if (text.title && text.content) {
 			message += `**${text.title}**\n${text.content}\n`;
 		}
-	});
+	}
 	return message;
 }
 
-function createLocationMessage(location, locationDistance) {
-	let message = '';
-	if (location == '') return message;
-	if (locationDistance == '') {
-		message += `**Location**\nClient Location: ${location}\n`;
-	} else {
-		message += `**Location**\nThe client was ${locationDistance.toLowerCase()} ${location}. \n`;
+function createLocationMessage(data) {
+	let lines = [];
+	if (data.planetaryBody) lines.push(`Planetary Body: ${data.planetaryBody}`);
+	if (data.locationType) lines.push(`Location Type: ${data.locationType}`);
+	if (data.location) {
+		if (data.locationDistance) {
+			lines.push(`Specific POI: ${data.locationDistance} ${data.location}`);
+		} else {
+			lines.push(`Specific POI: ${data.location}`);
+		}
 	}
-	return message;
+	if (data.intersystemResponse && data.intersystemResponse.required) {
+		lines.push(`Intersystem Response: Yes`);
+		if (data.intersystemResponse.details) lines.push(`ISR Details: ${data.intersystemResponse.details}`);
+	}
+	if (lines.length === 0) return '';
+	return '**Location**\n' + lines.join('\n') + '\n';
 }
 
 function createAlertBreakdownMessage(alertBreakdown) {
-	if (alertBreakdown !== '') {
-		let message = '**Alert Breakdown**\n';
-		message += `${alertBreakdown}\n`;
-		return message;
-	}
-	return '';
+	if (!alertBreakdown) return '';
+	return `**Alert Breakdown**\n${alertBreakdown}\n`;
 }
 
 function createIncidentReportMessage(incidentReport) {
-	if (incidentReport !== '') {
-		let message = '**Incident Report**\n';
-		message += `${incidentReport}\n`;
-		return message;
-	}
-	return '';
+	if (!incidentReport) return '';
+	return `**Incident Report**\n${incidentReport}\n`;
 }
 
 function createVodMessage(vod) {
-	if (vod.url !== '') {
-		let message = '**VOD**\n';
-		message += `VOD${vod.timestamps ? '*(Includes Timestamps)*' : ''}: [VOD Link](${vod.url})\n`;
-		if (vod.commsAllowed) {
-			message += '*Comms Version Available to Media Team Members*\n';
-		}
-		return message;
+	if (!vod.url) return '';
+	let message = '**VOD**\n';
+	message += `VOD${vod.timestamps ? ' *(Includes Timestamps)*' : ''}: [VOD Link](${vod.url})\n`;
+	if (vod.commsAllowed) {
+		message += '*Comms Version Available to Media Team Members*\n';
+	}
+	return message;
+}
+
+function createAlertTypeMessage(alertType, alertTypeOther) {
+	if (alertType && alertType !== 'Other') {
+		return `**Alert Type: ${alertType}**\n`;
+	}
+	if (alertType === 'Other' && alertTypeOther) {
+		return `**Alert Type (Other): ${alertTypeOther}**\n`;
 	}
 	return '';
 }
 
-function createAlertTypeMessage(alertType, alertTypeOther) {
-	let message = '';
-	if (alertType !== '' && alertType !== 'Other') {
-		message += `**Alert Type: ${alertType}**\n`;
-	}
-	if (alertTypeOther !== '' && alertType == 'Other') {
-		message += `**Alert Type (Other): ${alertTypeOther}**\n`;
-	}
-	return message;
+function createEncountersMessage(encounters) {
+	if (!encounters) return '';
+	let lines = [];
+	if (encounters.pve) lines.push(`PVE: ${encounters.pve}`);
+	if (encounters.pvp) lines.push(`PVP: ${encounters.pvp}`);
+	if (encounters.actionsTaken) lines.push(`Actions Taken: ${encounters.actionsTaken}`);
+	if (lines.length === 0) return '';
+	return '**Encounters**\n' + lines.join('\n') + '\n';
+}
+
+function createIssuesMessage(issues) {
+	if (!issues) return '';
+	let lines = [];
+	if (issues.types && issues.types.length > 0) lines.push(`Types: ${issues.types.join(', ')}`);
+	if (issues.problems) lines.push(`Problems: ${issues.problems}`);
+	if (issues.briefFix) lines.push(`Brief Fix: ${issues.briefFix}`);
+	if (lines.length === 0) return '';
+	return '**Issues**\n' + lines.join('\n') + '\n';
+}
+
+function createResultMessage(result) {
+	if (!result) return '';
+	let lines = [];
+	if (result.extractedTo) lines.push(`Client Extracted To: ${result.extractedTo}`);
+	if (result.challenges) lines.push(`Challenges: ${result.challenges}`);
+	if (result.failureReason) lines.push(`Failure/Abort Reason: ${result.failureReason}`);
+	if (lines.length === 0) return '';
+	return '**Result**\n' + lines.join('\n') + '\n';
+}
+
+function createSummaryMessage(summary) {
+	if (!summary) return '';
+	return `**Summary**\n${summary}\n`;
+}
+
+function createIntersystemMessage(intersystem) {
+	if (!intersystem || !intersystem.required) return '';
+	let msg = '**Intersystem Response**\nRequired: Yes\n';
+	if (intersystem.details) msg += `Details: ${intersystem.details}\n`;
+	return msg;
 }

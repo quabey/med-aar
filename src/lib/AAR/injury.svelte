@@ -1,51 +1,41 @@
 <script>
-	import { injuries } from '$lib/stores.js';
-	import { Select, Label, Button, ButtonGroup } from 'flowbite-svelte';
-	import { capitalizeFirstLetters } from '$lib/util.js';
+	let { data } = $props();
 
-	const injuryOptions = [
-		{ value: 'None', name: 'None' },
-		{ value: 'Tier 1', name: 'Tier 1' },
-		{ value: 'Tier 2', name: 'Tier 2' },
-		{ value: 'Tier 3', name: 'Tier 3' },
-		{ value: 'Unknown', name: 'Unknown' }
-	];
+	const injuryOptions = ['None', 'Tier 1', 'Tier 2', 'Tier 3', 'Unknown'];
+	const bodyParts = ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'];
 
-	function setNone() {
-		$injuries['head'] = 'None';
-		$injuries['chest'] = 'None';
-		$injuries['leftArm'] = 'None';
-		$injuries['rightArm'] = 'None';
-		$injuries['leftLeg'] = 'None';
-		$injuries['rightLeg'] = 'None';
+	function formatPartName(part) {
+		return part
+			.replace(/([A-Z])/g, ' $1')
+			.trim()
+			.split(' ')
+			.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+			.join(' ');
 	}
 
-	function setUnknown() {
-		$injuries['head'] = 'Unknown';
-		$injuries['chest'] = 'Unknown';
-		$injuries['leftArm'] = 'Unknown';
-		$injuries['rightArm'] = 'Unknown';
-		$injuries['leftLeg'] = 'Unknown';
-		$injuries['rightLeg'] = 'Unknown';
+	function setAll(value) {
+		for (const part of bodyParts) {
+			data.injuries[part] = value;
+		}
 	}
 </script>
 
-<div class="flex flex-col gap-2 rounded-lg">
-	{#each ['head', 'chest', 'leftArm', 'rightArm', 'leftLeg', 'rightLeg'] as part}
-		<div class="flex flex-row items-center justify-between">
-			{ capitalizeFirstLetters(part.replace(/([A-Z])/g, ' $1')) }:
-			<div class="">
-				<Label>
-					<Select class="" items={injuryOptions} bind:value={$injuries[part]} />
-				</Label>
-			</div>
+<div class="flex flex-col gap-3">
+	{#each bodyParts as part}
+		<div class="flex items-center justify-between gap-2">
+			<label for="injury-{part}" class="text-sm text-gray-300">{formatPartName(part)}</label>
+			<select id="injury-{part}" bind:value={data.injuries[part]} class="select w-36">
+				{#each injuryOptions as option}
+					<option value={option}>{option}</option>
+				{/each}
+			</select>
 		</div>
 	{/each}
 
-	<div class="flex flex-row items-center justify-center gap-3">
-		<ButtonGroup>
-			<Button on:click={setNone}>Set None</Button>
-			<Button on:click={setUnknown}>Set Unknown</Button>
-		</ButtonGroup>
+	<div class="flex justify-center gap-2 pt-2">
+		<button class="btn btn-secondary text-sm" onclick={() => setAll('None')}>Set All None</button>
+		<button class="btn btn-secondary text-sm" onclick={() => setAll('Unknown')}>
+			Set All Unknown
+		</button>
 	</div>
 </div>
