@@ -1,6 +1,7 @@
 <script>
 	import { successToast } from '$lib/state/toast.svelte.js';
 	import { supabase } from '$lib/supabaseClient.js';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	const LS_NAME = 'medtools:copyPasteName';
 	const NAME_PLACEHOLDER = '[INSERT NAME HERE]';
@@ -47,9 +48,9 @@
 		} else {
 			favoriteIds.add(id);
 			favoriteIds = new Set(favoriteIds);
-			const { data: { user } } = await supabase.auth.getUser();
-			if (user) {
-				await supabase.from('user_favorites').insert({ user_id: user.id, copypaste_id: id });
+			const { data } = await supabase.auth.getUser();
+			if (data?.user) {
+				await supabase.from('user_favorites').insert({ user_id: data.user.id, copypaste_id: id });
 			}
 		}
 	}
@@ -68,15 +69,15 @@
 
 	async function addCustom() {
 		if (!newLabel.trim() || !newText.trim()) return;
-		const { data: { user } } = await supabase.auth.getUser();
-		if (!user) return;
-		const { data, error } = await supabase
+		const { data } = await supabase.auth.getUser();
+		if (!data?.user) return;
+		const { data: inserted, error } = await supabase
 			.from('user_custom_pastes')
-			.insert({ user_id: user.id, name: newLabel.trim(), category: newCategory.trim() || 'Custom', content: newText.trim() })
+			.insert({ user_id: data.user.id, name: newLabel.trim(), category: newCategory.trim() || 'Custom', content: newText.trim() })
 			.select()
 			.single();
-		if (!error && data) {
-			customMessages = [...customMessages, data];
+		if (!error && inserted) {
+			customMessages = [...customMessages, inserted];
 			newLabel = '';
 			newText = '';
 			newCategory = 'Custom';
@@ -86,7 +87,11 @@
 	}
 
 	async function deleteCustom(id) {
-		await supabase.from('user_custom_pastes').delete().eq('id', id);
+		const { error } = await supabase.from('user_custom_pastes').delete().eq('id', id);
+		if (error) {
+			console.error('Failed to delete custom paste:', error);
+			return;
+		}
 		customMessages = customMessages.filter((m) => m.id !== id);
 		successToast('Message deleted');
 	}
@@ -186,37 +191,40 @@
 
 		<!-- Messages: favorites section at top, then by category -->
 		<div class="flex-1 overflow-y-auto p-2 pb-16">
-			{#if favoritedMessages.length > 0}
-				<div class="mb-3">
-					<p class="mb-1 px-1 text-[10px] font-semibold uppercase tracking-widest text-yellow-500/70">⭐ Favorites</p>
-					{#each favoritedMessages as msg}
-						<div class="mb-1 flex items-center gap-1 rounded bg-gray-700/40 px-2 py-1.5">
-							<button
-								class="flex-shrink-0 text-base leading-none transition-colors text-yellow-400"
-								onclick={() => toggleFavorite(msg.id)}
-								title="Unfavorite"
-							>★</button>
-							<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
-							{#if needsName(msg.text) && !userName}
-								<span class="relative group flex-shrink-0">
-									<button
-										class="btn-sm text-[10px] bg-gray-600 text-gray-400 cursor-not-allowed"
-										disabled
-									>Copy</button>
-									<span class="pointer-events-none absolute bottom-full right-0 mb-1 hidden whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-[10px] text-gray-300 shadow-lg group-hover:block">Set your name in settings</span>
-								</span>
-							{:else}
+			{#if !loaded}
+				<LoadingSpinner message="Loading messages..." size="sm" />
+			{:else}
+				{#if favoritedMessages.length > 0}
+					<div class="mb-3">
+						<p class="mb-1 px-1 text-[10px] font-semibold uppercase tracking-widest text-yellow-500/70">⭐ Favorites</p>
+						{#each favoritedMessages as msg}
+							<div class="mb-1 flex items-center gap-1 rounded bg-gray-700/40 px-2 py-1.5">
 								<button
-									class="btn-sm btn-primary text-[10px] flex-shrink-0"
-									onclick={() => copyMessage(msg.text, msg.category)}
-								>Copy</button>
-							{/if}
-						</div>
-					{/each}
-				</div>
-				<div class="mx-1 mb-3 h-px bg-gray-700"></div>
-			{/if}
-			{#each categories as category}
+									class="flex-shrink-0 text-base leading-none transition-colors text-yellow-400"
+									onclick={() => toggleFavorite(msg.id)}
+									title="Unfavorite"
+								>★</button>
+								<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
+								{#if needsName(msg.text) && !userName}
+									<span class="relative group flex-shrink-0">
+										<button
+											class="btn-sm text-[10px] bg-gray-600 text-gray-400 cursor-not-allowed"
+											disabled
+										>Copy</button>
+										<span class="pointer-events-none absolute bottom-full right-0 mb-1 hidden whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-[10px] text-gray-300 shadow-lg group-hover:block">Set your name in settings</span>
+									</span>
+								{:else}
+									<button
+										class="btn-sm btn-primary text-[10px] flex-shrink-0"
+										onclick={() => copyMessage(msg.text, msg.category)}
+									>Copy</button>
+								{/if}
+							</div>
+						{/each}
+					</div>
+					<div class="mx-1 mb-3 h-px bg-gray-700"></div>
+				{/if}
+				{#each categories as category}
 				<div class="mb-3">
 					<p class="mb-1 px-1 text-[10px] font-semibold uppercase tracking-widest text-gray-500">{category}</p>
 					{#each allMessages.filter((m) => m.category === category) as msg}
@@ -256,6 +264,7 @@
 					{/each}
 				</div>
 			{/each}
+			{/if}
 		</div>
 	{/if}
 </div>

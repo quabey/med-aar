@@ -2,6 +2,7 @@
 	import { slide } from 'svelte/transition';
 	import { config } from '$lib/config/index.svelte.js';
 	import { alertStore } from '$lib/state/alerts.svelte.js';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	let { onselect } = $props();
 
@@ -31,6 +32,9 @@
 			<p class="text-gray-400">{selectedTemplate ? 'Name your AAR or pick a recent alert' : 'Choose a template to get started'}</p>
 		</div>
 
+		{#if !config.loaded}
+			<LoadingSpinner message="Loading templates..." />
+		{:else}
 		<!-- Template grid (always visible) -->
 		<div class="grid gap-3 sm:grid-cols-3">
 			{#each Object.entries(config.templates) as [id, template]}
@@ -112,6 +116,7 @@
 					</p>
 				{/if}
 			</div>
+		{/if}
 		{/if}
 	</div>
 </div>

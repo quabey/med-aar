@@ -9,7 +9,11 @@ function getSupabaseAdmin() {
 	return createClient(PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY);
 }
 
-export async function GET() {
+export async function GET({ locals }) {
+	if (!locals.session) {
+		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
+
 	try {
 		const supabase = getSupabaseAdmin();
 		const { data, error } = await supabase
@@ -44,7 +48,11 @@ export async function GET() {
 	}
 }
 
-export async function POST({ request }) {
+export async function POST({ request, locals }) {
+	if (!locals.session) {
+		return json({ error: 'Unauthorized' }, { status: 401 });
+	}
+
 	let alert;
 	try {
 		alert = await request.json();

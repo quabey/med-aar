@@ -60,6 +60,11 @@ export async function handle({ event, resolve }) {
 			}
 		}
 
+		// Redirect approved users away from /pending
+		if (event.locals.profile?.is_approved && event.url.pathname === '/pending') {
+			throw redirect(303, '/');
+		}
+
 		if (event.url.pathname.startsWith('/admin')) {
 			if (!event.locals.profile?.is_admin) {
 				throw redirect(303, '/');

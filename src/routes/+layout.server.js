@@ -1,8 +1,7 @@
 export async function load({ locals }) {
-	const { session, user } = await locals.safeGetSession();
 	return {
-		session,
-		user,
+		session: locals.session,
+		user: locals.user,
 		profile: locals.profile
 	};
 }

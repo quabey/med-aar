@@ -1,6 +1,7 @@
 <script>
 	import { config } from '$lib/config/index.svelte.js';
 	import Modal from '$lib/components/Modal.svelte';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 	import { successToast, errorToast } from '$lib/state/toast.svelte.js';
 	import { supabase } from '$lib/supabaseClient.js';
 
@@ -457,7 +458,7 @@
 				</div>
 			</div>
 			{#if usersLoading}
-				<p class="text-sm text-gray-400">Loading...</p>
+				<LoadingSpinner message="Loading users..." />
 			{:else if filteredUsers.length === 0}
 				<p class="text-sm text-gray-500 italic">No users found.</p>
 			{:else}
@@ -510,7 +511,7 @@
 				<button class="btn btn-primary text-sm" onclick={openNewPaste}>+ Add Copypaste</button>
 			</div>
 			{#if copypastesLoading}
-				<p class="text-sm text-gray-400">Loading...</p>
+				<LoadingSpinner message="Loading copypastes..." />
 			{:else}
 				<div class="rounded-lg border border-gray-700 bg-gray-800/50">
 					{#each copypastes as paste}
@@ -564,7 +565,7 @@
 			<h2 class="text-lg font-semibold text-gray-200">Ships</h2>
 
 			{#if shipsLoading}
-				<p class="text-sm text-gray-400">Loading...</p>
+				<LoadingSpinner message="Loading ships..." />
 			{:else}
 				{#each ['medical', 'combat', 'cap'] as category}
 					<div>
@@ -604,7 +605,7 @@
 			</div>
 
 			{#if locationsLoading}
-				<p class="text-sm text-gray-400">Loading...</p>
+				<LoadingSpinner message="Loading locations..." />
 			{:else}
 				<input
 					type="text"
@@ -651,7 +652,7 @@
 			</div>
 
 			{#if templatesLoading}
-				<p class="text-sm text-gray-400">Loading...</p>
+				<LoadingSpinner message="Loading templates..." />
 			{:else}
 				{#each dbTemplates as tmpl}
 					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">

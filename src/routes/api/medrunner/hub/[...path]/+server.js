@@ -14,7 +14,9 @@ function getApi(token) {
 	return cachedApi;
 }
 
-async function proxy({ request, params, url, platform }) {
+async function proxy({ request, params, url, platform, locals }) {
+	if (!locals.session) return new Response('Unauthorized', { status: 401 });
+
 	const token = platform?.env?.MEDRUNNER_TOKEN ?? env.MEDRUNNER_TOKEN;
 	if (!token) return new Response('Not configured', { status: 500 });
 

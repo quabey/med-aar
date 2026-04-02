@@ -1,6 +1,9 @@
 <script>
 	import { supabase } from '$lib/supabaseClient.js';
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+
+	let checking = $state(false);
 
 	async function logout() {
 		await supabase.auth.signOut();
@@ -8,9 +11,27 @@
 	}
 
 	async function checkStatus() {
-		// Reload the page to re-check approval status via hooks
-		window.location.reload();
+		checking = true;
+		try {
+			const { data } = await supabase
+				.from('profiles')
+				.select('is_approved')
+				.single();
+			if (data?.is_approved) {
+				goto('/');
+				return;
+			}
+		} catch {
+			// ignore errors, just stay on pending
+		}
+		checking = false;
 	}
+
+	// Poll every 10 seconds for approval
+	onMount(() => {
+		const interval = setInterval(checkStatus, 10000);
+		return () => clearInterval(interval);
+	});
 </script>
 
 <svelte:head>
@@ -33,9 +54,10 @@
 		<div class="mt-6 flex justify-center gap-3">
 			<button
 				onclick={checkStatus}
-				class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+				disabled={checking}
+				class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500 disabled:opacity-50"
 			>
-				Check Status
+				{checking ? 'Checking...' : 'Check Status'}
 			</button>
 			<button
 				onclick={logout}

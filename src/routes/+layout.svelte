@@ -2,6 +2,7 @@
 	import Header from '$lib/Header.svelte';
 	import Toast from '$lib/components/Toast.svelte';
 	import { alertStore } from '$lib/state/alerts.svelte.js';
+	import { config } from '$lib/config/index.svelte.js';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import { invalidateAll } from '$app/navigation';
@@ -9,9 +10,9 @@
 
 	let { data, children } = $props();
 
-	onMount(() => {
-		alertStore.initialize();
+	const isLoggedIn = $derived(!!data.session && data.profile?.is_approved);
 
+	onMount(() => {
 		const {
 			data: { subscription }
 		} = supabase.auth.onAuthStateChange(() => {
@@ -19,6 +20,13 @@
 		});
 
 		return () => subscription.unsubscribe();
+	});
+
+	$effect(() => {
+		if (isLoggedIn) {
+			alertStore.initialize();
+			config.initialize();
+		}
 	});
 </script>
 
@@ -31,7 +39,9 @@
 </svelte:head>
 
 <div class="flex h-screen flex-col overflow-hidden bg-gray-900 font-Mohave font-medium text-white">
-	<Header profile={data.profile} />
+	{#if isLoggedIn}
+		<Header profile={data.profile} />
+	{/if}
 	<main class="relative flex min-h-0 flex-1 flex-col">
 		{@render children()}
 	</main>

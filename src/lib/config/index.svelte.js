@@ -11,10 +11,16 @@ class ConfigStore {
 	locations = $state(defaultLocations);
 	loaded = $state(false);
 
+	#initialized = false;
+
 	constructor() {
-		if (typeof window !== 'undefined') {
-			this.#fetchConfig();
-		}
+		// Don't auto-fetch; wait for initialize() after auth
+	}
+
+	async initialize() {
+		if (this.#initialized || typeof window === 'undefined') return;
+		this.#initialized = true;
+		await this.#fetchConfig();
 	}
 
 	async #fetchConfig() {

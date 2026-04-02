@@ -1,6 +1,7 @@
 <script>
 	import { untrack } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
+	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	let filters = $state({
 		client: '',
@@ -94,13 +95,21 @@
 		delete countParams.p_limit;
 		delete countParams.p_offset;
 
-		const [{ data }, { data: countData }] = await Promise.all([
+		const [searchRes, countRes] = await Promise.all([
 			supabase.rpc('search_completed_alerts', params),
 			supabase.rpc('count_completed_alerts', countParams)
 		]);
 
-		results = data || [];
-		totalCount = countData || 0;
+		if (searchRes.error) {
+			console.error('Search error:', searchRes.error);
+			results = [];
+			totalCount = 0;
+			loading = false;
+			return;
+		}
+
+		results = searchRes.data || [];
+		totalCount = countRes.data || 0;
 		loading = false;
 	}
 
@@ -252,9 +261,7 @@
 
 		<!-- Results -->
 		{#if loading}
-			<div class="flex justify-center py-12">
-				<p class="text-sm text-gray-400">Loading...</p>
-			</div>
+			<LoadingSpinner message="Searching alerts..." />
 		{:else if results.length === 0 && hasSearched}
 			<div class="py-12 text-center">
 				<p class="text-gray-500">No alerts found matching your criteria.</p>
