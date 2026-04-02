@@ -399,6 +399,22 @@
 		return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 	}
 
+	// Webhook test state
+	let webhookTesting = $state(false);
+
+	async function testWebhook() {
+		webhookTesting = true;
+		try {
+			const res = await fetch('/api/admin/test-webhook', { method: 'POST' });
+			const data = await res.json();
+			if (res.ok) successToast('Webhook test sent successfully');
+			else errorToast(data.error || 'Webhook test failed');
+		} catch {
+			errorToast('Failed to send webhook test');
+		}
+		webhookTesting = false;
+	}
+
 	const editors = [
 		{ key: 'users', label: 'Users' },
 		{ key: 'copypastes', label: 'Copypastes' },
@@ -406,7 +422,8 @@
 		{ key: 'ships', label: 'Ships' },
 		{ key: 'locations', label: 'Locations' },
 		{ key: 'templates', label: 'Templates' },
-		{ key: 'staffLookup', label: 'Staff Lookup' }
+		{ key: 'staffLookup', label: 'Staff Lookup' },
+		{ key: 'webhook', label: 'Webhook' }
 	];
 </script>
 
@@ -743,6 +760,20 @@
 					{/each}
 				</div>
 			{/if}
+		</div>
+	{/if}
+
+	{#if activeEditor === 'webhook'}
+		<div class="space-y-4">
+			<h2 class="text-lg font-semibold text-gray-200">Discord Webhook</h2>
+			<p class="text-sm text-gray-400">Send a test message to the configured Discord webhook to verify it's working.</p>
+			<button
+				class="btn btn-primary text-sm"
+				onclick={testWebhook}
+				disabled={webhookTesting}
+			>
+				{webhookTesting ? 'Sending...' : 'Send Test Webhook'}
+			</button>
 		</div>
 	{/if}
 </div>

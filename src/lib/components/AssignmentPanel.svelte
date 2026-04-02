@@ -1,7 +1,7 @@
 <script>
 	import { assignmentPlayers, assignmentShips, pilotAssignments } from '$lib/stores.js';
 	import { get } from 'svelte/store';
-	import ships from '$lib/config/ships.json';
+	import { config } from '$lib/config/index.svelte.js';
 	import { MEDRUNNER_ROLES, getRoleLabel } from '$lib/data/roles.js';
 	import { successToast, errorToast } from '$lib/state/toast.svelte.js';
 	import Modal from '$lib/components/Modal.svelte';
@@ -480,7 +480,7 @@
 				</div>
 				<select class="select mb-2 w-full text-xs" bind:value={$assignmentShips.gunship}>
 					<option value="">Ship...</option>
-					{#each ships.combat as ship}
+					{#each config.ships.combat || [] as ship}
 						<option value={ship.value}>{ship.name}</option>
 					{/each}
 				</select>
@@ -542,7 +542,7 @@
 				</div>
 				<select class="select mb-2 w-full text-xs" bind:value={$assignmentShips.medship}>
 					<option value="">Ship...</option>
-					{#each ships.medical as ship}
+					{#each config.ships.medical || [] as ship}
 						<option value={ship.value}>{ship.name}</option>
 					{/each}
 				</select>
@@ -635,6 +635,7 @@
 						</div>
 						<div class="flex gap-1">
 							<button class="rounded bg-gray-600 px-2 py-1 text-xs font-semibold text-gray-200 transition-colors hover:bg-blue-600 hover:text-white" onclick={() => movePlayer(player, 'cap', 'gunship')} title="Move to Gunship">Gun</button>
+							<button class="rounded bg-gray-600 px-2 py-1 text-xs font-semibold text-gray-200 transition-colors hover:bg-blue-600 hover:text-white" onclick={() => movePlayer(player, 'cap', 'medship')} title="Move to Medship">Med</button>
 							<button class="rounded bg-gray-600 px-2 py-1 text-xs font-semibold text-gray-200 transition-colors hover:bg-red-600 hover:text-white" onclick={() => removePlayer(getPlayerName(player))} title="Remove">✕</button>
 						</div>
 					</div>
