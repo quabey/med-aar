@@ -391,9 +391,6 @@ function computeBadges(
 	return badges;
 }
 
-	return badges;
-}
-
 function findMemberByHandle(handle, team) {
 	const lowerHandle = handle.toLowerCase();
 	const arrays = [team.staff, team.allMembers, team.dispatchers].filter(Array.isArray);
