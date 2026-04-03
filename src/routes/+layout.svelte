@@ -15,8 +15,10 @@
 	onMount(() => {
 		const {
 			data: { subscription }
-		} = supabase.auth.onAuthStateChange(() => {
-			invalidateAll();
+		} = supabase.auth.onAuthStateChange((event) => {
+			if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED') {
+				invalidateAll();
+			}
 		});
 
 		return () => subscription.unsubscribe();
