@@ -159,17 +159,20 @@
 
 	const favoritedMessages = $derived.by(() => {
 		const favs = allMessages.filter((m) => isFavorited(m.id, m.isCustom));
-		// Sync favoriteOrder: add new favorites, remove stale ones
-		const favIdSet = new Set(favs.map((m) => m.id));
+		// Sort by saved order; unknown items go to end
+		const orderMap = new Map(favoriteOrder.map((id, i) => [id, i]));
+		return [...favs].sort((a, b) => (orderMap.get(a.id) ?? 999) - (orderMap.get(b.id) ?? 999));
+	});
+
+	// Keep favoriteOrder in sync (outside of derived to avoid reactive loops)
+	$effect(() => {
+		const favIdSet = new Set(favoritedMessages.map((m) => m.id));
 		const currentOrder = favoriteOrder.filter((id) => favIdSet.has(id));
-		const missing = favs.filter((m) => !currentOrder.includes(m.id)).map((m) => m.id);
+		const missing = favoritedMessages.filter((m) => !currentOrder.includes(m.id)).map((m) => m.id);
 		if (missing.length || currentOrder.length !== favoriteOrder.length) {
 			favoriteOrder = [...currentOrder, ...missing];
 			saveFavoriteOrder();
 		}
-		// Sort by order
-		const orderMap = new Map(favoriteOrder.map((id, i) => [id, i]));
-		return [...favs].sort((a, b) => (orderMap.get(a.id) ?? 999) - (orderMap.get(b.id) ?? 999));
 	});
 
 	const categories = $derived([...new Set(allMessages.map((m) => m.category))]);
