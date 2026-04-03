@@ -4,21 +4,52 @@
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
 	const LS_NAME = 'medtools:copyPasteName';
+	const LS_CUSTOM_FAVS = 'medtools:customFavorites';
+	const LS_FAV_ORDER = 'medtools:favoriteOrder';
 	const NAME_PLACEHOLDER = '[INSERT NAME HERE]';
 
 	let sharedMessages = $state([]);
 	let customMessages = $state([]);
 	let favoriteIds = $state(new Set());
+	let customFavoriteIds = $state(new Set());
+	let favoriteOrder = $state([]);
 	let loaded = $state(false);
 	let showAdd = $state(false);
 	let showSettings = $state(false);
+	let editingFavorites = $state(false);
 	let newLabel = $state('');
 	let newText = $state('');
 	let newCategory = $state('Custom');
 	let collapsed = $state(false);
 	let userName = $state(typeof window !== 'undefined' ? (localStorage.getItem(LS_NAME) || '') : '');
 
+	function loadCustomFavorites() {
+		try {
+			const stored = localStorage.getItem(LS_CUSTOM_FAVS);
+			if (stored) customFavoriteIds = new Set(JSON.parse(stored));
+		} catch {}
+	}
+
+	function saveCustomFavorites() {
+		localStorage.setItem(LS_CUSTOM_FAVS, JSON.stringify([...customFavoriteIds]));
+	}
+
+	function loadFavoriteOrder() {
+		try {
+			const stored = localStorage.getItem(LS_FAV_ORDER);
+			if (stored) favoriteOrder = JSON.parse(stored);
+		} catch {}
+	}
+
+	function saveFavoriteOrder() {
+		localStorage.setItem(LS_FAV_ORDER, JSON.stringify(favoriteOrder));
+	}
+
 	async function loadData() {
+		if (typeof window !== 'undefined') {
+			loadCustomFavorites();
+			loadFavoriteOrder();
+		}
 		const [sharedRes, favsRes, customRes] = await Promise.all([
 			supabase.from('copypastes').select('*').order('sort_order', { ascending: true }),
 			supabase.from('user_favorites').select('copypaste_id'),
@@ -40,19 +71,43 @@
 		localStorage.setItem(LS_NAME, userName);
 	}
 
-	async function toggleFavorite(id) {
-		if (favoriteIds.has(id)) {
-			favoriteIds.delete(id);
-			favoriteIds = new Set(favoriteIds);
-			await supabase.from('user_favorites').delete().eq('copypaste_id', id);
+	function isFavorited(id, isCustom) {
+		return isCustom ? customFavoriteIds.has(id) : favoriteIds.has(id);
+	}
+
+	async function toggleFavorite(id, isCustom) {
+		if (isCustom) {
+			if (customFavoriteIds.has(id)) {
+				customFavoriteIds.delete(id);
+			} else {
+				customFavoriteIds.add(id);
+			}
+			customFavoriteIds = new Set(customFavoriteIds);
+			saveCustomFavorites();
 		} else {
-			favoriteIds.add(id);
-			favoriteIds = new Set(favoriteIds);
-			const { data } = await supabase.auth.getUser();
-			if (data?.user) {
-				await supabase.from('user_favorites').insert({ user_id: data.user.id, copypaste_id: id });
+			if (favoriteIds.has(id)) {
+				favoriteIds.delete(id);
+				favoriteIds = new Set(favoriteIds);
+				await supabase.from('user_favorites').delete().eq('copypaste_id', id);
+			} else {
+				favoriteIds.add(id);
+				favoriteIds = new Set(favoriteIds);
+				const { data } = await supabase.auth.getUser();
+				if (data?.user) {
+					await supabase.from('user_favorites').insert({ user_id: data.user.id, copypaste_id: id });
+				}
 			}
 		}
+	}
+
+	function moveFavorite(index, direction) {
+		const newIndex = index + direction;
+		if (newIndex < 0 || newIndex >= favoriteOrder.length) return;
+		const temp = favoriteOrder[index];
+		favoriteOrder[index] = favoriteOrder[newIndex];
+		favoriteOrder[newIndex] = temp;
+		favoriteOrder = [...favoriteOrder];
+		saveFavoriteOrder();
 	}
 
 	function copyMessage(text, category) {
@@ -102,7 +157,20 @@
 		...customMessages.map((m) => ({ id: m.id, category: m.category, label: m.name, text: m.content, isCustom: true }))
 	]);
 
-	const favoritedMessages = $derived(allMessages.filter((m) => favoriteIds.has(m.id)));
+	const favoritedMessages = $derived.by(() => {
+		const favs = allMessages.filter((m) => isFavorited(m.id, m.isCustom));
+		// Sync favoriteOrder: add new favorites, remove stale ones
+		const favIdSet = new Set(favs.map((m) => m.id));
+		const currentOrder = favoriteOrder.filter((id) => favIdSet.has(id));
+		const missing = favs.filter((m) => !currentOrder.includes(m.id)).map((m) => m.id);
+		if (missing.length || currentOrder.length !== favoriteOrder.length) {
+			favoriteOrder = [...currentOrder, ...missing];
+			saveFavoriteOrder();
+		}
+		// Sort by order
+		const orderMap = new Map(favoriteOrder.map((id, i) => [id, i]));
+		return [...favs].sort((a, b) => (orderMap.get(a.id) ?? 999) - (orderMap.get(b.id) ?? 999));
+	});
 
 	const categories = $derived([...new Set(allMessages.map((m) => m.category))]);
 </script>
@@ -196,12 +264,34 @@
 			{:else}
 				{#if favoritedMessages.length > 0}
 					<div class="mb-3">
-						<p class="mb-1 px-1 text-[10px] font-semibold uppercase tracking-widest text-yellow-500/70">⭐ Favorites</p>
-						{#each favoritedMessages as msg}
+						<div class="mb-1 flex items-center justify-between px-1">
+							<p class="text-[10px] font-semibold uppercase tracking-widest text-yellow-500/70">⭐ Favorites</p>
+							<button
+								class="text-[10px] font-medium transition-colors {editingFavorites ? 'text-yellow-400' : 'text-gray-500 hover:text-gray-300'}"
+								onclick={() => (editingFavorites = !editingFavorites)}
+							>{editingFavorites ? 'Done' : 'Edit'}</button>
+						</div>
+						{#each favoritedMessages as msg, i}
 							<div class="mb-1 flex items-center gap-1 rounded bg-gray-700/40 px-2 py-1.5">
+								{#if editingFavorites}
+									<div class="flex flex-shrink-0 flex-col gap-0.5">
+										<button
+											class="rounded px-0.5 text-[10px] leading-none text-gray-400 transition-colors hover:text-white disabled:opacity-30"
+											onclick={() => moveFavorite(i, -1)}
+											disabled={i === 0}
+											title="Move up"
+										>▲</button>
+										<button
+											class="rounded px-0.5 text-[10px] leading-none text-gray-400 transition-colors hover:text-white disabled:opacity-30"
+											onclick={() => moveFavorite(i, 1)}
+											disabled={i === favoritedMessages.length - 1}
+											title="Move down"
+										>▼</button>
+									</div>
+								{/if}
 								<button
 									class="flex-shrink-0 text-base leading-none transition-colors text-yellow-400"
-									onclick={() => toggleFavorite(msg.id)}
+									onclick={() => toggleFavorite(msg.id, msg.isCustom)}
 									title="Unfavorite"
 								>★</button>
 								<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
@@ -230,9 +320,9 @@
 					{#each allMessages.filter((m) => m.category === category) as msg}
 						<div class="mb-1 flex items-center gap-1 rounded bg-gray-700/40 px-2 py-1.5">
 							<button
-								class="flex-shrink-0 text-base leading-none transition-colors {favoriteIds.has(msg.id) ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}"
-								onclick={() => toggleFavorite(msg.id)}
-								title={favoriteIds.has(msg.id) ? 'Unfavorite' : 'Favorite'}
+								class="flex-shrink-0 text-base leading-none transition-colors {isFavorited(msg.id, msg.isCustom) ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}"
+								onclick={() => toggleFavorite(msg.id, msg.isCustom)}
+								title={isFavorited(msg.id, msg.isCustom) ? 'Unfavorite' : 'Favorite'}
 							>★</button>
 							<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
 							{#if needsName(msg.text) && !userName}

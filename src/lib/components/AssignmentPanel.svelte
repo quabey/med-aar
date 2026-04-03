@@ -480,7 +480,7 @@
 				</div>
 				<select class="select mb-2 w-full text-xs" bind:value={$assignmentShips.gunship}>
 					<option value="">Ship...</option>
-					{#each config.ships.combat || [] as ship}
+					{#each [...(config.ships.combat || [])].sort((a, b) => a.name.localeCompare(b.name)) as ship}
 						<option value={ship.value}>{ship.name}</option>
 					{/each}
 				</select>
@@ -542,7 +542,7 @@
 				</div>
 				<select class="select mb-2 w-full text-xs" bind:value={$assignmentShips.medship}>
 					<option value="">Ship...</option>
-					{#each config.ships.medical || [] as ship}
+					{#each [...(config.ships.medical || [])].sort((a, b) => a.name.localeCompare(b.name)) as ship}
 						<option value={ship.value}>{ship.name}</option>
 					{/each}
 				</select>

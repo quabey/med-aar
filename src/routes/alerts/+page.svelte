@@ -33,6 +33,7 @@
 		1: 'Active',
 		2: 'Concluded',
 		3: 'Success',
+		4: 'Failure',
 		6: 'Cancelled',
 		8: 'Aborted',
 		9: 'Game Error'

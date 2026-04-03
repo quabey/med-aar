@@ -4,19 +4,19 @@
 	let { data } = $props();
 
 	const medicalShips = $derived([
-		...config.ships.medical,
+		...[...config.ships.medical].sort((a, b) => a.name.localeCompare(b.name)),
 		{ name: 'Other', value: 'Other' },
 		{ name: 'None', value: 'None' }
 	]);
 
 	const combatShips = $derived([
-		...config.ships.combat,
+		...[...config.ships.combat].sort((a, b) => a.name.localeCompare(b.name)),
 		{ name: 'Other', value: 'Other' },
 		{ name: 'None', value: 'None' }
 	]);
 
 	const capShipOptions = $derived([
-		...(config.ships.cap || []),
+		...[...(config.ships.cap || [])].sort((a, b) => a.name.localeCompare(b.name)),
 		{ name: 'Other', value: 'Other' }
 	]);
 
