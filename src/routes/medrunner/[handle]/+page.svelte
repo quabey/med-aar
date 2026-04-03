@@ -1,6 +1,7 @@
 <script>
 	import { MEDRUNNER_ROLES } from '$lib/data/roles.js';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+	import BadgeIcon from '$lib/components/BadgeIcon.svelte';
 
 	let { data } = $props();
 	let profileOverride = $state(null);
@@ -122,7 +123,7 @@
 				<div class="relative mb-6">
 					<div class="h-20 w-20 animate-spin rounded-full border-4 border-gray-700 border-t-primary-500"></div>
 					<div class="absolute inset-0 flex items-center justify-center">
-						<span class="text-2xl">🚑</span>
+						<svg class="h-8 w-8 text-primary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
 					</div>
 				</div>
 				<h2 class="font-Mohave text-2xl font-bold text-white">Building Profile</h2>
@@ -134,7 +135,7 @@
 			</div>
 		{:else if !profile && !updating}
 			<div class="py-20 text-center">
-				<div class="mb-4 text-5xl">🔍</div>
+				<svg class="mx-auto mb-4 h-12 w-12 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
 				<p class="text-lg text-gray-400">No data found for <span class="font-semibold text-white">{data.handle}</span></p>
 				<p class="mt-2 text-sm text-gray-500">This person hasn't participated in any alerts.</p>
 				<a href="/medrunner" class="btn btn-secondary mt-6 inline-block text-sm">← Back to Profiles</a>
@@ -148,7 +149,7 @@
 						<div class="relative mb-4">
 							<div class="h-14 w-14 animate-spin rounded-full border-4 border-gray-600 border-t-primary-500"></div>
 							<div class="absolute inset-0 flex items-center justify-center">
-								<span class="text-xl">🚑</span>
+								<svg class="h-6 w-6 text-primary-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
 							</div>
 						</div>
 						<p class="font-Mohave text-lg font-bold text-white">Updating Stats...</p>
@@ -189,21 +190,21 @@
 					{/if}
 					<div class="mt-3 flex flex-wrap justify-center gap-4 text-sm sm:justify-start">
 						<div class="flex items-center gap-1.5 text-gray-300">
-							<span class="text-lg">🚑</span>
+							<svg class="h-4 w-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>
 							<span class="font-semibold text-white">{profile.total_alerts}</span> alerts
 						</div>
 						<div class="flex items-center gap-1.5 text-gray-300">
-							<span class="text-lg">✅</span>
+							<svg class="h-4 w-4 text-green-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m6 2a10 10 0 11-20 0 10 10 0 0120 0z" /></svg>
 							<span class="font-semibold text-green-400">{successRate()}%</span> success
 						</div>
 						{#if profile.average_rating}
 							<div class="flex items-center gap-1.5 text-gray-300">
-								<span class="text-lg">⭐</span>
+								<svg class="h-4 w-4 text-yellow-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" /></svg>
 								<span class="font-semibold text-yellow-400">{profile.average_rating.toFixed(1)}</span> avg rating
 							</div>
 						{/if}
 						<div class="flex items-center gap-1.5 text-gray-300">
-							<span class="text-lg">📅</span>
+							<svg class="h-4 w-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>
 							since {formatTimestamp(profile.first_alert_timestamp)}
 						</div>
 					</div>
@@ -250,7 +251,7 @@
 								class="flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-2.5 transition-colors hover:border-gray-600"
 								title={badge.description}
 							>
-								<span class="text-xl">{badge.icon}</span>
+								<BadgeIcon id={badge.id} tier={badge.tier} class="h-5 w-5" />
 								<div>
 									<p class="text-sm font-semibold text-white">{badge.name}</p>
 									<p class="text-[11px] text-gray-400">{badge.description}</p>

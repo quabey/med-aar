@@ -58,15 +58,24 @@ export async function POST({ params, locals }) {
 	const handle = decodeURIComponent(params.handle);
 	const supabase = getAdmin();
 
-	// Fetch all alerts for this medrunner using the RPC function
-	const { data: alerts, error: alertError } = await supabase.rpc(
-		'get_medrunner_alerts_by_handle',
-		{ p_rsi_handle: handle }
-	);
+	// Fetch all alerts in batches (Supabase caps RPC results at 1000 rows)
+	let alerts = [];
+	let offset = 0;
+	const BATCH = 1000;
+	while (true) {
+		const { data, error } = await supabase
+			.rpc('get_medrunner_alerts_by_handle', { p_rsi_handle: handle })
+			.range(offset, offset + BATCH - 1);
 
-	if (alertError) {
-		console.error('Error fetching medrunner alerts:', alertError);
-		return json({ error: 'Failed to fetch alerts' }, { status: 500 });
+		if (error) {
+			console.error('Error fetching medrunner alerts:', error);
+			return json({ error: 'Failed to fetch alerts' }, { status: 500 });
+		}
+
+		if (!data || data.length === 0) break;
+		alerts = alerts.concat(data);
+		if (data.length < BATCH) break;
+		offset += BATCH;
 	}
 
 	if (!alerts || alerts.length === 0) {
@@ -297,117 +306,90 @@ function computeBadges(
 ) {
 	const badges = [];
 
-	// Alert milestones
-	if (total >= 500)
-		badges.push({ id: 'legendary', name: 'Legendary', description: '500+ alerts', icon: '🏆' });
+	// Alert milestones — multiple tiers
+	if (total >= 3000)
+		badges.push({ id: 'immortal', name: 'Immortal', description: '3000+ alerts', tier: 8 });
+	else if (total >= 2000)
+		badges.push({ id: 'transcendent', name: 'Transcendent', description: '2000+ alerts', tier: 7 });
+	else if (total >= 1000)
+		badges.push({ id: 'mythic', name: 'Mythic', description: '1000+ alerts', tier: 6 });
+	else if (total >= 500)
+		badges.push({ id: 'legendary', name: 'Legendary', description: '500+ alerts', tier: 5 });
 	else if (total >= 250)
-		badges.push({ id: 'elite', name: 'Elite', description: '250+ alerts', icon: '💎' });
+		badges.push({ id: 'elite', name: 'Elite', description: '250+ alerts', tier: 4 });
 	else if (total >= 100)
-		badges.push({ id: 'veteran', name: 'Veteran', description: '100+ alerts', icon: '🎖️' });
+		badges.push({ id: 'veteran', name: 'Veteran', description: '100+ alerts', tier: 3 });
 	else if (total >= 50)
-		badges.push({
-			id: 'experienced',
-			name: 'Experienced',
-			description: '50+ alerts',
-			icon: '⭐'
-		});
+		badges.push({ id: 'experienced', name: 'Experienced', description: '50+ alerts', tier: 2 });
 	else if (total >= 10)
-		badges.push({
-			id: 'rookie',
-			name: 'Active Responder',
-			description: '10+ alerts',
-			icon: '🛡️'
-		});
+		badges.push({ id: 'rookie', name: 'Active Responder', description: '10+ alerts', tier: 1 });
 
-	// Success rate
+	// Success rate (only successes vs fails)
 	const completedAlerts = successful + failed;
 	if (completedAlerts >= 10) {
 		const rate = successful / completedAlerts;
-		if (rate >= 0.95)
-			badges.push({
-				id: 'perfect',
-				name: 'Near Perfect',
-				description: '95%+ success rate',
-				icon: '✨'
-			});
+		if (rate >= 0.98)
+			badges.push({ id: 'flawless', name: 'Flawless', description: '98%+ success rate', tier: 3 });
+		else if (rate >= 0.95)
+			badges.push({ id: 'perfect', name: 'Near Perfect', description: '95%+ success rate', tier: 2 });
 		else if (rate >= 0.85)
-			badges.push({
-				id: 'reliable',
-				name: 'Reliable',
-				description: '85%+ success rate',
-				icon: '💪'
-			});
+			badges.push({ id: 'reliable', name: 'Reliable', description: '85%+ success rate', tier: 1 });
 	}
 
 	// Fast responder
-	if (avgResponse && avgResponse < 120) {
-		badges.push({
-			id: 'fast_responder',
-			name: 'Fast Responder',
-			description: 'Avg response under 2 min',
-			icon: '⚡'
-		});
+	if (avgResponse && avgResponse < 60) {
+		badges.push({ id: 'lightning', name: 'Lightning', description: 'Avg response under 1 min', tier: 2 });
+	} else if (avgResponse && avgResponse < 120) {
+		badges.push({ id: 'fast_responder', name: 'Fast Responder', description: 'Avg response under 2 min', tier: 1 });
 	}
 
 	// Role specialist
 	const topRole = Object.entries(roleCounts).sort(([, a], [, b]) => b - a)[0];
-	if (topRole && topRole[1] >= 20) {
+	if (topRole) {
 		const roleName = MEDRUNNER_ROLES[topRole[0]]?.name || 'Unknown';
-		badges.push({
-			id: 'specialist',
-			name: `${roleName} Specialist`,
-			description: `20+ alerts as ${roleName}`,
-			icon: '🎯'
-		});
+		if (topRole[1] >= 100)
+			badges.push({ id: 'master', name: `${roleName} Master`, description: `100+ alerts as ${roleName}`, tier: 3 });
+		else if (topRole[1] >= 50)
+			badges.push({ id: 'expert', name: `${roleName} Expert`, description: `50+ alerts as ${roleName}`, tier: 2 });
+		else if (topRole[1] >= 20)
+			badges.push({ id: 'specialist', name: `${roleName} Specialist`, description: `20+ alerts as ${roleName}`, tier: 1 });
 	}
 
 	// Dispatcher
-	if (dispatchCount >= 25) {
-		badges.push({
-			id: 'dispatcher',
-			name: 'Command Center',
-			description: '25+ dispatch missions',
-			icon: '📡'
-		});
-	}
+	if (dispatchCount >= 100)
+		badges.push({ id: 'dispatch_master', name: 'Overwatch', description: '100+ dispatch missions', tier: 3 });
+	else if (dispatchCount >= 50)
+		badges.push({ id: 'dispatch_expert', name: 'Coordinator', description: '50+ dispatch missions', tier: 2 });
+	else if (dispatchCount >= 25)
+		badges.push({ id: 'dispatcher', name: 'Command Center', description: '25+ dispatch missions', tier: 1 });
 
 	// Field operator
-	if (fieldCount >= 25) {
-		badges.push({
-			id: 'field_ops',
-			name: 'Field Operator',
-			description: '25+ field missions',
-			icon: '🚀'
-		});
-	}
+	if (fieldCount >= 100)
+		badges.push({ id: 'field_master', name: 'Frontline', description: '100+ field missions', tier: 3 });
+	else if (fieldCount >= 50)
+		badges.push({ id: 'field_expert', name: 'Veteran Operator', description: '50+ field missions', tier: 2 });
+	else if (fieldCount >= 25)
+		badges.push({ id: 'field_ops', name: 'Field Operator', description: '25+ field missions', tier: 1 });
 
 	// Versatile (used 3+ different roles)
-	if (Object.keys(roleCounts).length >= 3) {
-		badges.push({
-			id: 'versatile',
-			name: 'Versatile',
-			description: 'Served in 3+ roles',
-			icon: '🔄'
-		});
-	}
+	if (Object.keys(roleCounts).length >= 4)
+		badges.push({ id: 'polymath', name: 'Polymath', description: 'Served in 4+ roles', tier: 2 });
+	else if (Object.keys(roleCounts).length >= 3)
+		badges.push({ id: 'versatile', name: 'Versatile', description: 'Served in 3+ roles', tier: 1 });
 
 	// Time dedication badges
 	const totalHours = totalTimeSeconds / 3600;
-	if (totalHours >= 100) {
-		badges.push({
-			id: 'dedicated',
-			name: 'Dedicated',
-			description: '100+ hours on alerts',
-			icon: '⏰'
-		});
-	} else if (totalHours >= 24) {
-		badges.push({
-			id: 'committed',
-			name: 'Committed',
-			description: '24+ hours on alerts',
-			icon: '🕐'
-		});
-	}
+	if (totalHours >= 1000)
+		badges.push({ id: 'lifelong', name: 'Lifelong', description: '1000+ hours on alerts', tier: 4 });
+	else if (totalHours >= 500)
+		badges.push({ id: 'tireless', name: 'Tireless', description: '500+ hours on alerts', tier: 3 });
+	else if (totalHours >= 100)
+		badges.push({ id: 'dedicated', name: 'Dedicated', description: '100+ hours on alerts', tier: 2 });
+	else if (totalHours >= 24)
+		badges.push({ id: 'committed', name: 'Committed', description: '24+ hours on alerts', tier: 1 });
+
+	return badges;
+}
 
 	return badges;
 }

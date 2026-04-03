@@ -1,5 +1,6 @@
 <script>
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+	import BadgeIcon from '$lib/components/BadgeIcon.svelte';
 
 	let { data } = $props();
 	let searchResults = $state(null);
@@ -138,7 +139,7 @@
 			</div>
 		{:else if profiles.length === 0}
 			<div class="py-12 text-center">
-				<div class="mb-3 text-4xl">🔍</div>
+				<svg class="mx-auto mb-3 h-10 w-10 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
 				{#if searched}
 					<p class="text-gray-400">No medrunners found matching "<span class="text-white">{searchQuery}</span>"</p>
 					<p class="mt-2 text-sm text-gray-500">Try searching for an exact RSI handle, or use "Go to Profile" to look up directly.</p>
@@ -164,7 +165,9 @@
 							<div class="flex items-center gap-2">
 								<span class="text-base font-semibold text-white">{profile.rsi_handle}</span>
 								{#if profile.badges?.length > 0}
-									<span class="text-sm" title={profile.badges[0].name}>{profile.badges[0].icon}</span>
+									<span title={profile.badges[0].name}>
+										<BadgeIcon id={profile.badges[0].id} tier={profile.badges[0].tier} class="h-4 w-4" />
+									</span>
 								{/if}
 							</div>
 							{#if profile.discord_username && profile.discord_username !== profile.rsi_handle}

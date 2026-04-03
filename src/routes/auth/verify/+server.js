@@ -71,44 +71,39 @@ export async function POST({ request }) {
 		return json({ ok: true, status: 'approved' });
 	}
 
-	if (!existing || existing.approval_status === 'rejected') {
-		// New user or previously rejected — check if first user (auto-admin)
-		const { count } = await supabaseAdmin
-			.from('profiles')
-			.select('*', { count: 'exact', head: true });
+	// New user, auto-created by trigger with 'pending', or previously rejected
+	const { count } = await supabaseAdmin
+		.from('profiles')
+		.select('*', { count: 'exact', head: true });
 
-		const isFirstUser = (count || 0) === 0;
+	const isFirstUser = (count || 0) <= 1;
 
-		const discordUser = member.user || {};
-		await supabaseAdmin
-			.from('profiles')
-			.upsert({
-				id: userId,
-				discord_id: discordUser.id || '',
-				discord_username: discordUser.global_name || discordUser.username || '',
-				discord_avatar: discordUser.avatar
-					? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`
-					: null,
-				approval_status: isFirstUser ? 'approved' : 'pending',
-				is_approved: isFirstUser,
-				is_admin: isFirstUser
-			}, { onConflict: 'id' });
+	const discordUser = member.user || {};
+	await supabaseAdmin
+		.from('profiles')
+		.upsert({
+			id: userId,
+			discord_id: discordUser.id || '',
+			discord_username: discordUser.global_name || discordUser.username || '',
+			discord_avatar: discordUser.avatar
+				? `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`
+				: null,
+			approval_status: isFirstUser ? 'approved' : 'pending',
+			is_approved: isFirstUser,
+			is_admin: isFirstUser
+		}, { onConflict: 'id' });
 
-		if (!isFirstUser) {
-			// Send Discord webhook notification for non-first users
-			await sendApprovalWebhook({
-				username: discordUser.global_name || discordUser.username || 'Unknown',
-				discordId: discordUser.id || '',
-				avatar: discordUser.avatar
-			});
-		}
-
-		const displayName = discordUser.global_name || discordUser.username || 'Unknown';
-		await log('user.signup', `${displayName} (${discordUser.id || 'unknown'}) registered${isFirstUser ? ' as first user (auto-admin)' : ''}`);
-
-		return json({ ok: true, status: isFirstUser ? 'approved' : 'pending' });
+	if (!isFirstUser && existing?.approval_status !== 'approved') {
+		// Send Discord webhook notification for pending users
+		await sendApprovalWebhook({
+			username: discordUser.global_name || discordUser.username || 'Unknown',
+			discordId: discordUser.id || '',
+			avatar: discordUser.avatar
+		});
 	}
 
-	// Pending — just acknowledge
-	return json({ ok: true, status: existing.approval_status });
+	const displayName = discordUser.global_name || discordUser.username || 'Unknown';
+	await log('user.signup', `${displayName} (${discordUser.id || 'unknown'}) registered${isFirstUser ? ' as first user (auto-admin)' : ''}`);
+
+	return json({ ok: true, status: isFirstUser ? 'approved' : 'pending' });
 }
