@@ -29,11 +29,11 @@
 </script>
 
 <div class="relative z-30 border-b border-gray-700 bg-gray-800/50">
-	<div class="flex items-center gap-1 px-4 py-1">
-		<div class="flex flex-1 items-center gap-1 overflow-x-auto">
+	<div class="flex items-center gap-1 px-2 py-1 sm:px-4">
+		<div class="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
 			{#each tabStore.tabs as tab (tab.id)}
 				<div
-					class="group flex items-center gap-1 rounded-t-lg px-3 py-2 text-sm transition-colors
+					class="group flex flex-shrink-0 items-center gap-1 rounded-t-lg px-2 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm transition-colors
 						{tab.id === tabStore.activeTabId
 						? 'bg-gray-700 text-white'
 						: 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'}"
@@ -70,7 +70,7 @@
 
 			<!-- New Tab Button -->
 			<button
-				class="flex items-center gap-1 rounded-t-lg px-3 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-700/50 hover:text-white"
+				class="flex flex-shrink-0 items-center gap-1 rounded-t-lg px-2 py-1.5 text-xs sm:px-3 sm:py-2 sm:text-sm text-gray-400 transition-colors hover:bg-gray-700/50 hover:text-white"
 				onclick={() => (tabStore.activeTabId = null)}
 				title="New AAR"
 			>

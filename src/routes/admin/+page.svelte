@@ -136,9 +136,15 @@
 	// ── Users CRUD ──────────────────────────────────────────
 	async function approveUser(userId) {
 		const user = users.find((u) => u.id === userId);
+		const { data: { user: currentUser } } = await supabase.auth.getUser();
 		const { error } = await supabase
 			.from('profiles')
-			.update({ is_approved: true, approval_status: 'approved' })
+			.update({
+				is_approved: true,
+				approval_status: 'approved',
+				approved_by: currentUser?.id || null,
+				approved_at: new Date().toISOString()
+			})
 			.eq('id', userId);
 		if (error) return errorToast('Failed to approve user');
 		adminLog('user.approved', `Approved ${user?.discord_username || userId}`);
@@ -150,7 +156,12 @@
 		const user = users.find((u) => u.id === userId);
 		const { error } = await supabase
 			.from('profiles')
-			.update({ is_approved: false, approval_status: 'rejected' })
+			.update({
+				is_approved: false,
+				approval_status: 'rejected',
+				approved_by: null,
+				approved_at: null
+			})
 			.eq('id', userId);
 		if (error) return errorToast('Failed to reject user');
 		adminLog('user.rejected', `Rejected ${user?.discord_username || userId}`);

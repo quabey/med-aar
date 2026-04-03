@@ -26,13 +26,13 @@
 	onclick={handleBackdrop}
 >
 	<div
-		class="mx-4 max-h-[90vh] w-full overflow-y-auto rounded-xl bg-gray-800 shadow-2xl {sizeClasses[
+		class="mx-2 max-h-[95vh] w-full overflow-y-auto rounded-xl bg-gray-800 shadow-2xl sm:mx-4 sm:max-h-[90vh] {sizeClasses[
 			size
 		] ?? sizeClasses.md}"
 	>
 		{#if title}
-			<div class="flex items-center justify-between border-b border-gray-700 px-5 py-4">
-				<h3 class="font-Mohave text-xl font-semibold text-white">{title}</h3>
+			<div class="flex items-center justify-between border-b border-gray-700 px-4 py-3 sm:px-5 sm:py-4">
+				<h3 class="font-Mohave text-lg font-semibold text-white sm:text-xl">{title}</h3>
 				<button
 					onclick={onclose}
 					aria-label="Close"
@@ -49,7 +49,7 @@
 				</button>
 			</div>
 		{/if}
-		<div class="p-5">
+		<div class="p-4 sm:p-5">
 			{@render children()}
 		</div>
 	</div>

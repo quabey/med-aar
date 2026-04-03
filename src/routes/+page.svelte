@@ -13,6 +13,7 @@
 
 	let showAssignments = $state(true);
 	let showCopyPaste = $state(true);
+	let mobilePanel = $state(null); // 'assignments' | 'copypaste' | null — for mobile overlay
 	let sidebarWidth = $state(
 		typeof window !== 'undefined'
 			? parseInt(localStorage.getItem('medtools:sidebarWidth') || '585', 10)
@@ -146,7 +147,7 @@
 		{#if !tabStore.hasActiveTab}
 			<TemplateSelector onselect={selectTemplate} />
 		{:else if tabStore.activeData}
-			<div class="relative flex justify-center gap-4 pb-12">
+			<div class="relative flex justify-center gap-4 pb-20 lg:pb-12">
 				<div class="my-4 flex w-full flex-col items-center gap-3">
 					<!-- Sections -->
 					<div class="w-full max-w-3xl px-4">
@@ -162,14 +163,14 @@
 						{:else}
 							<div class="py-12 text-center text-gray-500">
 								<p class="text-lg">No sections yet</p>
-								<p class="text-sm">Add sections using the floating toolbar</p>
+								<p class="text-sm">Add sections using the toolbar below</p>
 							</div>
 						{/if}
 					</div>
 				</div>
 
-				<!-- Sticky action card (right side, stays in view while scrolling) -->
-				<div class="sticky top-4 mt-4 mr-6 flex h-fit flex-col gap-2 rounded-xl border border-gray-700/50 bg-gray-800/95 p-3 shadow-2xl backdrop-blur-sm">
+				<!-- Sticky action card — desktop only -->
+				<div class="sticky top-4 mt-4 mr-6 hidden h-fit flex-col gap-2 rounded-xl border border-gray-700/50 bg-gray-800/95 p-3 shadow-2xl backdrop-blur-sm lg:flex">
 					<button class="btn btn-primary text-sm" onclick={() => (showPreview = true)}>
 						Preview
 					</button>
@@ -223,9 +224,9 @@
 		{/if}
 	</div>
 
-	<!-- Assignments sidebar -->
+	<!-- Assignments sidebar — desktop -->
 	{#if showAssignments}
-		<div class="relative flex flex-shrink-0 border-l border-gray-700 bg-gray-900" style="width: {sidebarWidth}px">
+		<div class="relative hidden flex-shrink-0 border-l border-gray-700 bg-gray-900 lg:flex" style="width: {sidebarWidth}px">
 			<!-- Resize handle -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
@@ -238,9 +239,9 @@
 		</div>
 	{/if}
 
-	<!-- Copy-paste sidebar -->
+	<!-- Copy-paste sidebar — desktop -->
 	{#if showCopyPaste}
-		<div class="relative flex flex-shrink-0 border-l border-gray-700 bg-gray-900" style="width: {copyPasteWidth}px">
+		<div class="relative hidden flex-shrink-0 border-l border-gray-700 bg-gray-900 lg:flex" style="width: {copyPasteWidth}px">
 			<!-- Resize handle -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
@@ -254,9 +255,97 @@
 	{/if}
 </div>
 
-<!-- Toggle assignments button -->
+<!-- Mobile bottom toolbar (visible when active tab, hidden on desktop) -->
+{#if tabStore.activeData}
+	<div class="fixed inset-x-0 bottom-0 z-40 flex items-center justify-around border-t border-gray-700 bg-gray-800/95 px-2 py-2 backdrop-blur-sm lg:hidden">
+		<button class="btn btn-primary px-3 py-1.5 text-xs" onclick={() => (showPreview = true)}>
+			Preview
+		</button>
+		<CopyButton data={tabStore.activeData} />
+		<div class="relative">
+			<button
+				class="btn btn-outline px-3 py-1.5 text-xs flex items-center gap-1"
+				onclick={() => (showAddSection = !showAddSection)}
+			>
+				<svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+				</svg>
+				Add
+			</button>
+			{#if showAddSection}
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<div
+					class="fixed inset-0 z-40"
+					onclick={() => (showAddSection = false)}
+					onkeydown={() => {}}
+				></div>
+				<div
+					class="absolute bottom-full left-1/2 z-50 mb-2 max-h-64 w-48 -translate-x-1/2 overflow-y-auto rounded-lg border border-gray-700 bg-gray-800 py-1 shadow-xl"
+				>
+					{#each sectionOptions as option}
+						{#if !tabStore.activeData.sections.find((s) => s.name === option.toLowerCase())}
+							<button
+								class="block w-full whitespace-nowrap px-4 py-2 text-left text-sm text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+								onclick={() => addSection(option)}
+							>
+								{option}
+							</button>
+						{/if}
+					{/each}
+				</div>
+			{/if}
+		</div>
+		<button class="btn btn-outline px-3 py-1.5 text-xs" onclick={() => (mobilePanel = 'assignments')}>
+			Team
+		</button>
+		<button class="btn btn-outline px-3 py-1.5 text-xs" onclick={() => (mobilePanel = 'copypaste')}>
+			Pastes
+		</button>
+	</div>
+{/if}
+
+<!-- Mobile slide-over panels -->
+{#if mobilePanel}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div
+		class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm lg:hidden"
+		onclick={() => (mobilePanel = null)}
+		onkeydown={() => {}}
+	>
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div
+			class="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-gray-900 shadow-2xl"
+			onclick={(e) => e.stopPropagation()}
+			onkeydown={() => {}}
+		>
+			<div class="flex items-center justify-between border-b border-gray-700 px-4 py-3">
+				<h3 class="font-Mohave text-lg font-semibold text-white">
+					{mobilePanel === 'assignments' ? 'Assignments' : 'Copy Pastes'}
+				</h3>
+				<button
+					class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-700 hover:text-white"
+					onclick={() => (mobilePanel = null)}
+					aria-label="Close panel"
+				>
+					<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+					</svg>
+				</button>
+			</div>
+			<div class="flex-1 overflow-y-auto">
+				{#if mobilePanel === 'assignments'}
+					<AssignmentPanel />
+				{:else}
+					<CopyPastePanel />
+				{/if}
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Toggle assignments button — desktop only -->
 <button
-	class="fixed bottom-4 right-4 z-50 rounded-full bg-gray-700 p-2.5 shadow-lg transition-colors hover:bg-gray-600"
+	class="fixed bottom-4 right-4 z-50 hidden rounded-full bg-gray-700 p-2.5 shadow-lg transition-colors hover:bg-gray-600 lg:block"
 	onclick={() => (showAssignments = !showAssignments)}
 	title={showAssignments ? 'Hide Assignments' : 'Show Assignments'}
 >
@@ -265,9 +354,9 @@
 	</svg>
 </button>
 
-<!-- Toggle copy-paste button -->
+<!-- Toggle copy-paste button — desktop only -->
 <button
-	class="fixed bottom-4 right-16 z-50 rounded-full bg-gray-700 p-2.5 shadow-lg transition-colors hover:bg-gray-600"
+	class="fixed bottom-4 right-16 z-50 hidden rounded-full bg-gray-700 p-2.5 shadow-lg transition-colors hover:bg-gray-600 lg:block"
 	onclick={() => (showCopyPaste = !showCopyPaste)}
 	title={showCopyPaste ? 'Hide Copy Pastes' : 'Show Copy Pastes'}
 >

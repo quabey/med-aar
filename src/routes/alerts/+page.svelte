@@ -1,7 +1,14 @@
 <script>
 	import { untrack } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
+	import { marked } from 'marked';
+	import DOMPurify from 'dompurify';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
+
+	function renderMarkdown(text) {
+		if (!text) return '';
+		return DOMPurify.sanitize(marked.parse(text));
+	}
 
 	let filters = $state({
 		client: '',
@@ -368,7 +375,9 @@
 											{#if alert.aar_remarks}
 												<div class="col-span-full">
 													<span class="text-xs text-gray-500">AAR Remarks</span>
-													<p class="text-gray-300">{alert.aar_remarks}</p>
+													<div class="prose prose-sm prose-invert max-w-none text-gray-300">
+														{@html renderMarkdown(alert.aar_remarks)}
+													</div>
 												</div>
 											{/if}
 											{#if alert.cancellation_reason}

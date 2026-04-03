@@ -2,6 +2,7 @@
 	import logo from '$lib/assets/medtool-logo-beta-white.svg';
 	import { supabase } from '$lib/supabaseClient.js';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 
 	let { profile = null } = $props();
 	let mobileOpen = $state(false);
@@ -13,6 +14,12 @@
 		{ href: '/alerts', label: 'Alerts' },
 		{ href: '/medrunner', label: 'Profiles' }
 	];
+
+	function isActive(href) {
+		const path = page.url.pathname;
+		if (href === '/') return path === '/';
+		return path === href || path.startsWith(href + '/');
+	}
 
 	async function logout() {
 		await supabase.auth.signOut();
@@ -38,7 +45,9 @@
 					<li>
 						<a
 							href={link.href}
-							class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-gray-800 hover:text-white"
+							class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm transition-colors {isActive(link.href)
+								? 'bg-gray-800 text-white'
+								: 'text-gray-300 hover:bg-gray-800 hover:text-white'}"
 						>
 							{link.label}
 							{#if link.badge}
@@ -139,7 +148,9 @@
 			{#each navLinks as link}
 				<a
 					href={link.href}
-					class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-300 hover:bg-gray-800"
+					class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm {isActive(link.href)
+						? 'bg-gray-800 text-white'
+						: 'text-gray-300 hover:bg-gray-800'}"
 					onclick={() => (mobileOpen = false)}
 				>
 					{link.label}

@@ -176,34 +176,34 @@
 </Modal>
 {/if}
 
-<div class="max-w-8xl m-auto w-full justify-center sm:p-4 md:w-[70rem]">
-	<div class="my-2 grid w-full grid-cols-3 items-center gap-4 px-5">
+<div class="max-w-8xl m-auto w-full justify-center p-3 sm:p-4 md:w-[70rem]">
+	<div class="my-2 grid w-full grid-cols-3 items-center gap-2 px-2 sm:gap-4 sm:px-5">
 		<button
-			class="btn flex items-center justify-center gap-2 bg-lime-700 text-white hover:bg-lime-900"
+			class="btn flex items-center justify-center gap-1.5 bg-lime-700 text-xs text-white hover:bg-lime-900 sm:gap-2 sm:text-sm"
 			onclick={addTeam}
 		>
-			<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path d="M5 12h14m-7 7V5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
 			</svg>
-			New Team
+			<span class="hidden sm:inline">New </span>Team
 		</button>
-		<button class="btn btn-primary flex items-center justify-center gap-2" onclick={copyFeed}>
-			<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+		<button class="btn btn-primary flex items-center justify-center gap-1.5 text-xs sm:gap-2 sm:text-sm" onclick={copyFeed}>
+			<svg class="h-4 w-4 sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24">
 				<path d="M15 1H4c-1.1 0-2 .9-2 2v13c0 .55.45 1 1 1s1-.45 1-1V4c0-.55.45-1 1-1h10c.55 0 1-.45 1-1s-.45-1-1-1zm.59 4.59 4.83 4.83c.37.37.58.88.58 1.41V21c0 1.1-.9 2-2 2H7.99C6.89 23 6 22.1 6 21l.01-14c0-1.1.89-2 1.99-2h6.17c.53 0 1.04.21 1.42.59zM15 12h4.5L14 6.5V11c0 .55.45 1 1 1z" />
 			</svg>
-			Copy Feed
+			Copy<span class="hidden sm:inline"> Feed</span>
 		</button>
 		<button
-			class="btn flex items-center justify-center gap-2 bg-red-700 text-white hover:bg-red-900"
+			class="btn flex items-center justify-center gap-1.5 bg-red-700 text-xs text-white hover:bg-red-900 sm:gap-2 sm:text-sm"
 			onclick={() => (clearModal = true)}
 		>
-			<svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 				<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
 			</svg>
-			Delete all teams
+			<span class="hidden sm:inline">Delete all</span><span class="sm:hidden">Clear</span>
 		</button>
 	</div>
-	<div class="my-2 grid w-full grid-cols-1 items-center px-5">
+	<div class="my-2 grid w-full grid-cols-1 items-center px-2 sm:px-5">
 		<select class="select" bind:value={selectedSystem} onchange={() => setSelectedSystem(selectedSystem)}>
 			{#each systems as sys}
 				<option value={sys.value}>{sys.name}</option>
@@ -211,7 +211,7 @@
 		</select>
 	</div>
 	<div
-		class="my-2 grid w-full grid-cols-1 items-center gap-4 px-5 xl:grid-cols-2"
+		class="my-2 grid w-full grid-cols-1 items-center gap-3 px-2 sm:gap-4 sm:px-5 xl:grid-cols-2"
 		id="draggable-wrapper"
 	>
 		{#each TEAMS as team, i}
@@ -280,18 +280,18 @@
 					{/if}
 				</div>
 
-				<div class="flex justify-between p-1">
+				<div class="flex justify-between gap-1 p-1">
 					<button class="btn btn-outline btn-sm flex items-center gap-1" onclick={() => moveToFirst(team.num)}>
 						<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
 							<path d="M18.41 16.59 13.82 12l4.59-4.59L17 6l-6 6 6 6 1.41-1.41zM6 6h2v12H6V6z" />
 						</svg>
-						Move to first
+						<span class="hidden sm:inline">Move to first</span><span class="sm:hidden">First</span>
 					</button>
 					<button class="btn btn-outline btn-sm flex items-center gap-1" onclick={() => moveToLast(team.num)}>
 						<svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
 							<path d="M5.59 7.41 10.18 12l-4.59 4.59L7 18l6-6-6-6-1.41 1.41zM16 6h2v12h-2V6z" />
 						</svg>
-						Move to last
+						<span class="hidden sm:inline">Move to last</span><span class="sm:hidden">Last</span>
 					</button>
 					<button
 						class="btn btn-sm flex items-center gap-1 bg-red-700 text-white hover:bg-red-900"
@@ -300,7 +300,7 @@
 						<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 							<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
 						</svg>
-						Delete
+						<span class="hidden sm:inline">Delete</span>
 					</button>
 				</div>
 			</div>

@@ -37,57 +37,60 @@ export async function GET({ url, locals, platform }) {
 		}
 
 		const data = await res.json();
-		const alerts = Array.isArray(data) ? data : data.data ?? [];
+		const allAlerts = Array.isArray(data) ? data : data.data ?? [];
 
-		if (alerts.length === 0) {
+		if (allAlerts.length === 0) {
 			await log('alerts.sync', 'No completed alerts returned from API');
 			return json({ success: true, upserted: 0 });
 		}
 
 		const supabase = createClient(PUBLIC_SUPABASE_URL, env.SUPABASE_SECRET_KEY);
 
-		const rows = alerts.map((a) => ({
-			id: a.id,
-			system: a.system || null,
-			subsystem: a.subsystem || null,
-			tertiary_location: a.tertiaryLocation || null,
-			threat_level: a.threatLevel ?? null,
-			client_rsi_handle: a.clientRsiHandle || null,
-			client_discord_id: a.clientDiscordId || null,
-			client_id: a.clientId || null,
-			subscription_tier: a.subscriptionTier || null,
-			status: a.status ?? null,
-			cancellation_reason: a.cancellationReason ?? null,
-			mission_name: a.missionName || null,
-			submission_source: a.submissionSource ?? null,
-			origin: a.origin ?? null,
-			is_complete: a.isComplete ?? null,
-			test: a.test ?? null,
-			rating: a.rating ?? null,
-			rating_remarks: a.ratingRemarks || null,
-			creation_timestamp: a.creationTimestamp ?? null,
-			accepted_timestamp: a.acceptedTimestamp ?? null,
-			completion_timestamp: a.completionTimestamp ?? null,
-			created_at: a.createdAt || null,
-			updated_at: a.updatedAt || null,
-			coord_thread_id: a.coordThreadId || null,
-			coord_channel_id: a.coordChannelId || null,
-			client_rsi_profile_link: a.clientRsiProfileLink || null,
-			client_got_data: a.clientGotData ?? null,
-			client_redacted_org: a.clientRedactedOrg ?? null,
-			client_reported: a.clientReported ?? null,
-			client_user_sid: a.clientUserSid || null,
-			aar_services_provided: a.aarServicesProvided ?? null,
-			aar_suspected_trap: a.aarSuspectedTrap ?? null,
-			aar_remarks: a.aarRemarks || null,
-			aar_submitter_staff_id: a.aarSubmitterStaffId || null,
-			aar_submitted_on: a.aarSubmittedOn || null,
-			aar_has_been_edited: a.aarHasBeenEdited ?? null,
-			responding_team: a.respondingTeam ?? null,
-			responding_teams: a.respondingTeams ?? null,
-			aar_edit_history: a.aarEditHistory ?? null,
-			raw: a
-		}));
+		const rows = allAlerts.map((a) => {
+			const aar = a.afterActionReport || {};
+			return {
+				id: a.id,
+				system: a.system || null,
+				subsystem: a.subsystem || null,
+				tertiary_location: a.tertiaryLocation || null,
+				threat_level: a.threatLevel ?? null,
+				client_rsi_handle: a.clientRsiHandle || null,
+				client_discord_id: a.clientDiscordId || null,
+				client_id: a.clientId || null,
+				subscription_tier: a.subscriptionTier || null,
+				status: a.status ?? null,
+				cancellation_reason: a.cancellationReason ?? null,
+				mission_name: a.missionName || null,
+				submission_source: a.submissionSource ?? null,
+				origin: a.origin ?? null,
+				is_complete: a.isComplete ?? null,
+				test: a.test ?? null,
+				rating: a.rating ?? null,
+				rating_remarks: a.ratingRemarks || null,
+				creation_timestamp: a.creationTimestamp ?? null,
+				accepted_timestamp: a.acceptedTimestamp ?? null,
+				completion_timestamp: a.completionTimestamp ?? null,
+				created_at: a.createdAt || null,
+				updated_at: a.updatedAt || null,
+				coord_thread_id: a.coordThreadId || null,
+				coord_channel_id: a.coordChannelId || null,
+				client_rsi_profile_link: a.clientRsiProfileLink || null,
+				client_got_data: a.clientGotData ?? null,
+				client_redacted_org: a.clientRedactedOrg ?? null,
+				client_reported: a.clientReported ?? null,
+				client_user_sid: a.clientUserSid || null,
+				aar_services_provided: aar.servicesProvided ?? null,
+				aar_suspected_trap: aar.suspectedTrap ?? null,
+				aar_remarks: aar.remarks || null,
+				aar_submitter_staff_id: aar.submitterStaffId || null,
+				aar_submitted_on: aar.submittedOn || null,
+				aar_has_been_edited: aar.hasBeenEdited ?? null,
+				responding_team: a.respondingTeam ?? null,
+				responding_teams: a.respondingTeams ?? null,
+				aar_edit_history: aar.editHistory ?? null,
+				raw: a
+			};
+		});
 
 		const { error } = await supabase
 			.from('completed_alerts')
