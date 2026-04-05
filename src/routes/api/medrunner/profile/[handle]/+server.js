@@ -10,6 +10,7 @@ function getAdmin() {
 
 /**
  * GET — return stored profile by RSI handle (or 404)
+ * If the handle is an old name, return a redirect to the current profile.
  */
 export async function GET({ params, locals }) {
 	if (!locals.profile?.is_approved) {
@@ -19,36 +20,48 @@ export async function GET({ params, locals }) {
 	const handle = decodeURIComponent(params.handle);
 	const supabase = getAdmin();
 
+	// Try direct match first
 	const { data, error } = await supabase
 		.from('medrunner_profiles')
 		.select('*')
 		.ilike('rsi_handle', handle)
 		.single();
 
-	if (error || !data) {
-		return json({ error: 'Profile not found' }, { status: 404 });
+	if (!error && data) {
+		const { data: siteProfile } = data.discord_id
+			? await supabase
+					.from('profiles')
+					.select('discord_avatar, discord_username')
+					.eq('discord_id', data.discord_id)
+					.single()
+			: { data: null };
+
+		return json({
+			profile: {
+				...data,
+				site_avatar: siteProfile?.discord_avatar || null,
+				site_username: siteProfile?.discord_username || null
+			}
+		});
 	}
 
-	// Check if this medrunner has a site profile (for avatar)
-	const { data: siteProfile } = data.discord_id
-		? await supabase
-				.from('profiles')
-				.select('discord_avatar, discord_username')
-				.eq('discord_id', data.discord_id)
-				.single()
-		: { data: null };
+	// Check if this handle is in someone's previous_handles
+	const { data: redirectProfile } = await supabase
+		.from('medrunner_profiles')
+		.select('rsi_handle')
+		.contains('previous_handles', [handle.toLowerCase()])
+		.single();
 
-	return json({
-		profile: {
-			...data,
-			site_avatar: siteProfile?.discord_avatar || null,
-			site_username: siteProfile?.discord_username || null
-		}
-	});
+	if (redirectProfile) {
+		return json({ redirect: redirectProfile.rsi_handle }, { status: 301 });
+	}
+
+	return json({ error: 'Profile not found' }, { status: 404 });
 }
 
 /**
- * POST — compute stats from completed_alerts and upsert profile
+ * POST — compute stats from completed_alerts and upsert profile.
+ * Uses discord_id to find ALL alerts across handle changes, merges old profiles.
  */
 export async function POST({ params, locals }) {
 	if (!locals.profile?.is_approved) {
@@ -58,7 +71,7 @@ export async function POST({ params, locals }) {
 	const handle = decodeURIComponent(params.handle);
 	const supabase = getAdmin();
 
-	// Fetch all alerts in batches (Supabase caps RPC results at 1000 rows)
+	// Step 1: Try to fetch alerts by handle first to get the discord_id
 	let alerts = [];
 	let offset = 0;
 	const BATCH = 1000;
@@ -78,20 +91,83 @@ export async function POST({ params, locals }) {
 		offset += BATCH;
 	}
 
+	// Extract discord_id from any alert we found
+	let discordId = null;
+	for (const alert of alerts) {
+		const member = findMemberByHandle(handle, alert.responding_team || {});
+		if (member?.discordId) {
+			discordId = member.discordId;
+			break;
+		}
+	}
+
+	// Also check if there's an existing profile with this handle that has a discord_id
+	if (!discordId) {
+		const { data: existingProfile } = await supabase
+			.from('medrunner_profiles')
+			.select('discord_id')
+			.ilike('rsi_handle', handle)
+			.single();
+		if (existingProfile?.discord_id) discordId = existingProfile.discord_id;
+	}
+
+	// Step 2: If we have a discord_id, fetch ALL alerts by discord_id (across name changes)
+	if (discordId) {
+		let allAlerts = [];
+		offset = 0;
+		while (true) {
+			const { data, error } = await supabase
+				.rpc('get_medrunner_alerts_by_discord_id', { p_discord_id: discordId })
+				.range(offset, offset + BATCH - 1);
+
+			if (error) {
+				console.error('Error fetching alerts by discord_id:', error);
+				break; // Fall back to handle-based alerts
+			}
+
+			if (!data || data.length === 0) break;
+			allAlerts = allAlerts.concat(data);
+			if (data.length < BATCH) break;
+			offset += BATCH;
+		}
+
+		if (allAlerts.length > 0) {
+			alerts = allAlerts;
+		}
+	}
+
 	if (!alerts || alerts.length === 0) {
 		return json({ error: 'No alerts found for this medrunner' }, { status: 404 });
 	}
 
-	// Compute stats
-	const stats = computeStats(handle, alerts);
+	// Step 3: Compute stats — pass discordId so we can find the member by discord_id too
+	const stats = computeStats(handle, alerts, discordId);
 
-	// Upsert profile
+	// Step 4: Collect all old handles (from alert data) that differ from current
+	const allHandles = collectAllHandles(alerts, discordId);
+	const currentHandle = stats.rsi_handle; // The latest handle from alert data
+	const previousHandles = allHandles
+		.filter((h) => h.toLowerCase() !== currentHandle.toLowerCase())
+		.map((h) => h.toLowerCase());
+
+	// Step 5: Delete any stale profiles for old handles
+	if (previousHandles.length > 0) {
+		for (const oldHandle of previousHandles) {
+			await supabase
+				.from('medrunner_profiles')
+				.delete()
+				.ilike('rsi_handle', oldHandle);
+		}
+	}
+
+	// Step 6: Upsert profile under the current (latest) handle
 	const { data: profile, error: upsertError } = await supabase
 		.from('medrunner_profiles')
 		.upsert(
 			{
-				rsi_handle: stats.rsi_handle,
+				rsi_handle: currentHandle,
 				...stats,
+				previous_handles: previousHandles,
 				updated_at: new Date().toISOString()
 			},
 			{ onConflict: 'rsi_handle' }
@@ -103,6 +179,9 @@ export async function POST({ params, locals }) {
 		console.error('Error upserting profile:', upsertError);
 		return json({ error: 'Failed to save profile' }, { status: 500 });
 	}
+
+	// If the request was for an old handle, return a redirect hint
+	const redirectHandle = currentHandle.toLowerCase() !== handle.toLowerCase() ? currentHandle : null;
 
 	// Check for site profile avatar
 	const { data: siteProfile } = profile.discord_id
@@ -118,13 +197,14 @@ export async function POST({ params, locals }) {
 			...profile,
 			site_avatar: siteProfile?.discord_avatar || null,
 			site_username: siteProfile?.discord_username || null
-		}
+		},
+		...(redirectHandle ? { redirect: redirectHandle } : {})
 	});
 }
 
-function computeStats(handle, alerts) {
+function computeStats(handle, alerts, knownDiscordId = null) {
 	let rsiHandle = handle;
-	let discordId = null;
+	let discordId = knownDiscordId;
 	let discordUsername = null;
 	const roleCounts = {};
 	const systemCounts = {};
@@ -140,19 +220,25 @@ function computeStats(handle, alerts) {
 	let partnerCounts = {};
 	let firstTs = null;
 	let lastTs = null;
+	let latestMemberTs = null; // Track the most recent alert to get the latest handle
 
 	for (const alert of alerts) {
 		const team = alert.responding_team;
 		if (!team) continue;
 
-		// Find this medrunner in the team by rsiHandle
-		const member = findMemberByHandle(handle, team);
+		// Find this medrunner — try by handle first, then by discord_id
+		let member = findMemberByHandle(handle, team);
+		if (!member && knownDiscordId) member = findMemberByDiscordId(knownDiscordId, team);
 		if (!member) continue;
 
-		// Capture discord info from last known alert
-		if (member.rsiHandle) rsiHandle = member.rsiHandle;
-		if (member.discordId) discordId = member.discordId;
-		if (member.discordUsername) discordUsername = member.discordUsername;
+		// Capture discord info from the most recent alert (by creation_timestamp)
+		const alertTs = alert.creation_timestamp || 0;
+		if (!latestMemberTs || alertTs > latestMemberTs) {
+			latestMemberTs = alertTs;
+			if (member.rsiHandle) rsiHandle = member.rsiHandle;
+			if (member.discordId) discordId = member.discordId;
+			if (member.discordUsername) discordUsername = member.discordUsername;
+		}
 
 		// Status counts
 		if (alert.status === 3) successful++;
@@ -176,9 +262,11 @@ function computeStats(handle, alerts) {
 			threatCounts[tlKey] = (threatCounts[tlKey] || 0) + 1;
 		}
 
-		// Dispatcher vs field
+		// Dispatcher vs field — match by handle or discordId
 		const isDispatcher = (team.dispatchers || []).some(
-			(d) => d.rsiHandle && d.rsiHandle.toLowerCase() === handle.toLowerCase()
+			(d) =>
+				(d.rsiHandle && d.rsiHandle.toLowerCase() === (member.rsiHandle || handle).toLowerCase()) ||
+				(knownDiscordId && d.discordId === knownDiscordId)
 		);
 		if (isDispatcher) dispatchCount++;
 		else fieldCount++;
@@ -214,7 +302,9 @@ function computeStats(handle, alerts) {
 		// Partners — find all other members on this alert
 		const allMembers = getAllMembers(team);
 		for (const m of allMembers) {
-			if (m.rsiHandle && m.rsiHandle.toLowerCase() === handle.toLowerCase()) continue;
+			// Skip self — match by discordId or handle
+			if (knownDiscordId && m.discordId === knownDiscordId) continue;
+			if (m.rsiHandle && m.rsiHandle.toLowerCase() === (member.rsiHandle || handle).toLowerCase()) continue;
 			const key = m.rsiHandle || m.discordId;
 			if (!key) continue;
 			if (!partnerCounts[key]) {
@@ -267,7 +357,10 @@ function computeStats(handle, alerts) {
 		avgResponseTime,
 		dispatchCount,
 		fieldCount,
-		totalTimeOnAlerts
+		totalTimeOnAlerts,
+		threatCounts,
+		alertDurations,
+		responseTimes
 	);
 
 	return {
@@ -302,7 +395,10 @@ function computeBadges(
 	avgResponse,
 	dispatchCount,
 	fieldCount,
-	totalTimeSeconds
+	totalTimeSeconds,
+	threatCounts,
+	alertDurations,
+	responseTimes
 ) {
 	const badges = [];
 
@@ -336,23 +432,20 @@ function computeBadges(
 			badges.push({ id: 'reliable', name: 'Reliable', description: '85%+ success rate', tier: 1 });
 	}
 
-	// Fast responder
-	if (avgResponse && avgResponse < 60) {
-		badges.push({ id: 'lightning', name: 'Lightning', description: 'Avg response under 1 min', tier: 2 });
-	} else if (avgResponse && avgResponse < 120) {
-		badges.push({ id: 'fast_responder', name: 'Fast Responder', description: 'Avg response under 2 min', tier: 1 });
-	}
-
-	// Role specialist
-	const topRole = Object.entries(roleCounts).sort(([, a], [, b]) => b - a)[0];
-	if (topRole) {
-		const roleName = MEDRUNNER_ROLES[topRole[0]]?.name || 'Unknown';
-		if (topRole[1] >= 100)
-			badges.push({ id: 'master', name: `${roleName} Master`, description: `100+ alerts as ${roleName}`, tier: 3 });
-		else if (topRole[1] >= 50)
-			badges.push({ id: 'expert', name: `${roleName} Expert`, description: `50+ alerts as ${roleName}`, tier: 2 });
-		else if (topRole[1] >= 20)
-			badges.push({ id: 'specialist', name: `${roleName} Specialist`, description: `20+ alerts as ${roleName}`, tier: 1 });
+	// Role badges — one per role that qualifies
+	for (const [roleKey, count] of Object.entries(roleCounts)) {
+		const roleName = MEDRUNNER_ROLES[roleKey]?.name || 'Unknown';
+		const roleId = roleName.toLowerCase().replace(/\s+/g, '_');
+		if (count >= 1000)
+			badges.push({ id: `god_${roleId}`, name: `${roleName} God`, description: `1000+ alerts as ${roleName}`, tier: 8 });
+		else if (count >= 500)
+			badges.push({ id: `master_${roleId}`, name: `${roleName} Master`, description: `500+ alerts as ${roleName}`, tier: 5 });
+		else if (count >= 200)
+			badges.push({ id: `expert_${roleId}`, name: `${roleName} Expert`, description: `200+ alerts as ${roleName}`, tier: 3 });
+		else if (count >= 100)
+			badges.push({ id: `specialist_${roleId}`, name: `${roleName} Specialist`, description: `100+ alerts as ${roleName}`, tier: 2 });
+		else if (count >= 20)
+			badges.push({ id: `apprentice_${roleId}`, name: `${roleName} Apprentice`, description: `20+ alerts as ${roleName}`, tier: 1 });
 	}
 
 	// Dispatcher
@@ -362,20 +455,6 @@ function computeBadges(
 		badges.push({ id: 'dispatch_expert', name: 'Coordinator', description: '50+ dispatch missions', tier: 2 });
 	else if (dispatchCount >= 25)
 		badges.push({ id: 'dispatcher', name: 'Command Center', description: '25+ dispatch missions', tier: 1 });
-
-	// Field operator
-	if (fieldCount >= 100)
-		badges.push({ id: 'field_master', name: 'Frontline', description: '100+ field missions', tier: 3 });
-	else if (fieldCount >= 50)
-		badges.push({ id: 'field_expert', name: 'Veteran Operator', description: '50+ field missions', tier: 2 });
-	else if (fieldCount >= 25)
-		badges.push({ id: 'field_ops', name: 'Field Operator', description: '25+ field missions', tier: 1 });
-
-	// Versatile (used 3+ different roles)
-	if (Object.keys(roleCounts).length >= 4)
-		badges.push({ id: 'polymath', name: 'Polymath', description: 'Served in 4+ roles', tier: 2 });
-	else if (Object.keys(roleCounts).length >= 3)
-		badges.push({ id: 'versatile', name: 'Versatile', description: 'Served in 3+ roles', tier: 1 });
 
 	// Time dedication badges
 	const totalHours = totalTimeSeconds / 3600;
@@ -387,6 +466,51 @@ function computeBadges(
 		badges.push({ id: 'dedicated', name: 'Dedicated', description: '100+ hours on alerts', tier: 2 });
 	else if (totalHours >= 24)
 		badges.push({ id: 'committed', name: 'Committed', description: '24+ hours on alerts', tier: 1 });
+
+	// "You Are a Failure" — 69+ failed alerts
+	if (failed >= 69)
+		badges.push({ id: 'failure', name: 'You Are a Failure', description: '69+ failed alerts', tier: 1 });
+
+	// "Scared, Potter?" — 100+ no-threat alerts (threat_level === 1 means None)
+	const noThreatCount = (threatCounts || {})['1'] || 0;
+	if (noThreatCount >= 100)
+		badges.push({ id: 'scared_potter', name: 'Scared, Potter?', description: '100+ no-threat alerts', tier: 2 });
+
+	// PvP badges (threat_level === 3 means PvP)
+	const pvpCount = (threatCounts || {})['3'] || 0;
+	if (pvpCount >= 100)
+		badges.push({ id: 'danger_zone_legend', name: 'Danger Zone Legend', description: '100+ PvP alerts', tier: 4 });
+	else if (pvpCount >= 50)
+		badges.push({ id: 'i_am_the_danger', name: 'I Am the Danger', description: '50+ PvP alerts', tier: 3 });
+	else if (pvpCount >= 20)
+		badges.push({ id: 'danger_zone', name: 'Welcome to the Danger Zone', description: '20+ PvP alerts', tier: 2 });
+
+	// Marathon badges — longest single alert duration
+	const longestAlertSeconds = alertDurations.length > 0 ? Math.max(...alertDurations) / 1000 : 0;
+	const longestAlertHours = longestAlertSeconds / 3600;
+	if (longestAlertHours >= 8)
+		badges.push({ id: 'ultramarathon', name: 'Ultramarathon', description: 'Single alert lasting 8+ hours', tier: 5 });
+	else if (longestAlertHours >= 4)
+		badges.push({ id: 'ironman', name: 'Ironman', description: 'Single alert lasting 4+ hours', tier: 4 });
+	else if (longestAlertHours >= 2)
+		badges.push({ id: 'marathon', name: 'Marathon', description: 'Single alert lasting 2+ hours', tier: 3 });
+	else if (longestAlertHours >= 1)
+		badges.push({ id: 'half_marathon', name: 'Half Marathon', description: 'Single alert lasting 1+ hour', tier: 2 });
+	else if (longestAlertSeconds >= 1800)
+		badges.push({ id: 'endurance', name: 'Endurance', description: 'Single alert lasting 30+ minutes', tier: 1 });
+
+	// First on Scene — number of alerts responded to within 60 seconds
+	const fastResponseCount = (responseTimes || []).filter((t) => t <= 60000).length;
+	if (fastResponseCount >= 500)
+		badges.push({ id: 'flash_legend', name: 'Speed of Light', description: '500+ alerts responded in under 60s', tier: 5 });
+	else if (fastResponseCount >= 200)
+		badges.push({ id: 'flash_master', name: 'Lightning Reflexes', description: '200+ alerts responded in under 60s', tier: 4 });
+	else if (fastResponseCount >= 100)
+		badges.push({ id: 'flash_expert', name: 'First on Scene', description: '100+ alerts responded in under 60s', tier: 3 });
+	else if (fastResponseCount >= 50)
+		badges.push({ id: 'flash_adept', name: 'Quick Draw', description: '50+ alerts responded in under 60s', tier: 2 });
+	else if (fastResponseCount >= 20)
+		badges.push({ id: 'flash_rookie', name: 'Ready & Waiting', description: '20+ alerts responded in under 60s', tier: 1 });
 
 	return badges;
 }
@@ -400,6 +524,31 @@ function findMemberByHandle(handle, team) {
 		}
 	}
 	return null;
+}
+
+function findMemberByDiscordId(discordId, team) {
+	const arrays = [team.staff, team.allMembers, team.dispatchers].filter(Array.isArray);
+	for (const arr of arrays) {
+		for (const member of arr) {
+			if (member.discordId === discordId) return member;
+		}
+	}
+	return null;
+}
+
+/**
+ * Collect all unique RSI handles used by a discord_id across all alerts.
+ */
+function collectAllHandles(alerts, discordId) {
+	if (!discordId) return [];
+	const handles = new Set();
+	for (const alert of alerts) {
+		const team = alert.responding_team;
+		if (!team) continue;
+		const member = findMemberByDiscordId(discordId, team);
+		if (member?.rsiHandle) handles.add(member.rsiHandle);
+	}
+	return [...handles];
 }
 
 function getAllMembers(team) {

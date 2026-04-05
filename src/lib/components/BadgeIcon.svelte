@@ -22,16 +22,41 @@
 		dispatcher:    'M22 12h-4l-3 9L9 3l-3 9H2',
 		dispatch_expert:'M22 12h-4l-3 9L9 3l-3 9H2',
 		dispatch_master:'M22 12h-4l-3 9L9 3l-3 9H2',
-		field_ops:     'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3M22 2l-5 5m-4.64 4.36a3.5 3.5 0 00-4.95 0L5 14l5 5 2.64-2.41a3.5 3.5 0 000-4.95z',
-		field_expert:  'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3M22 2l-5 5m-4.64 4.36a3.5 3.5 0 00-4.95 0L5 14l5 5 2.64-2.41a3.5 3.5 0 000-4.95z',
-		field_master:  'M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09zM12 15l-3-3M22 2l-5 5m-4.64 4.36a3.5 3.5 0 00-4.95 0L5 14l5 5 2.64-2.41a3.5 3.5 0 000-4.95z',
 		versatile:     'M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15',
 		polymath:      'M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15',
 		committed:     'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2',
 		dedicated:     'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2',
 		tireless:      'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2',
 		lifelong:      'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2',
+		failure:       'M12 2a10 10 0 100 20 10 10 0 000-20zM15 9l-6 6M9 9l6 6',
+		scared_potter: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 8v4m0 4h.01',
+		danger_zone:   'M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01',
+		i_am_the_danger:  'M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01',
+		danger_zone_legend:'M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01',
+		// Marathon badges — stopwatch icon
+		endurance:      'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2M16.24 7.76l1.42-1.42M20 4.5l-1.5 1.5',
+		half_marathon:  'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2M16.24 7.76l1.42-1.42M20 4.5l-1.5 1.5',
+		marathon:       'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2M16.24 7.76l1.42-1.42M20 4.5l-1.5 1.5',
+		ironman:        'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2M16.24 7.76l1.42-1.42M20 4.5l-1.5 1.5',
+		ultramarathon:  'M12 22a10 10 0 100-20 10 10 0 000 20zM12 6v6l4 2M16.24 7.76l1.42-1.42M20 4.5l-1.5 1.5',
+		// First on Scene badges — lightning/bolt icon
+		flash_rookie:   'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
+		flash_adept:    'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
+		flash_expert:   'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
+		flash_master:   'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
+		flash_legend:   'M13 2L3 14h9l-1 8 10-12h-9l1-8z',
 	};
+
+	// Map dynamic role-based badge ids back to base icon
+	function getPath(badgeId) {
+		if (paths[badgeId]) return paths[badgeId];
+		if (badgeId.startsWith('god_')) return paths.immortal;
+		if (badgeId.startsWith('master_')) return paths.master;
+		if (badgeId.startsWith('expert_')) return paths.expert;
+		if (badgeId.startsWith('specialist_')) return paths.specialist;
+		if (badgeId.startsWith('apprentice_')) return paths.specialist;
+		return 'M12 22a10 10 0 100-20 10 10 0 000 20zM12 8v4m0 4h.01';
+	}
 
 	const tierColors = {
 		1: 'text-gray-400',
@@ -45,7 +70,7 @@
 	};
 
 	const color = $derived(tierColors[tier] || 'text-gray-400');
-	const d = $derived(paths[id] || 'M12 22a10 10 0 100-20 10 10 0 000 20zM12 8v4m0 4h.01');
+	const d = $derived(getPath(id));
 </script>
 
 <svg class="{cls} {color}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">

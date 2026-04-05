@@ -1,9 +1,26 @@
 export enum System {
 	STANTON = 'Stanton',
+	PYRO = 'Pyro',
+	NYX = 'Nyx',
+	TRAINING = 'Training',
 }
 
 export function getAllSystems(): System[] {
 	return Object.values(System);
+}
+
+/** Map an API unit string to a System value */
+export function mapUnitToSystem(unit?: string): System {
+	if (!unit) return System.STANTON;
+	const lower = unit.toLowerCase();
+	if (lower.includes('pyro')) return System.PYRO;
+	if (lower.includes('nyx')) return System.NYX;
+	if (lower.includes('train')) return System.TRAINING;
+	// Check for exact matches in enum values
+	for (const sys of getAllSystems()) {
+		if (sys.toLowerCase() === lower) return sys;
+	}
+	return System.STANTON;
 }
 
 export function dropdownSystems(): { name: string, value: string }[] {

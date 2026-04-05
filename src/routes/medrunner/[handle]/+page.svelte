@@ -9,6 +9,7 @@
 	let updating = $state(false);
 	let error = $state(null);
 	let buildingNew = $state(false);
+	let buildFailed = $state(false);
 
 	const threatLabels = { 0: 'Unknown', 1: 'None', 2: 'PvE', 3: 'PvP' };
 	const threatBarColors = { '0': 'bg-gray-500', '1': 'bg-green-500', '2': 'bg-yellow-500', '3': 'bg-red-500' };
@@ -86,24 +87,32 @@
 	async function refreshProfile() {
 		updating = true;
 		error = null;
+		buildFailed = false;
 		try {
 			const res = await fetch(`/api/medrunner/profile/${encodeURIComponent(data.handle)}`, { method: 'POST' });
 			const result = await res.json();
 			if (res.ok) {
+				// If the user changed their RSI handle, redirect to the new profile URL
+				if (result.redirect) {
+					window.location.href = `/medrunner/${encodeURIComponent(result.redirect)}`;
+					return;
+				}
 				profileOverride = result.profile;
 			} else {
 				error = result.error || 'Failed to update profile';
+				buildFailed = true;
 			}
 		} catch (e) {
 			error = 'Network error';
+			buildFailed = true;
 		}
 		updating = false;
 		buildingNew = false;
 	}
 
-	// If profile doesn't exist yet, auto-create it
+	// If profile doesn't exist yet, auto-create it (once)
 	$effect(() => {
-		if (data.notFound && !profile && !updating && !buildingNew) {
+		if (data.notFound && !profile && !updating && !buildingNew && !buildFailed) {
 			buildingNew = true;
 			refreshProfile();
 		}
@@ -135,10 +144,25 @@
 			</div>
 		{:else if !profile && !updating}
 			<div class="py-20 text-center">
-				<svg class="mx-auto mb-4 h-12 w-12 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
-				<p class="text-lg text-gray-400">No data found for <span class="font-semibold text-white">{data.handle}</span></p>
-				<p class="mt-2 text-sm text-gray-500">This person hasn't participated in any alerts.</p>
-				<a href="/medrunner" class="btn btn-secondary mt-6 inline-block text-sm">← Back to Profiles</a>
+				{#if buildFailed}
+					<svg class="mx-auto mb-4 h-12 w-12 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M15 9l-6 6M9 9l6 6" /></svg>
+					<p class="text-lg text-red-400">Profile can't be found</p>
+					<p class="mt-2 text-sm text-gray-400">Make sure the spelling is correct, including capitalization.</p>
+					{#if error}
+						<p class="mt-1 text-xs text-gray-500">{error}</p>
+					{/if}
+					<div class="mt-6 flex justify-center gap-3">
+						<button class="btn btn-primary text-sm" onclick={() => { buildFailed = false; buildingNew = false; refreshProfile(); }}>
+							Try Again
+						</button>
+						<a href="/medrunner" class="btn btn-secondary text-sm">← Back to Profiles</a>
+					</div>
+				{:else}
+					<svg class="mx-auto mb-4 h-12 w-12 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
+					<p class="text-lg text-gray-400">No data found for <span class="font-semibold text-white">{data.handle}</span></p>
+					<p class="mt-2 text-sm text-gray-500">This person hasn't participated in any alerts.</p>
+					<a href="/medrunner" class="btn btn-secondary mt-6 inline-block text-sm">← Back to Profiles</a>
+				{/if}
 			</div>
 		{:else if profile}
 
@@ -254,7 +278,7 @@
 					<div class="flex flex-wrap gap-3">
 						{#each profile.badges as badge}
 							<div
-								class="flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-800/50 px-4 py-2.5 transition-colors hover:border-gray-600"
+								class="badge-card badge-tier-{badge.tier} flex items-center gap-2 rounded-lg border px-4 py-2.5 transition-all"
 								title={badge.description}
 							>
 								<BadgeIcon id={badge.id} tier={badge.tier} class="h-5 w-5" />
@@ -489,3 +513,132 @@
 		{/if}
 	</div>
 </div>
+
+<style>
+	/* Tier 1 — Common (gray) */
+	.badge-tier-1 {
+		border-color: rgb(75 85 99);
+		background: rgba(31, 41, 55, 0.5);
+	}
+	.badge-tier-1:hover {
+		border-color: rgb(107 114 128);
+	}
+
+	/* Tier 2 — Uncommon (blue glow) */
+	.badge-tier-2 {
+		border-color: rgb(59 130 246 / 0.5);
+		background: rgba(30, 58, 138, 0.2);
+		box-shadow: 0 0 8px rgba(59, 130, 246, 0.15);
+	}
+	.badge-tier-2:hover {
+		border-color: rgb(59 130 246 / 0.7);
+		box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
+	}
+
+	/* Tier 3 — Rare (purple glow) */
+	.badge-tier-3 {
+		border-color: rgb(168 85 247 / 0.5);
+		background: rgba(88, 28, 135, 0.2);
+		box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+		animation: pulse-purple 3s ease-in-out infinite;
+	}
+
+	/* Tier 4 — Epic (amber glow, animated) */
+	.badge-tier-4 {
+		border-color: rgb(245 158 11 / 0.6);
+		background: rgba(120, 53, 15, 0.2);
+		box-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
+		animation: pulse-amber 2.5s ease-in-out infinite;
+	}
+
+	/* Tier 5 — Legendary (gold shimmer) */
+	.badge-tier-5 {
+		border-color: rgb(245 158 11 / 0.7);
+		background: linear-gradient(135deg, rgba(120, 53, 15, 0.3), rgba(180, 83, 9, 0.15));
+		box-shadow: 0 0 18px rgba(245, 158, 11, 0.3), inset 0 0 12px rgba(245, 158, 11, 0.05);
+		animation: shimmer-gold 3s ease-in-out infinite;
+	}
+
+	/* Tier 6 — Mythic (red radiant) */
+	.badge-tier-6 {
+		border-color: rgb(239 68 68 / 0.6);
+		background: linear-gradient(135deg, rgba(127, 29, 29, 0.3), rgba(185, 28, 28, 0.15));
+		box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), 0 0 40px rgba(239, 68, 68, 0.1);
+		animation: radiant-red 2s ease-in-out infinite;
+	}
+
+	/* Tier 7 — Transcendent (rose radiant, strong) */
+	.badge-tier-7 {
+		border-color: rgb(251 113 133 / 0.7);
+		background: linear-gradient(135deg, rgba(159, 18, 57, 0.3), rgba(225, 29, 72, 0.15));
+		box-shadow: 0 0 24px rgba(251, 113, 133, 0.35), 0 0 48px rgba(251, 113, 133, 0.15);
+		animation: radiant-rose 1.8s ease-in-out infinite;
+	}
+
+	/* Tier 8 — Immortal (rainbow border with strong glow) */
+	.badge-tier-8 {
+		background: linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(55, 65, 81, 0.5));
+		border: 2px solid transparent;
+		background-clip: padding-box;
+		position: relative;
+		box-shadow: 0 0 28px rgba(255, 255, 255, 0.2), 0 0 56px rgba(168, 85, 247, 0.15);
+		animation: immortal-glow 2s ease-in-out infinite;
+	}
+	.badge-tier-8::before {
+		content: '';
+		position: absolute;
+		inset: -2px;
+		border-radius: 0.5rem;
+		padding: 2px;
+		background: linear-gradient(
+			var(--badge-angle, 0deg),
+			#f43f5e, #a855f7, #3b82f6, #10b981, #eab308, #f43f5e
+		);
+		mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		-webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+		mask-composite: exclude;
+		-webkit-mask-composite: xor;
+		animation: badge-rotate 3s linear infinite;
+		pointer-events: none;
+	}
+
+	@keyframes pulse-purple {
+		0%, 100% { box-shadow: 0 0 10px rgba(168, 85, 247, 0.2); }
+		50% { box-shadow: 0 0 18px rgba(168, 85, 247, 0.4); }
+	}
+
+	@keyframes pulse-amber {
+		0%, 100% { box-shadow: 0 0 14px rgba(245, 158, 11, 0.25); }
+		50% { box-shadow: 0 0 22px rgba(245, 158, 11, 0.5); }
+	}
+
+	@keyframes shimmer-gold {
+		0%, 100% { box-shadow: 0 0 18px rgba(245, 158, 11, 0.3), inset 0 0 12px rgba(245, 158, 11, 0.05); }
+		50% { box-shadow: 0 0 28px rgba(245, 158, 11, 0.5), inset 0 0 20px rgba(245, 158, 11, 0.1); }
+	}
+
+	@keyframes radiant-red {
+		0%, 100% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.3), 0 0 40px rgba(239, 68, 68, 0.1); }
+		50% { box-shadow: 0 0 30px rgba(239, 68, 68, 0.5), 0 0 60px rgba(239, 68, 68, 0.2); }
+	}
+
+	@keyframes radiant-rose {
+		0%, 100% { box-shadow: 0 0 24px rgba(251, 113, 133, 0.35), 0 0 48px rgba(251, 113, 133, 0.15); }
+		50% { box-shadow: 0 0 36px rgba(251, 113, 133, 0.55), 0 0 64px rgba(251, 113, 133, 0.25); }
+	}
+
+	@keyframes immortal-glow {
+		0%, 100% { box-shadow: 0 0 28px rgba(255, 255, 255, 0.2), 0 0 56px rgba(168, 85, 247, 0.15); }
+		50% { box-shadow: 0 0 40px rgba(255, 255, 255, 0.35), 0 0 72px rgba(168, 85, 247, 0.3); }
+	}
+
+	@property --badge-angle {
+		syntax: '<angle>';
+		initial-value: 0deg;
+		inherits: false;
+	}
+
+	@keyframes badge-rotate {
+		to { --badge-angle: 360deg; }
+	}
+</style>

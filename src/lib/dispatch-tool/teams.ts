@@ -1,9 +1,20 @@
+export interface TeamMember {
+	rsiHandle: string;
+	discordId: string;
+	class: number;
+}
+
 export interface Team {
 	position: number;
 	num: number;
 	leader: string;
 	status: string;
 	comment?: string;
+	apiTeamId?: string;
+	members?: TeamMember[];
+	memberCount?: number;
+	unit?: string;
+	system?: string;
 }
 
 /**

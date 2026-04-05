@@ -50,11 +50,13 @@ export function generateFeed(system: string, teams: Team[]): string {
 	teams.sort((a, b) => a.position - b.position);
 
 	let firstTeam = teams[0];
+	let firstSystem = firstTeam.system || system;
 	let queue = '';
 	if (teams.length > 1) {
 		queue = '\nQueue: ';
 		for (let i = 1; i < teams.length; i++) {
-			queue += `${teams[i].num}`;
+			const tSys = teams[i].system || system;
+			queue += `${tSys} ${teams[i].num}`;
 			if (i < teams.length - 1) {
 				queue += ', ';
 			}
@@ -63,10 +65,12 @@ export function generateFeed(system: string, teams: Team[]): string {
 
 	let maxLeaderLength = teams.reduce((max, team) => Math.max(max, team.leader.length), 0);
 
+	// Determine max name width for alignment (system + num + leader)
 	let teamStatus = teams.map((team) => {
 		let teamLeader = team.leader.padEnd(maxLeaderLength, ' ');
 		let status = getStatus(team.status);
-		let teamName = `${system} ${team.num}: ${teamLeader} | `;
+		let tSys = team.system || system;
+		let teamName = `${tSys} ${team.num}: ${teamLeader} | `;
 		let statusMessage = status.name;
 		if (status.input && status.input.length > 0 && team.comment && team.comment.length > 0) {
 			statusMessage += `: ${team.comment}`;
@@ -75,14 +79,14 @@ export function generateFeed(system: string, teams: Team[]): string {
 	}).join('\n');
 
 	return '```ansi\n' +
-		`--- Transmission from ${system} Dispatcher ---\n` +
+		`--- Transmission from Dispatcher ---\n` +
 		'\n' +
 		`${teamStatus}` +
 		' \n\n' +
 		'------------- End Transmission -------------\n' +
 		'```\n' +
 		'```\n' +
-		`Next in line: ${system} ${firstTeam.num}` +
+		`Next in line: ${firstSystem} ${firstTeam.num}` +
 		`${queue}` +
 		'```\n' +
 		`Last updated: <t:${Math.floor(Date.now() / 1000)}:R>`;

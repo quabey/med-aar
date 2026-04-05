@@ -10,9 +10,9 @@
 
 	const navLinks = [
 		{ href: '/', label: 'AAR Builder' },
-		{ href: '/dispatch-tool', label: 'Dispatch Tool' },
 		{ href: '/alerts', label: 'Alerts' },
-		{ href: '/medrunner', label: 'Profiles' }
+		{ href: '/medrunner', label: 'Profiles' },
+		{ href: '/dispatch-tool', label: 'Dispatch Tool' }
 	];
 
 	function isActive(href) {
