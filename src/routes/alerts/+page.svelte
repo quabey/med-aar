@@ -178,6 +178,11 @@
 
 <svelte:head>
 	<title>Alerts - Med-Tools</title>
+	<meta property="og:title" content="Completed Alerts - Med-Tools" />
+	<meta property="og:url" content="https://med-tools.space/alerts" />
+	<meta property="og:description" content="Search and browse completed Medrunner alerts. Filter by client, system, threat level, status, and more." />
+	<meta name="twitter:title" content="Completed Alerts - Med-Tools" />
+	<meta name="twitter:description" content="Search and browse completed Medrunner alerts." />
 </svelte:head>
 
 <div class="h-full overflow-y-auto">

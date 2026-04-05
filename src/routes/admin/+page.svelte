@@ -533,6 +533,8 @@
 
 <svelte:head>
 	<title>Admin - Med-Tools</title>
+	<meta property="og:title" content="Admin Panel - Med-Tools" />
+	<meta property="og:url" content="https://med-tools.space/admin" />
 </svelte:head>
 
 <div class="mx-auto max-w-5xl overflow-y-auto p-6">

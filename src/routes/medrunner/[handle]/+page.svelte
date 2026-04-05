@@ -84,6 +84,29 @@
 		return outcomeTotal() - profile.successful_alerts - profile.cancelled_alerts - profile.failed_alerts;
 	});
 
+	// Build embed description from server-loaded profile data
+	const embedDescription = $derived(() => {
+		const p = data.profile;
+		if (!p) return `Medrunner profile for ${data.handle}`;
+		const parts = [];
+		parts.push(`${p.total_alerts} alerts`);
+		const completed = p.successful_alerts + p.failed_alerts;
+		if (completed > 0) parts.push(`${Math.round((p.successful_alerts / completed) * 100)}% success`);
+		if (p.average_response_time_seconds) {
+			const s = p.average_response_time_seconds;
+			parts.push(`avg response ${s < 60 ? Math.round(s) + 's' : Math.floor(s / 60) + 'm ' + Math.round(s % 60) + 's'}`);
+		}
+		if (p.role_distribution) {
+			const topRole = Object.entries(p.role_distribution).sort(([, a], [, b]) => b - a)[0];
+			if (topRole) {
+				const role = MEDRUNNER_ROLES[topRole[0]];
+				if (role) parts.push(`primary ${role.name}`);
+			}
+		}
+		if (p.badges?.length) parts.push(`${p.badges.length} badge${p.badges.length !== 1 ? 's' : ''}`);
+		return parts.join(' · ');
+	});
+
 	async function refreshProfile() {
 		updating = true;
 		error = null;
@@ -121,6 +144,15 @@
 
 <svelte:head>
 	<title>{profile?.rsi_handle || data.handle} Profile - Med-Tools</title>
+	<meta property="og:title" content={`${profile?.rsi_handle || data.handle} — Medrunner Profile`} />
+	<meta property="og:type" content="profile" />
+	<meta property="og:url" content={`https://med-tools.space/medrunner/${encodeURIComponent(data.handle)}`} />
+	<meta property="og:description" content={embedDescription()} />
+	<meta property="og:image" content="https://med-tools.space/medtools-og.png" />
+	<meta property="profile:username" content={profile?.rsi_handle || data.handle} />
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content={`${profile?.rsi_handle || data.handle} — Medrunner Profile`} />
+	<meta name="twitter:description" content={embedDescription()} />
 </svelte:head>
 
 <div class="h-full overflow-y-auto">

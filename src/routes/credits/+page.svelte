@@ -1,3 +1,10 @@
+<svelte:head>
+	<title>Credits - Med-Tools</title>
+	<meta property="og:title" content="Credits - Med-Tools" />
+	<meta property="og:url" content="https://med-tools.space/credits" />
+	<meta property="og:description" content="The people who made Med-Tools possible." />
+</svelte:head>
+
 <div class="mx-auto max-w-2xl px-4 py-12">
 	<!-- Header -->
 	<div class="mb-10 text-center">

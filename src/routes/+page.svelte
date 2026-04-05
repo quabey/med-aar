@@ -134,9 +134,12 @@
 
 <svelte:head>
 	<title>Medrunner AAR - Med-Tools</title>
-	<meta property="og:title" content="Med-Tools" />
+	<meta property="og:title" content="Medrunner AAR - Med-Tools" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://med-tools.space" />
+	<meta property="og:description" content="Build and format After Action Reports for Medrunner operations. Add alert details, ship info, injuries, and more." />
+	<meta name="twitter:title" content="Medrunner AAR - Med-Tools" />
+	<meta name="twitter:description" content="Build and format After Action Reports for Medrunner operations." />
 </svelte:head>
 
 <TabBar />

@@ -71,6 +71,11 @@
 
 <svelte:head>
 	<title>Medrunner Profiles - Med-Tools</title>
+	<meta property="og:title" content="Medrunner Profiles - Med-Tools" />
+	<meta property="og:url" content="https://med-tools.space/medrunner" />
+	<meta property="og:description" content="Browse and search Medrunner profiles. View stats, badges, alert history, and performance metrics." />
+	<meta name="twitter:title" content="Medrunner Profiles - Med-Tools" />
+	<meta name="twitter:description" content="Browse and search Medrunner profiles." />
 </svelte:head>
 
 <div class="h-full overflow-y-auto">

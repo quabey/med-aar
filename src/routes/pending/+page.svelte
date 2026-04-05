@@ -36,6 +36,8 @@
 
 <svelte:head>
 	<title>Pending Approval — Med-Tools</title>
+	<meta property="og:title" content="Pending Approval — Med-Tools" />
+	<meta property="og:url" content="https://med-tools.space/pending" />
 </svelte:head>
 
 <div class="flex flex-1 items-center justify-center">

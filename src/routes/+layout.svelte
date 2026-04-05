@@ -33,11 +33,22 @@
 </script>
 
 <svelte:head>
-	<meta property="og:image" content={`https://med-tools.space/medtools-og.png`} />
+	<meta property="og:site_name" content="Med-Tools" />
+	<meta property="og:type" content="website" />
+	<meta property="og:image" content="https://med-tools.space/medtools-og.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
 	<meta
 		property="og:description"
 		content="med-tools.space is the premier unofficial resource hub for medrunners, offering essential tools for After Action Reports (AARs) and ship assignments."
 	/>
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:image" content="https://med-tools.space/medtools-og.png" />
+	<meta
+		name="twitter:description"
+		content="The premier unofficial resource hub for medrunners — AAR tools, dispatch, ship assignments, and more."
+	/>
+	<meta name="description" content="med-tools.space is the premier unofficial resource hub for medrunners, offering essential tools for After Action Reports (AARs) and ship assignments." />
 </svelte:head>
 
 <div class="flex h-screen flex-col overflow-hidden bg-gray-900 font-Mohave font-medium text-white">

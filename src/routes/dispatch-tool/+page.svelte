@@ -407,10 +407,13 @@
 </script>
 
 <svelte:head>
-	<title>Dispatch Tool</title>
+	<title>Dispatch Tool - Med-Tools</title>
 	<meta property="og:title" content="Dispatch Tool - Med-Tools" />
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://med-tools.space" />
+	<meta property="og:url" content="https://med-tools.space/dispatch-tool" />
+	<meta property="og:description" content="Real-time dispatch management for Medrunner teams. Track team status, assign systems, and coordinate operations." />
+	<meta name="twitter:title" content="Dispatch Tool - Med-Tools" />
+	<meta name="twitter:description" content="Real-time dispatch management for Medrunner teams." />
 </svelte:head>
 
 {#if clearModal}

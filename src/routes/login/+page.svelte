@@ -18,6 +18,9 @@
 
 <svelte:head>
 	<title>Login — Med-Tools</title>
+	<meta property="og:title" content="Login — Med-Tools" />
+	<meta property="og:url" content="https://med-tools.space/login" />
+	<meta property="og:description" content="Sign in with Discord to access Med-Tools." />
 </svelte:head>
 
 <div class="flex flex-1 items-center justify-center">
