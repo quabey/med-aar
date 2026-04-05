@@ -48,7 +48,11 @@ export async function handle({ event, resolve }) {
 	const isPublic = publicRoutes.some((r) => event.url.pathname.startsWith(r));
 	const isApiRoute = event.url.pathname.startsWith('/api/');
 
-	if (!isPublic && !isApiRoute) {
+	// Allow embed crawlers (Discord, Twitter, Facebook, etc.) through so they can read OG meta tags
+	const ua = event.request.headers.get('user-agent') || '';
+	const isBot = /Discordbot|Twitterbot|facebookexternalhit|LinkedInBot|Slackbot|TelegramBot|WhatsApp|Googlebot|bingbot/i.test(ua);
+
+	if (!isPublic && !isApiRoute && !isBot) {
 		if (!session) {
 			throw redirect(303, '/login');
 		}
