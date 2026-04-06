@@ -212,6 +212,7 @@ function computeStats(handle, alerts, knownDiscordId = null) {
 	let successful = 0;
 	let failed = 0;
 	let cancelled = 0;
+	let aborted = 0;
 	let dispatchCount = 0;
 	let fieldCount = 0;
 	let responseTimes = [];
@@ -242,8 +243,9 @@ function computeStats(handle, alerts, knownDiscordId = null) {
 
 		// Status counts
 		if (alert.status === 3) successful++;
-		else if (alert.status === 8) failed++;
+		else if (alert.status === 4) failed++;
 		else if (alert.status === 6) cancelled++;
+		else if (alert.status === 8) aborted++;
 
 		// Role distribution
 		if (member.class != null) {
@@ -352,6 +354,7 @@ function computeStats(handle, alerts, knownDiscordId = null) {
 		alerts.length,
 		successful,
 		failed,
+		aborted,
 		cancelled,
 		roleCounts,
 		avgResponseTime,
@@ -370,6 +373,7 @@ function computeStats(handle, alerts, knownDiscordId = null) {
 		total_alerts: alerts.length,
 		successful_alerts: successful,
 		failed_alerts: failed,
+		aborted_alerts: aborted,
 		cancelled_alerts: cancelled,
 		role_distribution: roleCounts,
 		systems_visited: sortedSystems,
@@ -390,6 +394,7 @@ function computeBadges(
 	total,
 	successful,
 	failed,
+	aborted,
 	cancelled,
 	roleCounts,
 	avgResponse,

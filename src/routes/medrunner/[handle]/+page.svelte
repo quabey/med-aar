@@ -81,7 +81,7 @@
 	const outcomeTotal = $derived(() => profile?.total_alerts || 1);
 	const otherAlerts = $derived(() => {
 		if (!profile) return 0;
-		return outcomeTotal() - profile.successful_alerts - profile.cancelled_alerts - profile.failed_alerts;
+		return outcomeTotal() - profile.successful_alerts - profile.cancelled_alerts - profile.failed_alerts - (profile.aborted_alerts || 0);
 	});
 
 	// Build embed description from server-loaded profile data
@@ -375,6 +375,13 @@
 								title="Failed: {profile.failed_alerts}"
 							></div>
 						{/if}
+						{#if (profile.aborted_alerts || 0) > 0}
+							<div
+								class="bg-orange-500 transition-all"
+								style="width: {((profile.aborted_alerts || 0) / outcomeTotal()) * 100}%"
+								title="Aborted: {profile.aborted_alerts}"
+							></div>
+						{/if}
 						{#if otherAlerts() > 0}
 							<div
 								class="bg-gray-500 transition-all"
@@ -399,6 +406,13 @@
 							<span class="text-gray-300">Failed</span>
 							<span class="font-semibold text-white">{profile.failed_alerts}</span>
 						</span>
+						{#if (profile.aborted_alerts || 0) > 0}
+							<span class="flex items-center gap-1.5">
+								<span class="inline-block h-2.5 w-2.5 rounded-full bg-orange-500"></span>
+								<span class="text-gray-300">Aborted</span>
+								<span class="font-semibold text-white">{profile.aborted_alerts}</span>
+							</span>
+						{/if}
 						{#if otherAlerts() > 0}
 							<span class="flex items-center gap-1.5">
 								<span class="inline-block h-2.5 w-2.5 rounded-full bg-gray-500"></span>
