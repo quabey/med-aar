@@ -34,27 +34,6 @@
 </script>
 
 <div class="flex flex-col gap-3">
-	<!-- Medical Ship -->
-	<div class="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
-		<label for="medship" class="text-sm text-gray-300">Medical Ship</label>
-		<div class="flex flex-wrap items-center gap-2">
-			<select id="medship" bind:value={data.ships.medship} class="select w-48">
-				<option value="">-- Select --</option>
-				{#each medicalShips as ship}
-					<option value={ship.value}>{ship.name}</option>
-				{/each}
-			</select>
-			{#if data.ships.medship === 'Other'}
-				<input
-					type="text"
-					bind:value={data.otherShips.medship}
-					class="input w-48"
-					placeholder="Enter Medical Ship..."
-				/>
-			{/if}
-		</div>
-	</div>
-
 	<!-- Gunship -->
 	<div class="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
 		<label for="gunship" class="text-sm text-gray-300">Gunship</label>
@@ -71,6 +50,27 @@
 					bind:value={data.otherShips.gunship}
 					class="input w-48"
 					placeholder="Enter Gunship..."
+				/>
+			{/if}
+		</div>
+	</div>
+
+	<!-- Medical Ship -->
+	<div class="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-center">
+		<label for="medship" class="text-sm text-gray-300">Medical Ship</label>
+		<div class="flex flex-wrap items-center gap-2">
+			<select id="medship" bind:value={data.ships.medship} class="select w-48">
+				<option value="">-- Select --</option>
+				{#each medicalShips as ship}
+					<option value={ship.value}>{ship.name}</option>
+				{/each}
+			</select>
+			{#if data.ships.medship === 'Other'}
+				<input
+					type="text"
+					bind:value={data.otherShips.medship}
+					class="input w-48"
+					placeholder="Enter Medical Ship..."
 				/>
 			{/if}
 		</div>

@@ -3,6 +3,8 @@
 	import { supabase } from '$lib/supabaseClient.js';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
+	let { isLoggedIn = true } = $props();
+
 	const LS_NAME = 'medtools:copyPasteName';
 	const LS_CUSTOM_FAVS = 'medtools:customFavorites';
 	const LS_FAV_ORDER = 'medtools:favoriteOrder';
@@ -50,14 +52,19 @@
 			loadCustomFavorites();
 			loadFavoriteOrder();
 		}
-		const [sharedRes, favsRes, customRes] = await Promise.all([
-			supabase.from('copypastes').select('*').order('sort_order', { ascending: true }),
-			supabase.from('user_favorites').select('copypaste_id'),
-			supabase.from('user_custom_pastes').select('*').order('sort_order', { ascending: true })
-		]);
-		if (sharedRes.data) sharedMessages = sharedRes.data;
-		if (favsRes.data) favoriteIds = new Set(favsRes.data.map((f) => f.copypaste_id));
-		if (customRes.data) customMessages = customRes.data;
+		if (isLoggedIn) {
+			const [sharedRes, favsRes, customRes] = await Promise.all([
+				supabase.from('copypastes').select('*').order('sort_order', { ascending: true }),
+				supabase.from('user_favorites').select('copypaste_id'),
+				supabase.from('user_custom_pastes').select('*').order('sort_order', { ascending: true })
+			]);
+			if (sharedRes.data) sharedMessages = sharedRes.data;
+			if (favsRes.data) favoriteIds = new Set(favsRes.data.map((f) => f.copypaste_id));
+			if (customRes.data) customMessages = customRes.data;
+		} else {
+			const sharedRes = await supabase.from('copypastes').select('*').order('sort_order', { ascending: true });
+			if (sharedRes.data) sharedMessages = sharedRes.data;
+		}
 		loaded = true;
 	}
 
@@ -184,6 +191,7 @@
 			Copy Pastes
 		</h3>
 		<div class="flex items-center gap-1">
+			{#if isLoggedIn}
 			<button
 				class="btn-sm btn-primary text-xs"
 				onclick={() => (showAdd = !showAdd)}
@@ -191,6 +199,7 @@
 			>
 				+ New
 			</button>
+			{/if}
 			<button
 				class="rounded p-1 text-gray-400 transition-colors hover:text-white"
 				onclick={() => (showSettings = !showSettings)}
@@ -234,7 +243,7 @@
 		{/if}
 
 		<!-- Add new message form -->
-		{#if showAdd}
+		{#if showAdd && isLoggedIn}
 			<div class="border-b border-gray-700 bg-gray-800/60 p-3 flex flex-col gap-2">
 				<input
 					type="text"
@@ -265,7 +274,7 @@
 			{#if !loaded}
 				<LoadingSpinner message="Loading messages..." size="sm" />
 			{:else}
-				{#if favoritedMessages.length > 0}
+				{#if isLoggedIn && favoritedMessages.length > 0}
 					<div class="mb-3">
 						<div class="mb-1 flex items-center justify-between px-1">
 							<p class="text-[10px] font-semibold uppercase tracking-widest text-yellow-500/70">⭐ Favorites</p>
@@ -322,11 +331,13 @@
 					<p class="mb-1 px-1 text-[10px] font-semibold uppercase tracking-widest text-gray-500">{category}</p>
 					{#each allMessages.filter((m) => m.category === category) as msg}
 						<div class="mb-1 flex items-center gap-1 rounded bg-gray-700/40 px-2 py-1.5">
+							{#if isLoggedIn}
 							<button
 								class="flex-shrink-0 text-base leading-none transition-colors {isFavorited(msg.id, msg.isCustom) ? 'text-yellow-400' : 'text-gray-600 hover:text-yellow-400'}"
 								onclick={() => toggleFavorite(msg.id, msg.isCustom)}
 								title={isFavorited(msg.id, msg.isCustom) ? 'Unfavorite' : 'Favorite'}
 							>★</button>
+							{/if}
 							<span class="flex-1 min-w-0 text-xs text-gray-200 truncate" title={msg.text}>{msg.label}</span>
 							{#if needsName(msg.text) && !userName}
 								<span class="relative group flex-shrink-0">
@@ -342,7 +353,7 @@
 									onclick={() => copyMessage(msg.text, msg.category)}
 								>Copy</button>
 							{/if}
-							{#if msg.isCustom}
+							{#if msg.isCustom && isLoggedIn}
 								<button
 									class="flex-shrink-0 rounded p-0.5 text-gray-600 transition-colors hover:text-red-400"
 									onclick={() => deleteCustom(msg.id)}

@@ -6,6 +6,8 @@
 	import { successToast, errorToast } from '$lib/state/toast.svelte.js';
 	import Modal from '$lib/components/Modal.svelte';
 
+	let { isLoggedIn = true, onRequireLogin = () => {} } = $props();
+
 	let newGunshipPlayer = $state('');
 	let newMedshipPlayer = $state('');
 	let newCAPPlayer = $state('');
@@ -222,6 +224,10 @@
 	}
 
 	async function handleImportClick() {
+		if (!isLoggedIn) {
+			onRequireLogin('You need to log in to import teams from the API.');
+			return;
+		}
 		const players = get(assignmentPlayers);
 		const hasAssignments = players.gunship.length + players.medship.length + players.cap.length > 0;
 		if (hasAssignments) {
@@ -345,6 +351,10 @@
 	}
 
 	async function updateTeam() {
+		if (!isLoggedIn) {
+			onRequireLogin('You need to log in to update teams from the API.');
+			return;
+		}
 		if (!importedTeamId) return;
 		updateLoading = true;
 		try {

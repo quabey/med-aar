@@ -1,4 +1,5 @@
 <script>
+	import { page } from '$app/stores';
 	import { tabStore } from '$lib/state/tabs.svelte.js';
 	import { config } from '$lib/config/index.svelte.js';
 	import TabBar from '$lib/components/TabBar.svelte';
@@ -9,7 +10,17 @@
 	import Modal from '$lib/components/Modal.svelte';
 	import AssignmentPanel from '$lib/components/AssignmentPanel.svelte';
 	import CopyPastePanel from '$lib/components/CopyPastePanel.svelte';
+	import LoginRequired from '$lib/components/LoginRequired.svelte';
 	import { successToast } from '$lib/state/toast.svelte.js';
+
+	const isLoggedIn = $derived(!!$page.data.session && $page.data.profile?.is_approved);
+	let showLoginRequired = $state(false);
+	let loginRequiredMessage = $state('');
+
+	function requireLogin(message) {
+		loginRequiredMessage = message;
+		showLoginRequired = true;
+	}
 
 	let showAssignments = $state(true);
 	let showCopyPaste = $state(true);
@@ -148,7 +159,7 @@
 	<!-- Main AAR content -->
 	<div class="flex-1 overflow-y-auto">
 		{#if !tabStore.hasActiveTab}
-			<TemplateSelector onselect={selectTemplate} />
+			<TemplateSelector onselect={selectTemplate} {isLoggedIn} />
 		{:else if tabStore.activeData}
 			<div class="relative flex justify-center gap-4 pb-20 lg:pb-12">
 				<div class="my-4 flex w-full flex-col items-center gap-3">
@@ -237,7 +248,7 @@
 				onmousedown={startResize}
 			></div>
 			<div class="flex-1 overflow-hidden">
-				<AssignmentPanel />
+				<AssignmentPanel {isLoggedIn} onRequireLogin={requireLogin} />
 			</div>
 		</div>
 	{/if}
@@ -252,7 +263,7 @@
 				onmousedown={startResizeCopyPaste}
 			></div>
 			<div class="flex-1 overflow-hidden">
-				<CopyPastePanel />
+				<CopyPastePanel {isLoggedIn} />
 			</div>
 		</div>
 	{/if}
@@ -337,9 +348,9 @@
 			</div>
 			<div class="flex-1 overflow-y-auto">
 				{#if mobilePanel === 'assignments'}
-					<AssignmentPanel />
+					<AssignmentPanel {isLoggedIn} onRequireLogin={requireLogin} />
 				{:else}
-					<CopyPastePanel />
+					<CopyPastePanel {isLoggedIn} />
 				{/if}
 			</div>
 		</div>
@@ -405,3 +416,5 @@
 		</div>
 	</Modal>
 {/if}
+
+<LoginRequired bind:show={showLoginRequired} message={loginRequiredMessage} />

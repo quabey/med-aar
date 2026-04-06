@@ -4,7 +4,7 @@
 	import { alertStore } from '$lib/state/alerts.svelte.js';
 	import LoadingSpinner from '$lib/components/LoadingSpinner.svelte';
 
-	let { onselect } = $props();
+	let { onselect, isLoggedIn = true } = $props();
 
 	let selectedTemplate = $state(null);
 	let customName = $state('');
@@ -80,7 +80,7 @@
 					</button>
 				</div>
 
-				{#if alertStore.recentAlerts.length > 0}
+				{#if isLoggedIn && alertStore.recentAlerts.length > 0}
 					<div class="h-px bg-gray-700 my-3"></div>
 					<h3 class="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">Recent Alerts</h3>
 					<div class="max-h-60 overflow-y-auto space-y-1.5">
@@ -103,7 +103,7 @@
 							</button>
 						{/each}
 					</div>
-				{:else}
+				{:else if isLoggedIn}
 					<p class="text-center text-xs text-gray-500 mt-3">
 						No recent alerts.
 						{#if alertStore.connected}

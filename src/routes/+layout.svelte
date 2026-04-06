@@ -28,6 +28,9 @@
 		if (isLoggedIn) {
 			alertStore.initialize();
 			config.initialize();
+		} else {
+			// For guests, mark config as loaded with local defaults
+			config.loaded = true;
 		}
 	});
 </script>
@@ -52,9 +55,7 @@
 </svelte:head>
 
 <div class="flex h-screen flex-col overflow-hidden bg-gray-900 font-Mohave font-medium text-white">
-	{#if isLoggedIn}
-		<Header profile={data.profile} />
-	{/if}
+	<Header profile={isLoggedIn ? data.profile : null} />
 	<main class="relative flex min-h-0 flex-1 flex-col">
 		{@render children()}
 	</main>

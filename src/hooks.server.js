@@ -44,15 +44,21 @@ export async function handle({ event, resolve }) {
 	}
 
 	// Public routes that don't require auth
-	const publicRoutes = ['/login', '/auth/callback', '/auth/verify'];
+	const publicRoutes = ['/login', '/auth/callback', '/auth/verify', '/credits'];
 	const isPublic = publicRoutes.some((r) => event.url.pathname.startsWith(r));
 	const isApiRoute = event.url.pathname.startsWith('/api/');
+
+	// Routes accessible without login (features that don't expose sensitive data)
+	const guestRoutes = ['/', '/dispatch-tool'];
+	const isGuestAllowed = guestRoutes.some((r) =>
+		r === '/' ? event.url.pathname === '/' : event.url.pathname.startsWith(r)
+	);
 
 	// Allow embed crawlers (Discord, Twitter, Facebook, etc.) through so they can read OG meta tags
 	const ua = event.request.headers.get('user-agent') || '';
 	const isBot = /Discordbot|Twitterbot|facebookexternalhit|LinkedInBot|Slackbot|TelegramBot|WhatsApp|Googlebot|bingbot/i.test(ua);
 
-	if (!isPublic && !isApiRoute && !isBot) {
+	if (!isPublic && !isApiRoute && !isBot && !isGuestAllowed) {
 		if (!session) {
 			throw redirect(303, '/login');
 		}
@@ -71,6 +77,15 @@ export async function handle({ event, resolve }) {
 		if (event.url.pathname.startsWith('/admin')) {
 			if (!event.locals.profile?.is_admin) {
 				throw redirect(303, '/');
+			}
+		}
+	}
+
+	// For guest routes, still apply approval/admin checks if logged in
+	if (isGuestAllowed && session) {
+		if (event.locals.profile && !event.locals.profile.is_approved) {
+			if (event.url.pathname !== '/pending') {
+				throw redirect(303, '/pending');
 			}
 		}
 	}

@@ -8,12 +8,22 @@
 	let mobileOpen = $state(false);
 	let userMenuOpen = $state(false);
 
-	const navLinks = [
+	const isLoggedIn = $derived(!!profile);
+
+	// Auth-required routes show a lock icon for guests
+	const guestRoutes = ['/', '/dispatch-tool'];
+	const allNavLinks = [
 		{ href: '/', label: 'AAR Builder' },
-		{ href: '/alerts', label: 'Alerts' },
-		{ href: '/medrunner', label: 'Profiles' },
+		{ href: '/alerts', label: 'Alerts', authRequired: true },
+		{ href: '/medrunner', label: 'Profiles', authRequired: true },
 		{ href: '/dispatch-tool', label: 'Dispatch Tool' }
 	];
+
+	const navLinks = $derived(
+		isLoggedIn
+			? allNavLinks
+			: allNavLinks.filter((l) => !l.authRequired)
+	);
 
 	function isActive(href) {
 		const path = page.url.pathname;
@@ -24,6 +34,16 @@
 	async function logout() {
 		await supabase.auth.signOut();
 		goto('/login');
+	}
+
+	async function loginWithDiscord() {
+		await supabase.auth.signInWithOAuth({
+			provider: 'discord',
+			options: {
+				scopes: 'identify email guilds.members.read',
+				redirectTo: `${window.location.origin}/auth/callback`
+			}
+		});
 	}
 </script>
 
@@ -126,6 +146,16 @@
 							</div>
 						{/if}
 					</div>
+				{:else}
+					<button
+						class="flex items-center gap-2 rounded-lg bg-primary-600 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-primary-500"
+						onclick={loginWithDiscord}
+					>
+						<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+						</svg>
+						Log In
+					</button>
 				{/if}
 			</div>
 		</div>
@@ -167,6 +197,8 @@
 				{/if}
 				{#if profile}
 					<button class="mt-1 text-left text-sm text-red-400 hover:text-red-300" onclick={logout}>Log Out</button>
+				{:else}
+					<button class="mt-1 text-left text-sm text-primary-400 hover:text-primary-300" onclick={loginWithDiscord}>Log In with Discord</button>
 				{/if}
 			</div>
 		</div>
