@@ -380,12 +380,9 @@
 					<p class="text-xs text-gray-500">{profile.successful_alerts} of {profile.successful_alerts + profile.failed_alerts} completed</p>
 				</div>
 				<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
-					<p class="text-xs font-medium uppercase text-gray-400">Avg Rating</p>
-					{#if profile.average_rating}
-						<p class="mt-1 text-2xl font-bold text-yellow-400">{profile.average_rating.toFixed(1)}<span class="ml-1 text-sm font-normal text-gray-400">/ 5</span></p>
-					{:else}
-						<p class="mt-1 text-2xl font-bold text-gray-500">—</p>
-					{/if}
+						<p class="text-xs font-medium uppercase text-gray-400">Avg Alert Duration</p>
+						<p class="mt-1 text-2xl font-bold text-amber-400">{formatDuration(profile.average_alert_duration_seconds)}</p>
+						<p class="mt-1 text-xs text-gray-500">longest {formatDuration(profile.longest_alert_duration_seconds)}</p>
 				</div>
 				<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
 					<p class="text-xs font-medium uppercase text-gray-400">Total Time on Alerts</p>
@@ -609,11 +606,6 @@
 				<h2 class="mb-3 font-Mohave text-xl font-bold text-white">Performance</h2>
 				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
-						<p class="text-xs font-medium uppercase text-gray-400">Avg Alert Duration</p>
-						<p class="mt-1 text-2xl font-bold text-amber-400">{formatDuration(profile.average_alert_duration_seconds)}</p>
-						<p class="mt-1 text-xs text-gray-500">longest {formatDuration(profile.longest_alert_duration_seconds)}</p>
-					</div>
-					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
 						<p class="text-xs font-medium uppercase text-gray-400">Avg Response Time</p>
 						<p class="mt-1 text-2xl font-bold text-blue-400">{formatDuration(profile.average_response_time_seconds)}</p>
 						<p class="mt-1 text-xs text-gray-500">median {formatDuration(profile.median_response_time_seconds)} · fastest {formatDuration(profile.fastest_response_time_seconds)}</p>
@@ -636,10 +628,11 @@
 							<p class="mt-1 text-xs text-gray-500">{profile.suspected_trap_count} suspected traps</p>
 						{/if}
 					</div>
+
 					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
 						<p class="text-xs font-medium uppercase text-gray-400">Leaderboard</p>
 						<p class="mt-1 text-sm text-gray-400">See how you rank against other medrunners.</p>
-						<a href="/medrunner/leaderboard" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary-400 hover:text-primary-300">
+						<a href="/leaderboard" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary-400 hover:text-primary-300">
 							View Leaderboard →
 						</a>
 					</div>
