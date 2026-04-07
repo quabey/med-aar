@@ -88,23 +88,44 @@
 	const embedDescription = $derived(() => {
 		const p = data.profile;
 		if (!p) return `Medrunner profile for ${data.handle}`;
-		const parts = [];
-		parts.push(`${p.total_alerts} alerts`);
+		const lines = [];
+
+		// Line 1: Core stats
+		const core = [];
+		core.push(`${p.total_alerts} alerts`);
 		const completed = p.successful_alerts + p.failed_alerts;
-		if (completed > 0) parts.push(`${Math.round((p.successful_alerts / completed) * 100)}% success`);
+		if (completed > 0) core.push(`${Math.round((p.successful_alerts / completed) * 100)}% success rate`);
+		if (p.average_rating) core.push(`${p.average_rating.toFixed(1)}★ rating`);
+		lines.push(core.join(' · '));
+
+		// Line 2: Response & time
+		const time = [];
 		if (p.average_response_time_seconds) {
 			const s = p.average_response_time_seconds;
-			parts.push(`avg response ${s < 60 ? Math.round(s) + 's' : Math.floor(s / 60) + 'm ' + Math.round(s % 60) + 's'}`);
+			time.push(`Avg response: ${s < 60 ? Math.round(s) + 's' : Math.floor(s / 60) + 'm ' + Math.round(s % 60) + 's'}`);
 		}
+		if (p.total_time_on_alerts_seconds) {
+			const h = Math.floor(p.total_time_on_alerts_seconds / 3600);
+			time.push(`${h}h total time`);
+		}
+		if (time.length) lines.push(time.join(' · '));
+
+		// Line 3: Role & activity
+		const info = [];
 		if (p.role_distribution) {
 			const topRole = Object.entries(p.role_distribution).sort(([, a], [, b]) => b - a)[0];
 			if (topRole) {
 				const role = MEDRUNNER_ROLES[topRole[0]];
-				if (role) parts.push(`primary ${role.name}`);
+				if (role) info.push(role.name);
 			}
 		}
-		if (p.badges?.length) parts.push(`${p.badges.length} badge${p.badges.length !== 1 ? 's' : ''}`);
-		return parts.join(' · ');
+		if (p.field_count && p.dispatch_count) info.push(`${p.field_count} field / ${p.dispatch_count} dispatch`);
+		else if (p.field_count) info.push(`${p.field_count} field ops`);
+		else if (p.dispatch_count) info.push(`${p.dispatch_count} dispatch ops`);
+		if (p.badges?.length) info.push(`${p.badges.length} badge${p.badges.length !== 1 ? 's' : ''}`);
+		if (info.length) lines.push(info.join(' · '));
+
+		return lines.join('\n');
 	});
 
 	async function refreshProfile() {
@@ -305,22 +326,45 @@
 
 			<!-- Badges -->
 			{#if profile.badges?.length > 0}
+				{@const sortedBadges = [...profile.badges].sort((a, b) => b.tier - a.tier)}
+				{@const featuredBadges = sortedBadges.filter(b => b.tier >= 4)}
+				{@const regularBadges = sortedBadges.filter(b => b.tier < 4)}
 				<div class="mb-8">
-					<h2 class="mb-3 font-Mohave text-xl font-bold text-white">Badges</h2>
-					<div class="flex flex-wrap gap-3">
-						{#each profile.badges as badge}
-							<div
-								class="badge-card badge-tier-{badge.tier} flex items-center gap-2 rounded-lg border px-4 py-2.5 transition-all"
-								title={badge.description}
-							>
-								<BadgeIcon id={badge.id} tier={badge.tier} class="h-5 w-5" />
-								<div>
-									<p class="text-sm font-semibold text-white">{badge.name}</p>
-									<p class="text-[11px] text-gray-400">{badge.description}</p>
+					<h2 class="mb-3 font-Mohave text-xl font-bold text-white">Badges <span class="ml-1 text-base font-normal text-gray-500">({profile.badges.length})</span></h2>
+
+					{#if featuredBadges.length > 0}
+						<div class="mb-3 flex flex-wrap gap-3">
+							{#each featuredBadges as badge}
+								<div
+									class="badge-card badge-tier-{badge.tier} flex items-center gap-2.5 rounded-lg border px-4 py-3 transition-all"
+									title={badge.description}
+								>
+									<BadgeIcon id={badge.id} tier={badge.tier} class="h-6 w-6 flex-shrink-0" />
+									<div>
+										<p class="text-sm font-bold text-white">{badge.name}</p>
+										<p class="text-[10px] text-gray-400">{badge.description}</p>
+									</div>
 								</div>
-							</div>
-						{/each}
-					</div>
+							{/each}
+						</div>
+					{/if}
+
+					{#if regularBadges.length > 0}
+						<div class="flex flex-wrap gap-2">
+							{#each regularBadges as badge}
+								<div
+									class="badge-card badge-tier-{badge.tier} flex items-center gap-2 rounded-lg border px-3 py-2 transition-all"
+									title={badge.description}
+								>
+									<BadgeIcon id={badge.id} tier={badge.tier} class="h-4 w-4 flex-shrink-0" />
+									<div>
+										<p class="text-xs font-semibold text-white">{badge.name}</p>
+										<p class="text-[10px] text-gray-400">{badge.description}</p>
+									</div>
+								</div>
+							{/each}
+						</div>
+					{/if}
 				</div>
 			{/if}
 
@@ -336,8 +380,12 @@
 					<p class="text-xs text-gray-500">{profile.successful_alerts} of {profile.successful_alerts + profile.failed_alerts} completed</p>
 				</div>
 				<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
-					<p class="text-xs font-medium uppercase text-gray-400">Avg Response Time</p>
-					<p class="mt-1 text-2xl font-bold text-blue-400">{formatDuration(profile.average_response_time_seconds)}</p>
+					<p class="text-xs font-medium uppercase text-gray-400">Avg Rating</p>
+					{#if profile.average_rating}
+						<p class="mt-1 text-2xl font-bold text-yellow-400">{profile.average_rating.toFixed(1)}<span class="ml-1 text-sm font-normal text-gray-400">/ 5</span></p>
+					{:else}
+						<p class="mt-1 text-2xl font-bold text-gray-500">—</p>
+					{/if}
 				</div>
 				<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
 					<p class="text-xs font-medium uppercase text-gray-400">Total Time on Alerts</p>
@@ -554,6 +602,121 @@
 						<p class="text-gray-200">{primaryRole()?.name || 'N/A'}</p>
 					</div>
 				</div>
+			</div>
+
+			<!-- Performance -->
+			<div class="mb-8">
+				<h2 class="mb-3 font-Mohave text-xl font-bold text-white">Performance</h2>
+				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+						<p class="text-xs font-medium uppercase text-gray-400">Avg Alert Duration</p>
+						<p class="mt-1 text-2xl font-bold text-amber-400">{formatDuration(profile.average_alert_duration_seconds)}</p>
+						<p class="mt-1 text-xs text-gray-500">longest {formatDuration(profile.longest_alert_duration_seconds)}</p>
+					</div>
+					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+						<p class="text-xs font-medium uppercase text-gray-400">Avg Response Time</p>
+						<p class="mt-1 text-2xl font-bold text-blue-400">{formatDuration(profile.average_response_time_seconds)}</p>
+						<p class="mt-1 text-xs text-gray-500">median {formatDuration(profile.median_response_time_seconds)} · fastest {formatDuration(profile.fastest_response_time_seconds)}</p>
+						<p class="mt-0.5 text-[10px] text-gray-600">successful alerts only</p>
+					</div>
+					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+						<p class="text-xs font-medium uppercase text-gray-400">Clients Helped</p>
+						<p class="mt-1 text-2xl font-bold text-cyan-400">{profile.unique_clients_helped ?? 0}</p>
+						<p class="mt-1 text-xs text-gray-500">{profile.repeat_clients ?? 0} repeat clients</p>
+					</div>
+					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+						<p class="text-xs font-medium uppercase text-gray-400">Longest Streak</p>
+						<p class="mt-1 text-2xl font-bold text-orange-400">{profile.longest_streak_days ?? 0}<span class="ml-1 text-sm font-normal text-gray-400">days</span></p>
+						<p class="mt-1 text-xs text-gray-500">current {profile.current_streak_days ?? 0} days</p>
+					</div>
+					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+						<p class="text-xs font-medium uppercase text-gray-400">Role Versatility</p>
+						<p class="mt-1 text-2xl font-bold text-violet-400">{profile.role_versatility_score ?? 0}<span class="ml-1 text-sm font-normal text-gray-400">/ {Object.keys(MEDRUNNER_ROLES).length} roles</span></p>
+						{#if (profile.suspected_trap_count ?? 0) > 0}
+							<p class="mt-1 text-xs text-gray-500">{profile.suspected_trap_count} suspected traps</p>
+						{/if}
+					</div>
+					<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+						<p class="text-xs font-medium uppercase text-gray-400">Leaderboard</p>
+						<p class="mt-1 text-sm text-gray-400">See how you rank against other medrunners.</p>
+						<a href="/medrunner/leaderboard" class="mt-2 inline-flex items-center gap-1 text-sm font-medium text-primary-400 hover:text-primary-300">
+							View Leaderboard →
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Activity Charts -->
+			<div class="mb-8">
+				<h2 class="mb-3 font-Mohave text-xl font-bold text-white">Activity</h2>
+				<div class="grid gap-4 lg:grid-cols-2">
+					<!-- Alerts Per Month -->
+					{#if profile.alerts_per_month && Object.keys(profile.alerts_per_month).length > 0}
+						{@const months = Object.entries(profile.alerts_per_month).sort(([a], [b]) => a.localeCompare(b))}
+						{@const maxMonth = Math.max(...months.map(([, c]) => c))}
+						<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+							<h3 class="mb-3 text-sm font-semibold uppercase text-gray-400">Alerts Per Month</h3>
+							<div class="max-h-64 space-y-1.5 overflow-y-auto pr-1">
+								{#each months as [month, count]}
+									<div class="flex items-center gap-2 text-sm">
+										<span class="w-16 flex-shrink-0 text-right text-gray-400">{month}</span>
+										<div class="h-4 flex-1 overflow-hidden rounded bg-gray-700">
+											<div class="h-full rounded bg-primary-500 transition-all" style="width: {(count / maxMonth) * 100}%"></div>
+										</div>
+										<span class="w-8 text-right text-xs text-gray-300">{count}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/if}
+
+					<!-- Activity by Day of Week -->
+					{#if profile.activity_by_day_of_week}
+						{@const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+						{@const dayCounts = dayLabels.map((_, i) => profile.activity_by_day_of_week[i] || 0)}
+						{@const maxDay = Math.max(...dayCounts, 1)}
+						<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+							<h3 class="mb-3 text-sm font-semibold uppercase text-gray-400">Activity by Day</h3>
+							<div class="flex items-end justify-between gap-2 pt-4" style="height: 140px;">
+								{#each dayLabels as label, i}
+									{@const count = dayCounts[i]}
+									{@const barH = Math.max(Math.round((count / maxDay) * 96), 2)}
+									<div class="flex flex-1 flex-col items-center gap-1">
+										<div class="w-full rounded-t bg-primary-500 transition-all" style="height: {barH}px"></div>
+										<span class="text-[10px] text-gray-400">{label}</span>
+									</div>
+								{/each}
+							</div>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Activity by Hour -->
+				{#if profile.activity_by_hour_of_day}
+					{@const hourCounts = Array.from({ length: 24 }, (_, i) => profile.activity_by_hour_of_day[i] || 0)}
+					{@const maxHour = Math.max(...hourCounts, 1)}
+					<div class="mt-4 rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+						<h3 class="mb-3 text-sm font-semibold uppercase text-gray-400">Activity by Hour (UTC)</h3>
+						<div class="flex items-end gap-px" style="height: 80px;">
+							{#each hourCounts as count, i}
+								{@const barH = Math.max(Math.round((count / maxHour) * 64), 2)}
+								<div class="flex flex-1 flex-col items-center" title="{i}:00 — {count} alerts">
+									<div
+										class="w-full rounded-t bg-blue-500 transition-all"
+										style="height: {barH}px; opacity: {0.35 + (count / maxHour) * 0.65}"
+									></div>
+								</div>
+							{/each}
+						</div>
+						<div class="mt-1.5 flex justify-between text-[10px] text-gray-500">
+							<span>0:00</span>
+							<span>6:00</span>
+							<span>12:00</span>
+							<span>18:00</span>
+							<span>23:00</span>
+						</div>
+					</div>
+				{/if}
 			</div>
 
 		{/if}

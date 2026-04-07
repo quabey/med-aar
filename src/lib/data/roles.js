@@ -3,9 +3,9 @@ export const MEDRUNNER_ROLES = {
 	2: { name: 'Security', abbreviation: 'SEC', emote: '' },
 	3: { name: 'Pilot', abbreviation: 'PIL', emote: '' },
 	4: { name: 'Team Lead', abbreviation: 'LEAD', emote: '' },
-	5: { name: 'Dispatch', abbreviation: 'DSP', emote: '' },
-	6: { name: 'Dispatch Lead', abbreviation: 'DSL', emote: '' },
-	7: { name: 'Dispatch Trainee', abbreviation: 'DST', emote: '' },
+	5: { name: 'Dispatch', abbreviation: 'DIS', emote: '' },
+	6: { name: 'Dispatch Lead', abbreviation: 'LDIS', emote: '' },
+	7: { name: 'Dispatch Trainee', abbreviation: 'DIST', emote: '' },
 	8: { name: 'Dispatch Observer', abbreviation: 'DSO', emote: '' },
 	9: { name: 'Combat Aerospace Patrol', abbreviation: 'CAP', emote: '' },
 	10: { name: 'Logistics', abbreviation: 'LOG', emote: '' }

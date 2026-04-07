@@ -19,10 +19,12 @@
 		{ href: '/dispatch-tool', label: 'Dispatch Tool' }
 	];
 
+	// Add Leaderboard to nav
+	const leaderboardLink = { href: '/leaderboard', label: 'Leaderboard' };
 	const navLinks = $derived(
 		isLoggedIn
-			? allNavLinks
-			: allNavLinks.filter((l) => !l.authRequired)
+			? [...allNavLinks, leaderboardLink]
+			: [...allNavLinks.filter((l) => !l.authRequired), leaderboardLink]
 	);
 
 	function isActive(href) {

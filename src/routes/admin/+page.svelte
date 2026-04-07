@@ -6,6 +6,19 @@
 	import { successToast, errorToast } from '$lib/state/toast.svelte.js';
 	import { supabase } from '$lib/supabaseClient.js';
 
+	// State for Update All Profiles admin action
+	let updateAllLoading = $state(false);
+	let updateAllResult = $state('');
+	let updateAllProgress = $state(0);
+	let updateAllTotal = $state(0);
+	let updateAllFailed = $state(0);
+
+	// State for Rebuild All Profiles (bulk SQL-based)
+	let rebuildLoading = $state(false);
+	let rebuildTestResult = $state(null); // null | { summary, preview }
+	let rebuildConfirmed = $state(false);
+	let rebuildFinalResult = $state(null); // null | { profiles, stale_deleted }
+
 	let activeEditor = $state('users');
 	let saving = $state(false);
 
@@ -502,6 +515,80 @@
 		return { destroy: () => observer.disconnect() };
 	}
 
+	// ── Rebuild All Profiles (bulk SQL-based) ───────────────
+	async function runRebuildTest() {
+		rebuildLoading = true;
+		rebuildTestResult = null;
+		rebuildFinalResult = null;
+		rebuildConfirmed = false;
+		try {
+			const res = await fetch('/api/admin/rebuild-all-profiles?test=true', { method: 'POST' });
+			const data = await res.json();
+			if (res.ok) rebuildTestResult = data;
+			else errorToast(data.error || 'Test run failed');
+		} catch {
+			errorToast('Test run failed');
+		}
+		rebuildLoading = false;
+	}
+
+	async function confirmRebuild() {
+		rebuildLoading = true;
+		rebuildFinalResult = null;
+		try {
+			const res = await fetch('/api/admin/rebuild-all-profiles', { method: 'POST' });
+			const data = await res.json();
+			if (res.ok) {
+				rebuildFinalResult = data;
+				rebuildTestResult = null;
+				rebuildConfirmed = false;
+				adminLog('profiles.rebuild_all', `Rebuilt ${data.profiles} profiles, deleted ${data.stale_deleted} stale`);
+				successToast(`Rebuilt ${data.profiles} profiles`);
+			} else {
+				errorToast(data.error || 'Rebuild failed');
+			}
+		} catch {
+			errorToast('Rebuild failed');
+		}
+		rebuildLoading = false;
+	}
+
+	// ── Update All Medrunner Profiles ───────────────────────
+	async function updateAllProfiles() {
+		updateAllLoading = true;
+		updateAllResult = '';
+		updateAllProgress = 0;
+		updateAllTotal = 0;
+		updateAllFailed = 0;
+
+		try {
+			const listRes = await fetch('/api/admin/update-all-profiles');
+			const listData = await listRes.json();
+			if (!listRes.ok) { errorToast(listData.error || 'Failed to load profiles'); updateAllLoading = false; return; }
+
+			const handles = listData.handles;
+			updateAllTotal = handles.length;
+
+			for (const handle of handles) {
+				try {
+					const res = await fetch(`/api/medrunner/profile/${encodeURIComponent(handle)}`, { method: 'POST' });
+					if (!res.ok) updateAllFailed++;
+				} catch {
+					updateAllFailed++;
+				}
+				updateAllProgress++;
+			}
+
+			const succeeded = updateAllTotal - updateAllFailed;
+			updateAllResult = `Done — ${succeeded}/${updateAllTotal} updated${updateAllFailed ? `, ${updateAllFailed} failed` : ''}.`;
+			adminLog('profiles.update_all', `Updated ${succeeded}/${updateAllTotal} medrunner profiles`);
+			successToast(`Updated ${succeeded}/${updateAllTotal} profiles`);
+		} catch {
+			errorToast('Update failed');
+		}
+		updateAllLoading = false;
+	}
+
 	// ── Completed alerts sync ───────────────────────────────
 	let syncLoading = $state(false);
 
@@ -727,6 +814,31 @@
 				<h2 class="text-lg font-semibold text-gray-200">Locations ({dbLocations.length})</h2>
 			</div>
 
+			<!-- Add new location form -->
+			<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
+				<h3 class="mb-3 text-sm font-semibold text-gray-300">Add Location</h3>
+				<div class="grid grid-cols-3 gap-2">
+					<div>
+						<label class="mb-1 block text-xs text-gray-500">Name *
+							<input type="text" bind:value={editingLocation.name} class="input w-full mt-1" placeholder="e.g. GrimHEX" />
+						</label>
+					</div>
+					<div>
+						<label class="mb-1 block text-xs text-gray-500">Type
+							<input type="text" bind:value={editingLocation.type} class="input w-full mt-1" placeholder="e.g. Station, City, Moon" />
+						</label>
+					</div>
+					<div>
+						<label class="mb-1 block text-xs text-gray-500">Planetary Body
+							<input type="text" bind:value={editingLocation.planetary_body} class="input w-full mt-1" placeholder="e.g. Yela, Hurston" />
+						</label>
+					</div>
+				</div>
+				<div class="mt-3 flex justify-end">
+					<button class="btn btn-primary text-sm" onclick={addLocationToDB} disabled={!editingLocation.name.trim()}>Add Location</button>
+				</div>
+			</div>
+
 			{#if locationsLoading}
 				<LoadingSpinner message="Loading locations..." />
 			{:else}
@@ -734,35 +846,29 @@
 					type="text"
 					bind:value={locationSearch}
 					class="input w-full"
-					placeholder="Filter locations by name..."
+					placeholder="Filter locations..."
 				/>
 
-				<div class="max-h-96 overflow-y-auto rounded-lg border border-gray-700 bg-gray-800/50">
+				<div class="max-h-[32rem] overflow-y-auto rounded-lg border border-gray-700 bg-gray-800/50">
 					{#each filteredLocations as loc}
 						<div class="flex items-center justify-between border-b border-gray-700/50 px-4 py-2 last:border-b-0">
-							<div>
+							<div class="flex items-baseline gap-2 min-w-0">
 								<span class="text-sm text-gray-200">{loc.name}</span>
 								{#if loc.type}
-									<span class="ml-2 text-xs text-gray-500">{loc.type}</span>
+									<span class="text-xs text-gray-500">{loc.type}</span>
 								{/if}
 								{#if loc.planetary_body}
-									<span class="ml-1 text-xs text-gray-600">({loc.planetary_body})</span>
+									<span class="text-xs text-gray-600">· {loc.planetary_body}</span>
 								{/if}
 							</div>
-							<button class="text-xs text-red-400 hover:text-red-300" onclick={() => removeLocationFromDB(loc.id)}>Remove</button>
+							<button class="ml-4 shrink-0 text-xs text-red-400 hover:text-red-300" onclick={() => removeLocationFromDB(loc.id)}>Remove</button>
 						</div>
 					{/each}
 					{#if filteredLocations.length === 0}
-						<div class="px-4 py-2 text-sm text-gray-500 italic">No locations found.</div>
+						<div class="px-4 py-3 text-sm text-gray-500 italic">No locations found.</div>
 					{/if}
 				</div>
 			{/if}
-
-			<div class="flex gap-2">
-				<input type="text" bind:value={editingLocation.name} class="input flex-1" placeholder="Location name..." />
-				<input type="text" bind:value={editingLocation.type} class="input w-40" placeholder="Type..." />
-				<button class="btn btn-primary text-sm" onclick={addLocationToDB}>Add</button>
-			</div>
 		</div>
 	{/if}
 
@@ -883,15 +989,132 @@
 
 			<hr class="border-gray-700" />
 
-			<h2 class="text-lg font-semibold text-gray-200">Completed Alerts Sync</h2>
-			<p class="text-sm text-gray-400">Manually trigger a sync of completed alerts from the Medrunner API. This normally runs every hour via cron.</p>
-			<button
-				class="btn btn-primary text-sm"
-				onclick={syncCompletedAlerts}
-				disabled={syncLoading}
-			>
-				{syncLoading ? 'Syncing...' : 'Sync Now'}
-			</button>
+			<div class="space-y-2">
+				<h2 class="text-lg font-semibold text-gray-200">Sync Completed Alerts</h2>
+				<p class="text-sm text-gray-400">Pull completed alerts from the Medrunner API and upsert them into the database.</p>
+				<button
+					class="btn btn-primary text-sm"
+					onclick={syncCompletedAlerts}
+					disabled={syncLoading}
+				>
+					{syncLoading ? 'Syncing...' : 'Sync Completed Alerts'}
+				</button>
+			</div>
+
+			<hr class="border-gray-700" />
+
+			<div class="space-y-2">
+				<h2 class="text-lg font-semibold text-gray-200">Update All Medrunner Profiles</h2>
+				<p class="text-sm text-gray-400">Force a full stats rebuild for every medrunner profile. This can take a while.</p>
+				<button
+					class="btn btn-primary text-sm"
+					onclick={updateAllProfiles}
+					disabled={updateAllLoading}
+				>
+					{updateAllLoading ? 'Updating...' : 'Update All Profiles'}
+				</button>
+				{#if updateAllLoading && updateAllTotal > 0}
+					<div class="space-y-1">
+						<div class="flex justify-between text-xs text-gray-400">
+							<span>{updateAllProgress} / {updateAllTotal} profiles</span>
+							{#if updateAllFailed > 0}<span class="text-red-400">{updateAllFailed} failed</span>{/if}
+						</div>
+						<div class="h-2 w-full overflow-hidden rounded-full bg-gray-700">
+							<div
+								class="h-full rounded-full bg-primary-500 transition-all duration-200"
+								style="width: {updateAllTotal > 0 ? (updateAllProgress / updateAllTotal) * 100 : 0}%"
+							></div>
+						</div>
+					</div>
+				{/if}
+				{#if updateAllResult}
+					<p class="text-xs text-green-400">{updateAllResult}</p>
+				{/if}
+			</div>
+
+			<hr class="border-gray-700" />
+
+			<!-- Bulk Rebuild -->
+			<div class="space-y-3">
+				<div>
+					<h2 class="text-lg font-semibold text-gray-200">Bulk Profile Rebuild</h2>
+					<p class="mt-1 text-sm text-gray-400">
+						Efficiently rebuilds every profile from the full alert database in one pass using a Postgres function.
+						Handles RSI handle changes and Discord account switches via identity grouping.
+						<span class="text-yellow-400"> Requires the SQL migration to be run first.</span>
+					</p>
+					<p class="mt-1 text-xs text-gray-500">SQL file: <code class="text-gray-400">src/lib/server/sql/get_all_medrunner_members.sql</code></p>
+				</div>
+
+				<div class="flex gap-2">
+					<button
+						class="btn btn-secondary text-sm"
+						onclick={runRebuildTest}
+						disabled={rebuildLoading}
+					>
+						{rebuildLoading && !rebuildTestResult ? 'Running test...' : '🧪 Test Run (dry run)'}
+					</button>
+					{#if rebuildTestResult && !rebuildFinalResult}
+						<button
+							class="btn btn-primary text-sm"
+							onclick={() => (rebuildConfirmed = !rebuildConfirmed)}
+						>
+							{rebuildConfirmed ? 'Cancel' : 'Confirm & Rebuild'}
+						</button>
+					{/if}
+				</div>
+
+				{#if rebuildTestResult}
+					<div class="rounded-lg border border-blue-700/40 bg-blue-900/10 p-4 text-sm space-y-2">
+						<p class="font-semibold text-blue-300">Test Run Results</p>
+						<div class="grid grid-cols-2 gap-x-6 gap-y-1 text-xs sm:grid-cols-4">
+							<div><span class="text-gray-400">Alerts scanned</span><br/><span class="font-bold text-white">{rebuildTestResult.summary.total_rows_processed.toLocaleString()}</span></div>
+							<div><span class="text-gray-400">Identity groups</span><br/><span class="font-bold text-white">{rebuildTestResult.summary.identity_groups.toLocaleString()}</span></div>
+							<div><span class="text-gray-400">Would create</span><br/><span class="font-bold text-green-400">{rebuildTestResult.summary.would_create}</span></div>
+							<div><span class="text-gray-400">Would update</span><br/><span class="font-bold text-yellow-400">{rebuildTestResult.summary.would_update}</span></div>
+						</div>
+						{#if rebuildTestResult.summary.would_delete > 0}
+							<p class="text-xs text-red-400">⚠ {rebuildTestResult.summary.would_delete} stale profiles would be deleted (old handles merged into canonical ones).</p>
+						{/if}
+						<details class="mt-2">
+							<summary class="cursor-pointer text-xs text-gray-400 hover:text-gray-200">Preview top 20 profiles</summary>
+							<div class="mt-2 max-h-48 overflow-y-auto rounded border border-gray-700 bg-gray-800/50">
+								{#each rebuildTestResult.preview as p}
+									<div class="flex items-center justify-between border-b border-gray-700/40 px-3 py-1.5 text-xs last:border-b-0">
+										<div class="flex items-center gap-2">
+											<span class="text-gray-200">{p.rsi_handle}</span>
+											{#if p.is_new}<span class="rounded bg-green-600/20 px-1 text-green-400">new</span>{/if}
+											{#if p.previous_handles?.length > 0}<span class="text-gray-500">← {p.previous_handles.join(', ')}</span>{/if}
+										</div>
+										<span class="text-gray-400">{p.total_alerts} alerts</span>
+									</div>
+								{/each}
+							</div>
+						</details>
+					</div>
+				{/if}
+
+				{#if rebuildConfirmed && rebuildTestResult && !rebuildFinalResult}
+					<div class="rounded-lg border border-red-700/40 bg-red-900/10 p-3 text-sm">
+						<p class="font-semibold text-red-300 mb-2">⚠ This will write to production. Are you sure?</p>
+						<button
+							class="btn text-sm bg-red-700 hover:bg-red-600 text-white"
+							onclick={confirmRebuild}
+							disabled={rebuildLoading}
+						>
+							{rebuildLoading ? 'Rebuilding...' : 'Yes, rebuild now'}
+						</button>
+					</div>
+				{/if}
+
+				{#if rebuildFinalResult}
+					<div class="rounded-lg border border-green-700/40 bg-green-900/10 p-3 text-sm">
+						<p class="text-green-300">✓ Rebuilt <strong>{rebuildFinalResult.profiles}</strong> profiles from <strong>{rebuildFinalResult.alerts_scanned?.toLocaleString()}</strong> alerts (<strong>{rebuildFinalResult.member_rows?.toLocaleString()}</strong> member rows).
+						{#if rebuildFinalResult.stale_deleted > 0}<span class="text-yellow-400"> {rebuildFinalResult.stale_deleted} stale profiles deleted.</span>{/if}
+						</p>
+					</div>
+				{/if}
+			</div>
 		</div>
 	{/if}
 
@@ -1058,3 +1281,4 @@
 		</div>
 	</Modal>
 {/if}
+
