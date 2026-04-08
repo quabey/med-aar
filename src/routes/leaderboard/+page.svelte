@@ -4,6 +4,23 @@
 	let activeTab = $state('general');
 	let activePeriod = $state('alltime');
 
+	// Lazy-loaded period data
+	let periodData = $state(/** @type {Record<string, {most_alerts?: any[], most_time?: any[]}>} */({}));
+	let periodLoading = $state(false);
+
+	async function selectPeriod(key) {
+		activeTab = 'general';
+		activePeriod = key;
+		if (key === 'alltime' || periodData[key]) return;
+		periodLoading = true;
+		try {
+			const res = await fetch('/api/medrunner/leaderboard');
+			const json = await res.json();
+			periodData = { ...periodData, monthly: json.monthly ?? {}, weekly: json.weekly ?? {} };
+		} catch {}
+		periodLoading = false;
+	}
+
 	const periods = [
 		{ key: 'alltime', label: 'All Time' },
 		{ key: 'monthly', label: 'This Month' },
@@ -26,8 +43,8 @@
 	];
 
 	const currentBoards = $derived(
-		activePeriod === 'monthly' ? (data.monthly ?? {}) :
-		activePeriod === 'weekly'  ? (data.weekly  ?? {}) :
+		activePeriod === 'monthly' ? (periodData.monthly ?? {}) :
+		activePeriod === 'weekly'  ? (periodData.weekly  ?? {}) :
 		(data.leaderboards ?? {})
 	);
 
@@ -106,7 +123,7 @@
 				{#each periods as p}
 					<button
 						class="rounded-md px-4 py-1.5 text-sm font-medium transition-colors {activePeriod === p.key ? 'bg-primary-600 text-white' : 'text-gray-400 hover:text-white'}"
-						onclick={() => { activePeriod = p.key; activeTab = 'general'; }}
+						onclick={() => selectPeriod(p.key)}
 					>
 						{p.label}
 					</button>
@@ -164,7 +181,12 @@
 					{/if}
 				{/each}
 
-				{#if visibleBoards.every(b => !(currentBoards[b.key]?.length))}
+				{#if periodLoading}
+					<div class="col-span-2 flex flex-col items-center gap-3 py-16">
+						<div class="h-7 w-7 animate-spin rounded-full border-2 border-gray-600 border-t-primary-400"></div>
+						<p class="text-sm text-gray-500">Loading…</p>
+					</div>
+				{:else if visibleBoards.every(b => !(currentBoards[b.key]?.length))}
 					<div class="col-span-2 py-12 text-center">
 						<p class="text-gray-400">No data for this period yet.</p>
 					</div>

@@ -205,13 +205,8 @@
 		<g>
 			<!-- 12° tilt gives the ship attitude relative to direction of travel -->
 			<g transform="rotate(12)">
-				<!-- Particle exhaust trail (no gradient — discrete dots scattered behind) -->
-				<circle cx="-13" cy="1"   r="1.8" fill="#c8c4bc" opacity="0.42"/>
-				<circle cx="-24" cy="-1"  r="1.5" fill="#c8c4bc" opacity="0.30"/>
-				<circle cx="-36" cy="1.5" r="1.2" fill="#c8c4bc" opacity="0.20"/>
-				<circle cx="-48" cy="-0.5" r="0.9" fill="#c8c4bc" opacity="0.13"/>
-				<circle cx="-60" cy="1"   r="0.7" fill="#c8c4bc" opacity="0.07"/>
-				<circle cx="-72" cy="-1"  r="0.5" fill="#c8c4bc" opacity="0.04"/>
+				<!-- Exhaust trail: single straight line behind ship -->
+				<line x1="-90" y1="0" x2="-2" y2="0" stroke="#c8c4bc" stroke-width="1" stroke-linecap="round" opacity="0.35"/>
 				<!-- Ship body -->
 				<polygon points="13,0 -5,-5 -3,0 -5,5" fill="#c8c4bc" opacity="0.55"/>
 				<!-- Cockpit line -->
