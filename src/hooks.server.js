@@ -41,6 +41,16 @@ export async function handle({ event, resolve }) {
 			.eq('id', user.id)
 			.single();
 		event.locals.profile = data;
+
+		// Fetch RSI handle from medrunner_profiles via discord_id
+		if (data?.discord_id) {
+			const { data: mp } = await event.locals.supabase
+				.from('medrunner_profiles')
+				.select('rsi_handle')
+				.eq('discord_id', data.discord_id)
+				.single();
+			if (mp?.rsi_handle) event.locals.profile.rsi_handle = mp.rsi_handle;
+		}
 	}
 
 	// Public routes that don't require auth

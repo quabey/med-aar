@@ -1,6 +1,4 @@
 <script>
-	import { MEDRUNNER_ROLES } from '$lib/data/roles.js';
-
 	let { data } = $props();
 
 	let activeTab = $state('general');
@@ -14,13 +12,12 @@
 
 	const generalBoards = [
 		{ key: 'most_alerts',          title: 'Most Alerts',               format: 'number',    suffix: 'alerts' },
-		{ key: 'fastest_avg_response', title: 'Fastest Avg Response',      format: 'duration'                   },
-		{ key: 'fastest_response',     title: 'Fastest Single Response',   format: 'duration'                   },
-		{ key: 'longest_alert',        title: 'Longest Single Alert',      format: 'duration'                   },
-		{ key: 'most_failed',          title: 'Most Failed Alerts',        format: 'number',    suffix: 'failed' },
 		{ key: 'most_time',            title: 'Most Time on Alerts',       format: 'totalTime'                  },
 		{ key: 'longest_streak',       title: 'Longest Streak (All Time)', format: 'number',    suffix: 'days'   },
-		{ key: 'current_streak',       title: 'Longest Streak (Ongoing)',  format: 'number',    suffix: 'days'   }
+		{ key: 'current_streak',       title: 'Longest Streak (Ongoing)',  format: 'number',    suffix: 'days'   },
+		{ key: 'longest_alert',        title: 'Longest Single Alert',      format: 'duration'                   },
+		{ key: 'most_failed',          title: 'Most Failed Alerts',        format: 'number',    suffix: 'failed' },
+		{ key: 'fastest_avg_response', title: 'Fastest Avg Response',      format: 'duration'                   }
 	];
 
 	const filteredBoards = [

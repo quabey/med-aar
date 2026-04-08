@@ -63,11 +63,11 @@ export async function GET({ locals }) {
 	};
 
 	// ── Weekly & Monthly from completed_alerts ───────────────────────────
-	// creation_timestamp can be .NET ticks (>1e16), ms (>1e12), or seconds.
-	// We can't filter reliably at the DB level, so we fetch newest-first and
-	// stop once we've passed 30 days back.
+	// creation_timestamp can be .NET ticks (>1e16), ms (>1e12), or seconds —
+	// can't filter at DB level reliably, so fetch all and filter in JS.
 	function normalizeTs(ts) {
 		if (!ts) return null;
+		if (typeof ts === 'string') return new Date(ts).getTime(); // ISO string from PostgREST
 		if (ts > 1e16) return (ts - 621355968000000000) / 10000; // .NET ticks → ms
 		if (ts > 1e12) return ts; // already ms
 		return ts * 1000; // seconds → ms
@@ -76,24 +76,26 @@ export async function GET({ locals }) {
 	const now = Date.now();
 	const weekAgoMs = now - 7 * 24 * 60 * 60 * 1000;
 	const monthStartMs = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
-	const cutoffMs = monthStartMs; // stop fetching once alert is older than this
 
 	const recentAlerts = [];
 	let alertOffset = 0;
-	let doneFetching = false;
 
-	while (!doneFetching) {
+	while (true) {
 		const { data: batch, error: batchError } = await supabase
 			.from('completed_alerts')
-			.select('creation_timestamp, closed_timestamp, accepted_timestamp, responding_team')
-			.order('id', { ascending: false })
+			.select('creation_timestamp, completion_timestamp, accepted_timestamp, responding_team')
 			.range(alertOffset, alertOffset + 999);
-		if (batchError || !batch?.length) break;
+		if (batchError) { console.error('leaderboard alerts fetch error:', batchError); break; }
+		if (!batch?.length) break;
+		if (alertOffset === 0 && batch[0]) {
+			console.log('[leaderboard] first alert creation_timestamp sample:', batch[0].creation_timestamp, typeof batch[0].creation_timestamp, '→ normalised:', normalizeTs(batch[0].creation_timestamp));
+		}
 
 		for (const alert of batch) {
 			const ts = normalizeTs(alert.creation_timestamp);
-			if (ts !== null && ts < cutoffMs) { doneFetching = true; break; }
-			recentAlerts.push({ ...alert, _ts: ts });
+			if (ts !== null && ts >= monthStartMs) {
+				recentAlerts.push({ ...alert, _ts: ts });
+			}
 		}
 
 		if (batch.length < 1000) break;
@@ -112,8 +114,8 @@ export async function GET({ locals }) {
 			...(team.dispatchers || [])
 		];
 		const duration =
-			alert.closed_timestamp && alert.accepted_timestamp
-				? Math.max(0, (normalizeTs(alert.closed_timestamp) - normalizeTs(alert.accepted_timestamp)) / 1000)
+			alert.completion_timestamp && alert.accepted_timestamp
+				? Math.max(0, (normalizeTs(alert.completion_timestamp) - normalizeTs(alert.accepted_timestamp)) / 1000)
 				: 0;
 		const seen = new Set();
 		for (const m of members) {

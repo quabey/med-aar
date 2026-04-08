@@ -6,7 +6,10 @@
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import { invalidateAll } from '$app/navigation';
+	import { page } from '$app/state';
 	import '../app.css';
+
+	const isLanding = $derived(page.url.pathname === '/');
 
 	let { data, children } = $props();
 
@@ -55,7 +58,9 @@
 </svelte:head>
 
 <div class="flex h-screen flex-col overflow-hidden bg-gray-900 font-Mohave font-medium text-white">
-	<Header profile={isLoggedIn ? data.profile : null} />
+	{#if !isLanding}
+		<Header profile={isLoggedIn ? data.profile : null} />
+	{/if}
 	<main class="relative flex min-h-0 flex-1 flex-col">
 		{@render children()}
 	</main>

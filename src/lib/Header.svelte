@@ -10,10 +10,8 @@
 
 	const isLoggedIn = $derived(!!profile);
 
-	// Auth-required routes show a lock icon for guests
-	const guestRoutes = ['/', '/dispatch-tool'];
 	const allNavLinks = [
-		{ href: '/', label: 'AAR Builder' },
+		{ href: '/aar', label: 'AAR Builder' },
 		{ href: '/alerts', label: 'Alerts', authRequired: true },
 		{ href: '/medrunner', label: 'Profiles', authRequired: true },
 		{ href: '/dispatch-tool', label: 'Dispatch Tool' }
@@ -123,6 +121,18 @@
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
 							<div class="fixed inset-0 z-40" onclick={() => (userMenuOpen = false)}></div>
 							<div class="absolute right-0 z-50 mt-2 w-48 rounded-lg border border-gray-700 bg-gray-800 py-1 shadow-xl">
+								{#if profile.rsi_handle}
+									<a
+										href="/medrunner/{encodeURIComponent(profile.rsi_handle)}"
+										class="flex items-center gap-2 px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white"
+										onclick={() => (userMenuOpen = false)}
+									>
+										<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+										</svg>
+										My Profile
+									</a>
+								{/if}
 								{#if profile.is_admin}
 									<a
 										href="/admin"
