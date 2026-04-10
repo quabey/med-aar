@@ -453,6 +453,30 @@
 	// Webhook test state
 	let webhookTesting = $state(false);
 
+	// Staging fetch state
+	let stagingLoading = $state(false);
+	let stagingResult = $state(null);
+
+	async function fetchAllToStaging() {
+		stagingLoading = true;
+		stagingResult = null;
+		try {
+			const res = await fetch('/api/admin/fetch-all-alerts-staging', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+			const data = await res.json();
+			if (res.ok) {
+				stagingResult = `Done — fetched ${data.fetched} alerts into staging (${data.pages} pages).`;
+				adminLog('alerts.staging.fetch', `Fetched ${data.fetched} alerts, ${data.upserted} upserted`);
+				successToast(`Fetched ${data.fetched} alerts into staging`);
+			} else {
+				stagingResult = `Error after ${data.fetched ?? 0} alerts: ${data.error}`;
+				errorToast(data.error || 'Staging fetch failed');
+			}
+		} catch {
+			errorToast('Staging fetch failed');
+		}
+		stagingLoading = false;
+	}
+
 	// Logs state
 	let logs = $state([]);
 	let logsLoading = $state(false);
@@ -1004,7 +1028,28 @@
 			<hr class="border-gray-700" />
 
 			<div class="space-y-2">
-				<h2 class="text-lg font-semibold text-gray-200">Update All Medrunner Profiles</h2>
+				<h2 class="text-lg font-semibold text-gray-200">Fetch All Alerts to Staging</h2>
+				<p class="text-sm text-gray-400">
+					Crawls the entire Medrunner API history (100 alerts per page) and writes every alert into
+					<code class="text-gray-300">completed_alerts_staging</code>. Use this to verify you have
+					the full dataset before merging into the main table. This will take several minutes.
+				</p>
+				<button
+					class="btn btn-primary text-sm"
+					onclick={fetchAllToStaging}
+					disabled={stagingLoading}
+				>
+					{stagingLoading ? 'Fetching… (this takes a while)' : 'Fetch All Alerts to Staging'}
+				</button>
+				{#if stagingResult}
+					<p class="text-xs text-green-400">{stagingResult}</p>
+				{/if}
+			</div>
+
+			<hr class="border-gray-700" />
+
+			<div class="space-y-2">
+				<h2 class="text-lg font-semibold text-gray-200">Update All Medrunner Profiles (outdated DO NOT USE)</h2>
 				<p class="text-sm text-gray-400">Force a full stats rebuild for every medrunner profile. This can take a while.</p>
 				<button
 					class="btn btn-primary text-sm"
@@ -1041,9 +1086,8 @@
 					<p class="mt-1 text-sm text-gray-400">
 						Efficiently rebuilds every profile from the full alert database in one pass using a Postgres function.
 						Handles RSI handle changes and Discord account switches via identity grouping.
-						<span class="text-yellow-400"> Requires the SQL migration to be run first.</span>
+						<span class="text-yellow-400"> DO NOT USE UNLESS YOU KNOW WHAT YOU'RE DOING</span>
 					</p>
-					<p class="mt-1 text-xs text-gray-500">SQL file: <code class="text-gray-400">src/lib/server/sql/get_all_medrunner_members.sql</code></p>
 				</div>
 
 				<div class="flex gap-2">

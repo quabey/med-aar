@@ -78,11 +78,14 @@
 			.sort((a, b) => b.count - a.count);
 	});
 
-	const outcomeTotal = $derived(() => profile?.total_alerts || 1);
-	const otherAlerts = $derived(() => {
-		if (!profile) return 0;
-		return outcomeTotal() - profile.successful_alerts - profile.cancelled_alerts - profile.failed_alerts - (profile.aborted_alerts || 0);
-	});
+	const fieldOutcomeTotal = $derived(() => profile?.field_total_alerts || 1);
+	const fieldSuccessful = $derived(() => profile?.field_successful_alerts || 0);
+	const fieldCancelled = $derived(() => profile?.field_cancelled_alerts || 0);
+	const fieldFailed = $derived(() => profile?.field_failed_alerts || 0);
+	const fieldAborted = $derived(() => profile?.field_aborted_alerts || 0);
+	const fieldNoContact = $derived(() => profile?.field_no_contact_alerts || 0);
+	const fieldRefused = $derived(() => profile?.field_refused_alerts || 0);
+	const fieldServerError = $derived(() => profile?.field_server_error_alerts || 0);
 
 	// Build embed description from server-loaded profile data
 	const embedDescription = $derived(() => {
@@ -394,75 +397,75 @@
 				</div>
 			</div>
 
-			<!-- Outcome Breakdown -->
+			<!-- Outcome Breakdown (field missions only) -->
 			<div class="mb-8">
-				<h2 class="mb-3 font-Mohave text-xl font-bold text-white">Alert Outcomes</h2>
+				<h2 class="mb-3 font-Mohave text-xl font-bold text-white">Alert Outcomes <span class="text-sm font-normal text-gray-400">field missions only</span></h2>
 				<div class="rounded-lg border border-gray-700 bg-gray-800/50 p-4">
 					<div class="mb-3 flex h-4 overflow-hidden rounded-full bg-gray-700">
-						{#if profile.successful_alerts > 0}
-							<div
-								class="bg-green-500 transition-all"
-								style="width: {(profile.successful_alerts / outcomeTotal()) * 100}%"
-								title="Successful: {profile.successful_alerts}"
-							></div>
+						{#if fieldSuccessful() > 0}
+							<div class="bg-green-500 transition-all" style="width: {(fieldSuccessful() / fieldOutcomeTotal()) * 100}%" title="Successful: {fieldSuccessful()}"></div>
 						{/if}
-						{#if profile.cancelled_alerts > 0}
-							<div
-								class="bg-yellow-500 transition-all"
-								style="width: {(profile.cancelled_alerts / outcomeTotal()) * 100}%"
-								title="Cancelled: {profile.cancelled_alerts}"
-							></div>
+						{#if fieldCancelled() > 0}
+							<div class="bg-yellow-500 transition-all" style="width: {(fieldCancelled() / fieldOutcomeTotal()) * 100}%" title="Cancelled: {fieldCancelled()}"></div>
 						{/if}
-						{#if profile.failed_alerts > 0}
-							<div
-								class="bg-red-500 transition-all"
-								style="width: {(profile.failed_alerts / outcomeTotal()) * 100}%"
-								title="Failed: {profile.failed_alerts}"
-							></div>
+						{#if fieldFailed() > 0}
+							<div class="bg-red-500 transition-all" style="width: {(fieldFailed() / fieldOutcomeTotal()) * 100}%" title="Failed: {fieldFailed()}"></div>
 						{/if}
-						{#if (profile.aborted_alerts || 0) > 0}
-							<div
-								class="bg-orange-500 transition-all"
-								style="width: {((profile.aborted_alerts || 0) / outcomeTotal()) * 100}%"
-								title="Aborted: {profile.aborted_alerts}"
-							></div>
+						{#if fieldAborted() > 0}
+							<div class="bg-orange-500 transition-all" style="width: {(fieldAborted() / fieldOutcomeTotal()) * 100}%" title="Aborted: {fieldAborted()}"></div>
 						{/if}
-						{#if otherAlerts() > 0}
-							<div
-								class="bg-gray-500 transition-all"
-								style="width: {(otherAlerts() / outcomeTotal()) * 100}%"
-								title="Other: {otherAlerts()}"
-							></div>
+						{#if fieldNoContact() > 0}
+							<div class="bg-purple-500 transition-all" style="width: {(fieldNoContact() / fieldOutcomeTotal()) * 100}%" title="No Contact: {fieldNoContact()}"></div>
+						{/if}
+						{#if fieldRefused() > 0}
+							<div class="bg-pink-500 transition-all" style="width: {(fieldRefused() / fieldOutcomeTotal()) * 100}%" title="Refused: {fieldRefused()}"></div>
+						{/if}
+						{#if fieldServerError() > 0}
+							<div class="bg-gray-500 transition-all" style="width: {(fieldServerError() / fieldOutcomeTotal()) * 100}%" title="Server Error: {fieldServerError()}"></div>
 						{/if}
 					</div>
 					<div class="flex flex-wrap gap-x-6 gap-y-1 text-sm">
 						<span class="flex items-center gap-1.5">
 							<span class="inline-block h-2.5 w-2.5 rounded-full bg-green-500"></span>
 							<span class="text-gray-300">Success</span>
-							<span class="font-semibold text-white">{profile.successful_alerts}</span>
+							<span class="font-semibold text-white">{fieldSuccessful()}</span>
 						</span>
 						<span class="flex items-center gap-1.5">
 							<span class="inline-block h-2.5 w-2.5 rounded-full bg-yellow-500"></span>
 							<span class="text-gray-300">Cancelled</span>
-							<span class="font-semibold text-white">{profile.cancelled_alerts}</span>
+							<span class="font-semibold text-white">{fieldCancelled()}</span>
 						</span>
 						<span class="flex items-center gap-1.5">
 							<span class="inline-block h-2.5 w-2.5 rounded-full bg-red-500"></span>
 							<span class="text-gray-300">Failed</span>
-							<span class="font-semibold text-white">{profile.failed_alerts}</span>
+							<span class="font-semibold text-white">{fieldFailed()}</span>
 						</span>
-						{#if (profile.aborted_alerts || 0) > 0}
+						{#if fieldAborted() > 0}
 							<span class="flex items-center gap-1.5">
 								<span class="inline-block h-2.5 w-2.5 rounded-full bg-orange-500"></span>
 								<span class="text-gray-300">Aborted</span>
-								<span class="font-semibold text-white">{profile.aborted_alerts}</span>
+								<span class="font-semibold text-white">{fieldAborted()}</span>
 							</span>
 						{/if}
-						{#if otherAlerts() > 0}
+						{#if fieldNoContact() > 0}
+							<span class="flex items-center gap-1.5">
+								<span class="inline-block h-2.5 w-2.5 rounded-full bg-purple-500"></span>
+								<span class="text-gray-300">No Contact</span>
+								<span class="font-semibold text-white">{fieldNoContact()}</span>
+							</span>
+						{/if}
+						{#if fieldRefused() > 0}
+							<span class="flex items-center gap-1.5">
+								<span class="inline-block h-2.5 w-2.5 rounded-full bg-pink-500"></span>
+								<span class="text-gray-300">Refused</span>
+								<span class="font-semibold text-white">{fieldRefused()}</span>
+							</span>
+						{/if}
+						{#if fieldServerError() > 0}
 							<span class="flex items-center gap-1.5">
 								<span class="inline-block h-2.5 w-2.5 rounded-full bg-gray-500"></span>
-								<span class="text-gray-300">Other</span>
-								<span class="font-semibold text-white">{otherAlerts()}</span>
+								<span class="text-gray-300">Server Error</span>
+								<span class="font-semibold text-white">{fieldServerError()}</span>
 							</span>
 						{/if}
 					</div>

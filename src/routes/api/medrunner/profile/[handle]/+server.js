@@ -234,8 +234,13 @@ function computeStats(handle, alerts, knownDiscordId = null, allDiscordIds = new
 	let failed = 0;
 	let cancelled = 0;
 	let aborted = 0;
+	let noContact = 0;
+	let refused = 0;
+	let serverError = 0;
 	let dispatchCount = 0;
 	let fieldCount = 0;
+	let fieldSuccessful = 0, fieldFailed = 0, fieldCancelled = 0, fieldAborted = 0;
+	let fieldNoContact = 0, fieldRefused = 0, fieldServerError = 0;
 	let responseTimes = [];
 	let alertDurations = [];
 	let ratings = [];
@@ -255,6 +260,9 @@ function computeStats(handle, alerts, knownDiscordId = null, allDiscordIds = new
 	let suspectedTrapCount = 0;
 
 	for (const alert of alerts) {
+		// Skip training/test alerts
+		if (alert.test === true) continue;
+
 		const team = alert.responding_team;
 		if (!team) continue;
 
@@ -278,11 +286,25 @@ function computeStats(handle, alerts, knownDiscordId = null, allDiscordIds = new
 			if (member.discordUsername) discordUsername = member.discordUsername;
 		}
 
+		// Dispatcher vs field — match by handle or any known discordId
+		const isDispatcher = (team.dispatchers || []).some(
+			(d) =>
+				(d.rsiHandle && d.rsiHandle.toLowerCase() === (member.rsiHandle || handle).toLowerCase()) ||
+				(knownDiscordId && d.discordId === knownDiscordId) ||
+				(d.discordId && allDiscordIds.has(d.discordId))
+		);
+		if (isDispatcher) dispatchCount++;
+		else fieldCount++;
+
 		// Status counts
-		if (alert.status === 3) successful++;
-		else if (alert.status === 4) failed++;
-		else if (alert.status === 6) cancelled++;
-		else if (alert.status === 8) aborted++;
+		const isField = !isDispatcher;
+		if (alert.status === 3) { successful++; if (isField) fieldSuccessful++; }
+		else if (alert.status === 4) { failed++; if (isField) fieldFailed++; }
+		else if (alert.status === 5) { noContact++; if (isField) fieldNoContact++; }
+		else if (alert.status === 6) { cancelled++; if (isField) fieldCancelled++; }
+		else if (alert.status === 7) { refused++; if (isField) fieldRefused++; }
+		else if (alert.status === 8) { aborted++; if (isField) fieldAborted++; }
+		else if (alert.status === 9) { serverError++; if (isField) fieldServerError++; }
 
 		// Role distribution
 		if (member.class != null) {
@@ -300,16 +322,6 @@ function computeStats(handle, alerts, knownDiscordId = null, allDiscordIds = new
 			const tlKey = String(alert.threat_level);
 			threatCounts[tlKey] = (threatCounts[tlKey] || 0) + 1;
 		}
-
-		// Dispatcher vs field — match by handle or any known discordId
-		const isDispatcher = (team.dispatchers || []).some(
-			(d) =>
-				(d.rsiHandle && d.rsiHandle.toLowerCase() === (member.rsiHandle || handle).toLowerCase()) ||
-				(knownDiscordId && d.discordId === knownDiscordId) ||
-				(d.discordId && allDiscordIds.has(d.discordId))
-		);
-		if (isDispatcher) dispatchCount++;
-		else fieldCount++;
 
 		// Response time (creation to accepted) — only for successful alerts
 		if (alert.status === 3 && alert.accepted_timestamp && alert.creation_timestamp) {
@@ -475,9 +487,12 @@ function computeStats(handle, alerts, knownDiscordId = null, allDiscordIds = new
 	// Role versatility — number of distinct roles used
 	const roleVersatility = Object.keys(roleCounts).length;
 
+	const total = successful + failed + noContact + cancelled + refused + aborted + serverError;
+	const fieldTotal = fieldSuccessful + fieldFailed + fieldNoContact + fieldCancelled + fieldRefused + fieldAborted + fieldServerError;
+
 	// Compute badges
 	const badges = computeBadges(
-		alerts.length,
+		total,
 		successful,
 		failed,
 		aborted,
@@ -496,11 +511,22 @@ function computeStats(handle, alerts, knownDiscordId = null, allDiscordIds = new
 		rsi_handle: rsiHandle,
 		discord_id: discordId,
 		discord_username: discordUsername,
-		total_alerts: alerts.length,
+		total_alerts: total,
 		successful_alerts: successful,
 		failed_alerts: failed,
 		aborted_alerts: aborted,
 		cancelled_alerts: cancelled,
+		no_contact_alerts: noContact,
+		refused_alerts: refused,
+		server_error_alerts: serverError,
+		field_total_alerts: fieldTotal,
+		field_successful_alerts: fieldSuccessful,
+		field_failed_alerts: fieldFailed,
+		field_cancelled_alerts: fieldCancelled,
+		field_aborted_alerts: fieldAborted,
+		field_no_contact_alerts: fieldNoContact,
+		field_refused_alerts: fieldRefused,
+		field_server_error_alerts: fieldServerError,
 		role_distribution: roleCounts,
 		systems_visited: sortedSystems,
 		threat_level_distribution: threatCounts,

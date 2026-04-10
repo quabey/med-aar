@@ -106,8 +106,8 @@ function createShipsMessage(ships, otherShips) {
 	if (medship === 'Other' && otherShips.medship) medship = otherShips.medship;
 
 	let lines = [];
-	if (medship) lines.push(`Medical Ship: ${medship}`);
 	if (gunship) lines.push(`Gunship: ${gunship}`);
+	if (medship) lines.push(`Medical Ship: ${medship}`);
 	const capShips = ships.cap || [];
 	if (capShips.length > 0) {
 		lines.push(`CAP: ${capShips.join(', ')}`);

@@ -39,8 +39,10 @@ function tsToDate(ts) {
 
 function computeStatsFromRows(rows, currentHandle, allHandles, alertPartnersMap) {
 	const roleCounts = {}, systemCounts = {}, threatCounts = {};
-	let successful = 0, failed = 0, cancelled = 0, aborted = 0;
+	let successful = 0, failed = 0, cancelled = 0, aborted = 0, noContact = 0, refused = 0, serverError = 0;
 	let dispatchCount = 0, fieldCount = 0;
+	let fieldSuccessful = 0, fieldFailed = 0, fieldCancelled = 0, fieldAborted = 0;
+	let fieldNoContact = 0, fieldRefused = 0, fieldServerError = 0;
 	const responseTimes = [], alertDurations = [], ratings = [];
 	const monthCounts = {}, dayOfWeekCounts = {0:0,1:0,2:0,3:0,4:0,5:0,6:0};
 	const hourOfDayCounts = {};
@@ -54,10 +56,18 @@ function computeStatsFromRows(rows, currentHandle, allHandles, alertPartnersMap)
 
 	for (const row of rows) {
 		const status = row.alert_status;
-		if (status === 3) successful++;
-		else if (status === 4) failed++;
-		else if (status === 6) cancelled++;
-		else if (status === 8) aborted++;
+		const isField = !row.is_dispatcher;
+
+		if (status === 3) { successful++; if (isField) fieldSuccessful++; }
+		else if (status === 4) { failed++; if (isField) fieldFailed++; }
+		else if (status === 5) { noContact++; if (isField) fieldNoContact++; }
+		else if (status === 6) { cancelled++; if (isField) fieldCancelled++; }
+		else if (status === 7) { refused++; if (isField) fieldRefused++; }
+		else if (status === 8) { aborted++; if (isField) fieldAborted++; }
+		else if (status === 9) { serverError++; if (isField) fieldServerError++; }
+
+		if (isField) fieldCount++;
+		else dispatchCount++;
 
 		if (row.member_class != null) {
 			const k = String(row.member_class);
@@ -68,9 +78,6 @@ function computeStatsFromRows(rows, currentHandle, allHandles, alertPartnersMap)
 			const k = String(row.threat_lvl);
 			threatCounts[k] = (threatCounts[k] || 0) + 1;
 		}
-
-		if (row.is_dispatcher) dispatchCount++;
-		else fieldCount++;
 
 		// Response time — successful alerts only
 		if (status === 3 && row.accepted_ts && row.creation_ts) {
@@ -166,7 +173,8 @@ function computeStatsFromRows(rows, currentHandle, allHandles, alertPartnersMap)
 		Object.entries(systemCounts).sort(([, a], [, b]) => b - a).slice(0, 10)
 	);
 
-	const total = successful + failed + cancelled + aborted;
+	const total = successful + failed + noContact + cancelled + refused + aborted + serverError;
+	const fieldTotal = fieldSuccessful + fieldFailed + fieldNoContact + fieldCancelled + fieldRefused + fieldAborted + fieldServerError;
 	const badges = computeBadges(
 		total, successful, failed, aborted, cancelled,
 		roleCounts, avgResponseTime ? avgResponseTime / 1000 : null,
@@ -180,6 +188,17 @@ function computeStatsFromRows(rows, currentHandle, allHandles, alertPartnersMap)
 		failed_alerts: failed,
 		aborted_alerts: aborted,
 		cancelled_alerts: cancelled,
+		no_contact_alerts: noContact,
+		refused_alerts: refused,
+		server_error_alerts: serverError,
+		field_total_alerts: fieldTotal,
+		field_successful_alerts: fieldSuccessful,
+		field_failed_alerts: fieldFailed,
+		field_cancelled_alerts: fieldCancelled,
+		field_aborted_alerts: fieldAborted,
+		field_no_contact_alerts: fieldNoContact,
+		field_refused_alerts: fieldRefused,
+		field_server_error_alerts: fieldServerError,
 		role_distribution: roleCounts,
 		systems_visited: sortedSystems,
 		threat_level_distribution: threatCounts,
@@ -292,7 +311,8 @@ export async function POST({ locals, url }) {
 	while (true) {
 		const { data, error: alertsError } = await supabase
 			.from('completed_alerts')
-			.select('id, status, creation_timestamp, accepted_timestamp, completion_timestamp, system, threat_level, rating, aar_suspected_trap, client_rsi_handle, client_discord_id, responding_team')
+			.select('id, status, test, creation_timestamp, accepted_timestamp, completion_timestamp, system, threat_level, rating, aar_suspected_trap, client_rsi_handle, client_discord_id, responding_team')
+			.or('test.is.null,test.eq.false')
 			.range(offset, offset + BATCH - 1);
 
 		if (alertsError) return json({ error: alertsError.message }, { status: 500 });
