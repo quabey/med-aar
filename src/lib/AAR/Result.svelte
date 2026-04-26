@@ -1,7 +1,7 @@
 <script>
 	let { data } = $props();
 
-	const extractedToOptions = ['Station', 'Player Ship', 'Declined', 'N/A'];
+	const extractedToOptions = ['Station', 'Lobby', 'On-Site Hangar/Pads', 'Surface', 'Player Ship', 'Declined', 'N/A'];
 </script>
 
 <div class="flex flex-col gap-3">
